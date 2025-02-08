@@ -383,7 +383,7 @@
       background: rgba(138, 43, 226, 0.1);
     }
 
-    /* Info icon now uses a simple, large 'i' and is fixed to bottom left */
+    /* Info icon using a simple 'i' and styled to look clean, fixed to bottom left */
     .info-icon {
       position: fixed;
       bottom: 20px;
@@ -628,7 +628,7 @@
     <div id="ideasGrid" class="ideas-grid"></div>
   </div>
 
-  <!-- Info icon now using a simple 'i' text, fixed to bottom left -->
+  <!-- Info icon now using a simple 'i' and fixed to bottom left -->
   <button id="infoBtn" class="info-icon" title="Information">
     <span class="info-text">i</span>
   </button>
@@ -688,7 +688,7 @@
     </div>
   </div>
 
-  <!-- Logout Modal (if needed later) -->
+  <!-- Logout Modal -->
   <div id="logoutModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -1054,6 +1054,10 @@
       {
         target: "#infoBtn",
         text: "Click this info icon to learn more about the site."
+      },
+      {
+        target: "#userProfile",
+        text: "Click your name to sign out."
       }
     ];
     let currentTutorialStep = 0;
@@ -1094,7 +1098,7 @@
       let topPosition = rect.bottom + 10 + window.scrollY;
       let leftPosition = rect.left + window.scrollX;
       
-      // For the first tutorial step, shift the tooltip further left (150px offset) and ensure it isn’t too close to the left edge
+      // For the first tutorial step, shift the tooltip further left (150px offset)
       if (currentTutorialStep === 0) {
         leftPosition = leftPosition - 150;
         if (leftPosition < window.scrollX + 40) {
@@ -1121,7 +1125,6 @@
       
       // Adjust if the tooltip would go off the right edge of the viewport
       if (leftPosition + tooltipWidth > window.innerWidth + window.scrollX) {
-        // Try positioning tooltip to the left of the target element
         let altLeft = rect.left - tooltipWidth - 10 + window.scrollX;
         if (altLeft > window.scrollX + 10) {
           leftPosition = altLeft;
@@ -1135,7 +1138,6 @@
         leftPosition = window.scrollX + 10;
       }
       
-      // Set the final positions
       tooltip.style.top = topPosition + "px";
       tooltip.style.left = leftPosition + "px";
       
@@ -1207,7 +1209,7 @@
   <!-- Firebase integration using modules for logging in -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
@@ -1235,6 +1237,18 @@
       })
       .catch((error) => {
         console.error("Firebase login error:", error);
+      });
+    }
+
+    // Define a global logout function
+    window.logout = function() {
+      signOut(auth)
+      .then(() => {
+        // Reset the UI to logged-out state; for simplicity, reload the page
+        location.reload();
+      })
+      .catch((error) => {
+        console.error("Firebase logout error:", error);
       });
     }
   </script>
