@@ -624,20 +624,11 @@
     <span class="info-text">i</span>
   </button>
 
-  <!-- Welcome Modal -->
-  <div id="welcomeModal" class="modal">
+  <!-- Combined Intro Modal (Welcome + Unlock) -->
+  <div id="introModal" class="modal">
     <div class="modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
-      <p>This site was built by a student at FCHS to gather and share creative website ideas. Whether big or small, practical or wild, your ideas matter—so share them here!</p>
-      <button class="submit-button" onclick="startLockedMode()">Get Started</button>
-    </div>
-  </div>
-
-  <!-- Locked Modal -->
-  <div id="lockedModal" class="modal">
-    <div class="modal-content">
-      <h2 class="modal-title">Unlock MyImagination</h2>
-      <p>Please continue with Google to unlock full access to the site.</p>
+      <p>This site was built by a student at FCHS to gather and share creative website ideas. Please continue with Google to unlock full access to the site.</p>
       <button class="gsi-material-button" onclick="firebaseLogin()">
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
@@ -815,19 +806,23 @@
     }
 
     function startLockedMode() {
-      hideModal('welcomeModal');
+      hideModal('introModal');
       filterBtn.style.display = 'none';
       ideasGrid.classList.add('locked');
-      showModal('lockedModal');
+      // Note: The intro modal is used only for first-time visitors.
     }
 
+    // Unlock the site and conditionally start the tutorial if it's the user's first visit.
     function unlockSite() {
       siteLocked = false;
       ideasGrid.classList.remove('locked');
       filterBtn.style.display = 'flex';
       newIdeaBtn.style.display = 'flex';
-      hideModal('lockedModal');
-      startTutorial();
+      hideModal('introModal');
+      if (!localStorage.getItem('visited')) {
+        startTutorial();
+        localStorage.setItem('visited', 'true');
+      }
     }
 
     function renderIdeas() {
@@ -1021,7 +1016,7 @@
       return false;
     }
 
-    // Spotlight tutorial functions
+    // Spotlight Tutorial Functions
     let tutorialSteps = [
       { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
       { target: "#filterBtn", text: "Use this filter icon to sort posts by popularity." },
@@ -1134,13 +1129,13 @@
 
     renderIdeas();
 
+    // On page load, if the user hasn't visited before, show the intro modal.
     if (!localStorage.getItem('visited')) {
-      showModal('welcomeModal');
-      localStorage.setItem('visited', 'true');
+      showModal('introModal');
     }
   </script>
   
-  <!-- Firebase Integration using Modules with Auth State Observer -->
+  <!-- Firebase Integration with Auth State Observer -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
@@ -1162,11 +1157,12 @@
     const database = getDatabase(app);
     const dbRef = ref(database);
 
-    // Listen for auth state changes to update the UI on refresh
+    // Listen for auth state changes and update the UI accordingly.
     onAuthStateChanged(auth, (user) => {
       if (user) {
         document.getElementById('username').textContent = user.displayName;
         document.getElementById('userProfile').style.display = 'flex';
+        // Only start the tutorial on the user's first visit.
         unlockSite();
       }
     });
