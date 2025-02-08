@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MyImagination - Creative Website Ideas Forum</title>
+  <!-- Firebase Compat Libraries -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -34,7 +38,7 @@
     }
 
     header {
-      background-color: rgba(255,255,255,0.1);
+      background-color: rgba(255, 255, 255, 0.1);
       padding: 20px;
       display: flex;
       justify-content: space-between;
@@ -43,7 +47,7 @@
       top: 0;
       z-index: 100;
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .header-left {
@@ -56,7 +60,7 @@
       font-size: 24px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .header-buttons {
@@ -65,7 +69,7 @@
       align-items: center;
     }
 
-    /* User profile shown when signed in. Clicking it opens a sign-out confirmation modal. */
+    /* User profile shown after login */
     .user-profile {
       display: none;
       align-items: center;
@@ -74,12 +78,12 @@
       cursor: pointer;
       padding: 8px 16px;
       border-radius: var(--border-radius);
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       transition: var(--transition);
       position: relative;
     }
     .user-profile:hover {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.2);
     }
 
     .icon-button {
@@ -87,7 +91,7 @@
       height: 40px;
       border: none;
       border-radius: 50%;
-      background: rgba(255,255,255,0.9);
+      background: rgba(255, 255, 255, 0.9);
       color: var(--primary-color);
       cursor: pointer;
       display: flex;
@@ -98,12 +102,12 @@
     .icon-button:hover {
       transform: translateY(-2px);
       background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .ideas-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 24px;
       margin-top: 30px;
       transition: var(--transition);
@@ -117,14 +121,14 @@
       background-color: var(--card-background);
       border-radius: var(--border-radius);
       padding: 24px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       transition: var(--transition);
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
     .idea-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     }
 
     .idea-subject {
@@ -341,7 +345,7 @@
       background: rgba(138,43,226,0.1);
     }
 
-    /* Info icon: simple, clean "i", fixed to bottom left */
+    /* Info icon: simple "i", fixed to bottom left */
     .info-icon {
       position: fixed;
       bottom: 20px;
@@ -577,7 +581,7 @@
     </div>
   </div>
 
-  <!-- Locked Modal (shown if not signed in) -->
+  <!-- Locked Modal (if not signed in) -->
   <div id="lockedModal" class="modal">
     <div class="modal-content">
       <h2 class="modal-title">Unlock MyImagination</h2>
@@ -704,8 +708,8 @@
   </div>
 
   <script>
-    // Helper push function (using Firebase Realtime Database)
-    function push(ref, data) {
+    // Helper push function using Firebase Realtime Database
+    function pushData(ref, data) {
       return firebase.database().ref(ref.toString()).push(data);
     }
 
@@ -927,7 +931,7 @@
         date: new Date().toLocaleString()
       };
       const commentRef = firebase.database().ref('posts/' + postId + '/comments');
-      push(commentRef, commentData);
+      pushData(commentRef, commentData);
       commentInput.value = '';
     };
 
@@ -944,7 +948,7 @@
         date: new Date().toLocaleString()
       };
       const replyRef = firebase.database().ref('posts/' + postId + '/comments/' + commentId + '/replies');
-      push(replyRef, replyData);
+      pushData(replyRef, replyData);
       replyInput.value = '';
     };
 
@@ -1044,11 +1048,13 @@
     });
   </script>
 
+  <!-- Firebase Integration (Compat version) -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
-    import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+    // Although we're using a module here, we rely on the global firebase object from the compat scripts
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js";
+    import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js";
 
+    // Firebase configuration – replace these values with your own if needed
     const firebaseConfig = {
       apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
       authDomain: "myteacheropinion.firebaseapp.com",
@@ -1059,10 +1065,11 @@
       appId: "1:945674655787:web:a59ef04ec9e843769bf26e"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
     const provider = new GoogleAuthProvider();
-    const database = getDatabase(app);
+    const database = firebase.database();
 
     window.firebaseLogin = function() {
       signInWithPopup(auth, provider)
