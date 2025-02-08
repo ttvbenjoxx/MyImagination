@@ -70,7 +70,7 @@
       align-items: center;
     }
 
-    /* User Profile Pill (with logout dropdown) */
+    /* User Profile Pill with Logout Dropdown */
     .user-profile {
       display: none;
       align-items: center;
@@ -83,23 +83,29 @@
       transition: var(--transition);
       position: relative; /* For dropdown positioning */
     }
-
     .user-profile:hover {
       background: rgba(255, 255, 255, 0.2);
     }
-
-    /* Logout Dropdown */
+    /* Logout Dropdown with Animation */
     .logout-dropdown {
       position: absolute;
       top: 100%;
-      left: 0;
+      right: 0;
       background: #fff;
       padding: 10px;
       border-radius: var(--border-radius);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: none;
       width: max-content;
       z-index: 110;
+      opacity: 0;
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      margin-top: 8px;
+    }
+    .logout-dropdown.show {
+      opacity: 1;
+      transform: scaleY(1);
     }
     .logout-dropdown p {
       margin: 0 0 10px 0;
@@ -132,7 +138,6 @@
       justify-content: center;
       transition: var(--transition);
     }
-
     .icon-button:hover {
       transform: translateY(-2px);
       background: #fff;
@@ -146,7 +151,6 @@
       margin-top: 30px;
       transition: var(--transition);
     }
-
     .ideas-grid.locked {
       filter: blur(8px);
       pointer-events: none;
@@ -161,26 +165,22 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
-
     .idea-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     }
-
     .idea-subject {
       font-size: 20px;
       font-weight: 600;
       margin-bottom: 12px;
       color: #1a1a1a;
     }
-
     .idea-description {
       color: #4a4a4a;
       margin-bottom: 20px;
       line-height: 1.6;
       white-space: pre-wrap;
     }
-
     .idea-meta {
       display: flex;
       justify-content: space-between;
@@ -188,12 +188,10 @@
       font-size: 14px;
       color: #666;
     }
-
     .idea-actions {
       display: flex;
       gap: 16px;
     }
-
     .action-button {
       display: flex;
       align-items: center;
@@ -205,17 +203,14 @@
       transition: var(--transition);
       padding: 4px;
     }
-
     .action-button:hover {
       color: var(--primary-color);
     }
-
     .action-button.liked svg {
       fill: #ff4b4b;
       stroke: #ff4b4b;
       animation: heartPop 0.3s ease;
     }
-
     @keyframes heartPop {
       0% { transform: scale(1); }
       50% { transform: scale(1.2); }
@@ -235,12 +230,10 @@
       justify-content: center;
       backdrop-filter: blur(8px);
     }
-
     .modal.show {
       display: flex;
       animation: modalFadeIn 0.3s ease;
     }
-
     .modal-content {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
@@ -254,25 +247,21 @@
       opacity: 0;
       transition: var(--transition);
     }
-
     .modal.show .modal-content {
       transform: translateY(0);
       opacity: 1;
     }
-
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
     }
-
     .modal-title {
       font-size: 24px;
       font-weight: 600;
       color: #1a1a1a;
     }
-
     .close-modal {
       background: none;
       border: none;
@@ -281,22 +270,18 @@
       color: #666;
       transition: var(--transition);
     }
-
     .close-modal:hover {
       color: #1a1a1a;
     }
-
     .form-group {
       margin-bottom: 20px;
     }
-
     .form-label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
       color: #1a1a1a;
     }
-
     .form-input {
       width: 100%;
       padding: 12px 16px;
@@ -305,18 +290,15 @@
       font-size: 16px;
       transition: var(--transition);
     }
-
     .form-input:focus {
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
     }
-
     textarea.form-input {
       min-height: 120px;
       resize: vertical;
     }
-
     .submit-button {
       background: var(--primary-color);
       color: white;
@@ -329,44 +311,36 @@
       transition: var(--transition);
       width: 100%;
     }
-
     .submit-button:hover {
       background: #7424c1;
       transform: translateY(-2px);
     }
-
     .comments-section {
       margin-top: 20px;
       padding-top: 20px;
       border-top: 1px solid #e1e1e1;
     }
-
     .comment {
       padding: 12px 0;
       border-bottom: 1px solid #f0f0f0;
     }
-
     .comment-header {
       display: flex;
       justify-content: space-between;
       margin-bottom: 8px;
     }
-
     .comment-author {
       font-weight: 500;
       color: #1a1a1a;
     }
-
     .comment-date {
       font-size: 14px;
       color: #666;
     }
-
     .comment-form {
       margin-top: 20px;
       margin-bottom: 20px;
     }
-
     .comment-input {
       width: 100%;
       padding: 12px;
@@ -376,28 +350,23 @@
       resize: vertical;
       min-height: 80px;
     }
-
     .comment-actions {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
     }
-
     .reply-form {
       margin-left: 40px;
       margin-top: 12px;
       display: none;
     }
-
     .reply-form.show {
       display: block;
     }
-
     .comment-replies {
       margin-left: 40px;
       margin-top: 12px;
     }
-
     .reply-button {
       background: none;
       border: none;
@@ -408,11 +377,9 @@
       border-radius: 4px;
       transition: var(--transition);
     }
-
     .reply-button:hover {
       background: rgba(138, 43, 226, 0.1);
     }
-
     .info-icon {
       position: fixed;
       bottom: 20px;
@@ -428,19 +395,16 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       transition: var(--transition);
     }
-
     .info-icon:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
-
     .info-icon .info-text {
       font-size: 24px;
       font-weight: bold;
       color: var(--primary-color);
       line-height: 1;
     }
-
     .tabs {
       display: flex;
       gap: 2px;
@@ -449,7 +413,6 @@
       border-radius: 8px;
       margin-bottom: 24px;
     }
-
     .tab {
       flex: 1;
       padding: 12px;
@@ -459,26 +422,21 @@
       border-radius: 6px;
       transition: var(--transition);
     }
-
     .tab.active {
       background: white;
       color: var(--primary-color);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-
     .tab-content {
       display: none;
     }
-
     .tab-content.active {
       display: block;
     }
-
     @keyframes modalFadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-
     #tutorialOverlay {
       position: fixed;
       top: 0;
@@ -489,7 +447,6 @@
       z-index: 3000;
       display: none;
     }
-
     #tutorialTooltip {
       position: absolute;
       background: white;
@@ -499,14 +456,12 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       transition: var(--transition);
     }
-
     .highlighted {
       position: relative;
       z-index: 3100;
       box-shadow: 0 0 0 4px var(--primary-color);
       border-radius: var(--border-radius);
     }
-
     @media (max-width: 768px) {
       .ideas-grid {
         grid-template-columns: 1fr;
@@ -516,7 +471,6 @@
         margin: 20px;
       }
     }
-
     .gsi-material-button {
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -548,14 +502,12 @@
       max-width: 400px;
       min-width: min-content;
     }
-
     .gsi-material-button .gsi-material-button-icon {
       height: 20px;
       margin-right: 12px;
       min-width: 20px;
       width: 20px;
     }
-
     .gsi-material-button .gsi-material-button-content-wrapper {
       -webkit-align-items: center;
       align-items: center;
@@ -569,7 +521,6 @@
       position: relative;
       width: 100%;
     }
-
     .gsi-material-button .gsi-material-button-contents {
       -webkit-flex-grow: 1;
       flex-grow: 1;
@@ -579,7 +530,6 @@
       text-overflow: ellipsis;
       vertical-align: top;
     }
-
     .gsi-material-button .gsi-material-button-state {
       -webkit-transition: opacity .218s;
       transition: opacity .218s;
@@ -590,32 +540,26 @@
       right: 0;
       top: 0;
     }
-
     .gsi-material-button:disabled {
       cursor: default;
       background-color: #ffffff61;
       border-color: #1f1f1f1f;
     }
-
     .gsi-material-button:disabled .gsi-material-button-contents {
       opacity: 38%;
     }
-
     .gsi-material-button:disabled .gsi-material-button-icon {
       opacity: 38%;
     }
-
     .gsi-material-button:not(:disabled):active .gsi-material-button-state, 
     .gsi-material-button:not(:disabled):focus .gsi-material-button-state {
       background-color: #303030;
       opacity: 12%;
     }
-
     .gsi-material-button:not(:disabled):hover {
       -webkit-box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
       box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
     }
-
     .gsi-material-button:not(:disabled):hover .gsi-material-button-state {
       background-color: #303030;
       opacity: 8%;
@@ -686,6 +630,30 @@
     </div>
   </div>
 
+  <!-- Signed Out Modal -->
+  <div id="signedOutModal" class="modal">
+    <div class="modal-content">
+      <h2 class="modal-title">Whoops!</h2>
+      <p>Looks like you've been signed out. Let's get you back on track.</p>
+      <button class="gsi-material-button" onclick="firebaseLogin()">
+        <div class="gsi-material-button-state"></div>
+        <div class="gsi-material-button-content-wrapper">
+          <div class="gsi-material-button-icon">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style="display: block;">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+              <path fill="none" d="M0 0h48v48H0z"></path>
+            </svg>
+          </div>
+          <span class="gsi-material-button-contents">Continue with Google</span>
+          <span style="display: none;">Continue with Google</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
   <!-- New Idea Modal -->
   <div id="newIdeaModal" class="modal">
     <div class="modal-content">
@@ -707,7 +675,7 @@
     </div>
   </div>
 
-  <!-- Logout Modal (unused since logout now appears in the dropdown) -->
+  <!-- Logout Modal (unused now since logout confirmation is in the dropdown) -->
   <div id="logoutModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -1175,20 +1143,14 @@
     // Logout Dropdown: Toggle dropdown when clicking the user profile pill.
     document.getElementById('userProfile').addEventListener('click', function(e) {
       var dropdown = document.getElementById('logoutDropdown');
-      if (dropdown.style.display === 'block') {
-        dropdown.style.display = 'none';
-      } else {
-        dropdown.style.display = 'block';
-      }
+      dropdown.classList.toggle("show");
       e.stopPropagation();
     });
 
     // Hide dropdown if clicking elsewhere.
     document.addEventListener('click', function() {
       var dropdown = document.getElementById('logoutDropdown');
-      if (dropdown.style.display === 'block') {
-        dropdown.style.display = 'none';
-      }
+      dropdown.classList.remove("show");
     });
 
     // When the confirm logout button is clicked, call logout().
@@ -1227,6 +1189,11 @@
         document.getElementById('userProfile').style.display = 'flex';
         // Unlock the site; the tutorial will only start if it is the user's first visit.
         unlockSite();
+      } else {
+        // If the user is signed out and they've visited before, show the "Whoops!" modal.
+        if (localStorage.getItem('visited')) {
+          showModal('signedOutModal');
+        }
       }
     });
 
@@ -1240,7 +1207,7 @@
         .catch((error) => {
           console.error("Firebase login error:", error);
         });
-    }
+    };
 
     window.logout = function() {
       signOut(auth)
@@ -1250,7 +1217,7 @@
         .catch((error) => {
           console.error("Firebase logout error:", error);
         });
-    }
+    };
   </script>
 </body>
 </html>
