@@ -763,7 +763,7 @@
   </div>
 
   <script>
-    // Global state variables
+    // Global state variables and site logic
     let siteLocked = true;
     let ideas = [
       {
@@ -1021,6 +1021,7 @@
       return false;
     }
 
+    // Spotlight tutorial functions
     let tutorialSteps = [
       { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
       { target: "#filterBtn", text: "Use this filter icon to sort posts by popularity." },
@@ -1139,14 +1140,12 @@
     }
   </script>
   
-  <!-- Firebase Integration using Modules -->
+  <!-- Firebase Integration using Modules with Auth State Observer -->
   <script type="module">
-    // Import Firebase App, Auth, and Database SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
     import { getDatabase, ref } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
-    // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
       authDomain: "myteacheropinion.firebaseapp.com",
@@ -1157,38 +1156,41 @@
       appId: "1:945674655787:web:a59ef04ec9e843769bf26e"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    
-    // Initialize Firebase Auth and Database
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
     const database = getDatabase(app);
-    // Optional: Create a reference to the root of the Realtime Database
     const dbRef = ref(database);
 
-    // Expose the firebaseLogin function to the global scope
-    window.firebaseLogin = function() {
-      signInWithPopup(auth, provider)
-      .then((result) => {
-        document.getElementById('username').textContent = result.user.displayName;
+    // Listen for auth state changes to update the UI on refresh
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('username').textContent = user.displayName;
         document.getElementById('userProfile').style.display = 'flex';
         unlockSite();
-      })
-      .catch((error) => {
-        console.error("Firebase login error:", error);
-      });
+      }
+    });
+
+    window.firebaseLogin = function() {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          document.getElementById('username').textContent = result.user.displayName;
+          document.getElementById('userProfile').style.display = 'flex';
+          unlockSite();
+        })
+        .catch((error) => {
+          console.error("Firebase login error:", error);
+        });
     }
 
-    // Expose a global logout function
     window.logout = function() {
       signOut(auth)
-      .then(() => {
-        location.reload();
-      })
-      .catch((error) => {
-        console.error("Firebase logout error:", error);
-      });
+        .then(() => {
+          location.reload();
+        })
+        .catch((error) => {
+          console.error("Firebase logout error:", error);
+        });
     }
   </script>
 </body>
