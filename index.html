@@ -186,15 +186,9 @@
     }
 
     @keyframes heartPop {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.2);
-      }
-      100% {
-        transform: scale(1);
-      }
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
     }
 
     /* Modal Styles with backdrop blur */
@@ -389,10 +383,11 @@
       background: rgba(138, 43, 226, 0.1);
     }
 
+    /* Info icon moved to bottom left */
     .info-icon {
       position: fixed;
       bottom: 20px;
-      right: 20px;
+      left: 20px;
       z-index: 100;
       background: white;
       border-radius: 50%;
@@ -444,12 +439,8 @@
     }
 
     @keyframes modalFadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     /* Tutorial overlay and tooltip */
@@ -486,7 +477,6 @@
       .ideas-grid {
         grid-template-columns: 1fr;
       }
-
       .modal-content {
         padding: 24px;
         margin: 20px;
@@ -526,6 +516,7 @@
     <div id="ideasGrid" class="ideas-grid"></div>
   </div>
 
+  <!-- Info icon now fixed to bottom left -->
   <button id="infoBtn" class="info-icon" title="Information">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <circle cx="12" cy="12" r="10"></circle>
@@ -979,6 +970,11 @@
       let topPosition = rect.bottom + 10 + window.scrollY;
       let leftPosition = rect.left + window.scrollX;
       
+      // For the first tutorial step, shift left a little
+      if (currentTutorialStep === 0) {
+        leftPosition -= 20;
+      }
+      
       // Temporarily display the tooltip (invisible) to measure its dimensions
       tooltip.style.top = topPosition + "px";
       tooltip.style.left = leftPosition + "px";
@@ -1044,6 +1040,16 @@
     // ---------------------------
     // Event Listeners for modals and buttons
     // ---------------------------
+    // Bind tab event listeners for Info Modal
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
     // Filter button sorts posts
     filterBtn.addEventListener('click', () => {
       ideas.sort((a, b) => b.likes - a.likes);
