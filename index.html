@@ -18,16 +18,11 @@
       --transition: all 0.3s ease;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-    }
-
+    /* Fallback background added */
     body {
       line-height: 1.6;
       color: var(--text-color);
+      background: #8a2be2;
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       min-height: 100vh;
     }
@@ -39,7 +34,7 @@
     }
 
     header {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255,255,255,0.1);
       padding: 20px;
       display: flex;
       justify-content: space-between;
@@ -48,7 +43,7 @@
       top: 0;
       z-index: 100;
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     .header-left {
@@ -61,7 +56,7 @@
       font-size: 24px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .header-buttons {
@@ -70,7 +65,7 @@
       align-items: center;
     }
 
-    /* The user profile will be shown once logged in. Clicking it will open the sign-out confirmation modal */
+    /* User profile (shown after login). Clicking it opens the sign‑out confirmation modal. */
     .user-profile {
       display: none;
       align-items: center;
@@ -79,12 +74,12 @@
       cursor: pointer;
       padding: 8px 16px;
       border-radius: var(--border-radius);
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       transition: var(--transition);
       position: relative;
     }
     .user-profile:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255,255,255,0.2);
     }
 
     .icon-button {
@@ -92,7 +87,7 @@
       height: 40px;
       border: none;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255,255,255,0.9);
       color: var(--primary-color);
       cursor: pointer;
       display: flex;
@@ -103,17 +98,16 @@
     .icon-button:hover {
       transform: translateY(-2px);
       background: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     .ideas-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
       gap: 24px;
       margin-top: 30px;
       transition: var(--transition);
     }
-    /* When locked, blur posts */
     .ideas-grid.locked {
       filter: blur(8px);
       pointer-events: none;
@@ -123,14 +117,14 @@
       background-color: var(--card-background);
       border-radius: var(--border-radius);
       padding: 24px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       transition: var(--transition);
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
     .idea-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
     }
 
     .idea-subject {
@@ -185,8 +179,7 @@
     .modal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
       background-color: var(--modal-background);
@@ -260,7 +253,7 @@
     .form-input:focus {
       outline: none;
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+      box-shadow: 0 0 0 3px rgba(138,43,226,0.1);
     }
     textarea.form-input {
       min-height: 120px;
@@ -345,10 +338,10 @@
       transition: var(--transition);
     }
     .reply-button:hover {
-      background: rgba(138, 43, 226, 0.1);
+      background: rgba(138,43,226,0.1);
     }
 
-    /* Info icon: a simple, large 'i' styled to look clean */
+    /* Info icon: now a simple, clean "i" */
     .info-icon {
       position: fixed;
       bottom: 20px;
@@ -361,12 +354,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: var(--transition);
     }
     .info-icon:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
     }
     .info-icon .info-text {
       font-size: 24px;
@@ -395,7 +388,7 @@
     .tab.active {
       background: white;
       color: var(--primary-color);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .tab-content {
       display: none;
@@ -415,7 +408,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0,0,0,0.7);
       z-index: 3000;
       display: none;
     }
@@ -425,10 +418,9 @@
       padding: 16px;
       border-radius: var(--border-radius);
       max-width: 300px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transition: var(--transition);
     }
-    /* Highlight effect for spotlight */
     .highlighted {
       position: relative;
       z-index: 3100;
@@ -445,7 +437,7 @@
       }
     }
 
-    /* Styles for the "Continue with Google" button */
+    /* "Continue with Google" button styles */
     .gsi-material-button {
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -532,8 +524,8 @@
       opacity: 12%;
     }
     .gsi-material-button:not(:disabled):hover {
-      -webkit-box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
-      box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+      -webkit-box-shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
     }
     .gsi-material-button:not(:disabled):hover .gsi-material-button-state {
       background-color: #303030;
@@ -559,7 +551,6 @@
         </svg>
         <span id="username">DummyUser</span>
       </div>
-      <!-- New Idea button shown only when unlocked -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -573,12 +564,11 @@
     <div id="ideasGrid" class="ideas-grid"></div>
   </div>
 
-  <!-- Info icon now using a simple, large "i" -->
   <button id="infoBtn" class="info-icon" title="Information">
     <span class="info-text">i</span>
   </button>
 
-  <!-- Welcome Modal (always appears if not visited before) -->
+  <!-- Welcome Modal -->
   <div id="welcomeModal" class="modal">
     <div class="modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
@@ -587,12 +577,11 @@
     </div>
   </div>
 
-  <!-- Locked Modal (if signed out and not first visit, this modal is forced) -->
+  <!-- Locked Modal (shown if not signed in) -->
   <div id="lockedModal" class="modal">
     <div class="modal-content">
       <h2 class="modal-title">Unlock MyImagination</h2>
       <p>Please continue with Google to unlock full access to the site.</p>
-      <!-- Styled "Continue with Google" button -->
       <button class="gsi-material-button" onclick="firebaseLogin()">
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
@@ -633,7 +622,7 @@
     </div>
   </div>
 
-  <!-- Sign Out Confirmation Modal (positioned next to the user profile) -->
+  <!-- Sign Out Confirmation Modal (positioned near userProfile) -->
   <div id="signOutModal" class="modal" style="align-items: flex-start; justify-content: flex-start;">
     <div class="modal-content" id="signOutModalContent" style="position: absolute; width: 300px;">
       <h2 class="modal-title">Sign Out?</h2>
@@ -714,34 +703,60 @@
     </div>
   </div>
 
-  <!-- Main script for local UI and database functionality -->
   <script>
-    // We will not use a local ideas array; posts are stored in Firebase Realtime Database.
-    // Firebase Realtime Database functions will update the UI in real time.
+    // The following functions use Firebase Realtime Database to persist posts, comments, likes, etc.
+    // A helper push() is defined below to mimic push() from the module version.
+    function push(ref, data) {
+      return firebase.database().ref(ref.toString()).push(data);
+    }
+
+    // Global variable to determine locked state
     let siteLocked = true;
-    
+
     // Get DOM elements
     const userProfile = document.getElementById('userProfile');
     const newIdeaBtn = document.getElementById('newIdeaBtn');
     const filterBtn = document.getElementById('filterBtn');
     const ideasGrid = document.getElementById('ideasGrid');
     const infoBtn = document.getElementById('infoBtn');
-    const signOutModal = document.getElementById('signOutModal');
-    const signOutModalContent = document.getElementById('signOutModalContent');
-    
-    // Render posts from Firebase data
+
+    // Functions to show/hide modals
+    function showModal(modalId) {
+      document.getElementById(modalId).classList.add('show');
+    }
+    function hideModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
+    }
+
+    // Start locked mode: hide welcome modal, blur posts, hide filter button, show locked modal
+    function startLockedMode() {
+      hideModal('welcomeModal');
+      filterBtn.style.display = 'none';
+      ideasGrid.classList.add('locked');
+      showModal('lockedModal');
+    }
+
+    // Unlock site: remove blur, show filter and new idea buttons, hide locked modal, start tutorial
+    function unlockSite() {
+      siteLocked = false;
+      ideasGrid.classList.remove('locked');
+      filterBtn.style.display = 'flex';
+      newIdeaBtn.style.display = 'flex';
+      hideModal('lockedModal');
+      startTutorial();
+    }
+
+    // Render ideas from Firebase data
     function renderIdeas(posts) {
-      // posts is an object from Firebase snapshot; convert to an array sorted by timestamp descending
       const postsArr = posts ? Object.keys(posts).map(key => ({ id: key, ...posts[key] })) : [];
       postsArr.sort((a, b) => b.timestamp - a.timestamp);
       ideasGrid.innerHTML = postsArr.map(idea => {
-        // Count comments (including replies)
         let commentCount = 0;
         if (idea.comments) {
-          commentCount = Object.keys(idea.comments).reduce((total, cid) => {
+          commentCount = Object.keys(idea.comments).reduce((sum, cid) => {
             const c = idea.comments[cid];
             let replies = c.replies ? Object.keys(c.replies).length : 0;
-            return total + 1 + replies;
+            return sum + 1 + replies;
           }, 0);
         }
         return `
@@ -774,15 +789,17 @@
       }).join('');
     }
 
-    // Real-time listener for posts
+    // Set up real-time listener for posts
     function setupPostsListener() {
-      const dbRef = firebase.database().ref('posts');
-      dbRef.on('value', (snapshot) => {
+      const postsRef = firebase.database().ref('posts');
+      postsRef.on('value', (snapshot) => {
         renderIdeas(snapshot.val());
       });
     }
 
-    // Add new post to Firebase
+    setupPostsListener();
+
+    // Add new idea (post)
     window.addNewIdea = function(event) {
       event.preventDefault();
       const subject = document.getElementById('ideaSubject').value;
@@ -803,7 +820,7 @@
       return false;
     };
 
-    // Toggle like for a post; updates in Firebase
+    // Toggle like for a post
     window.toggleLike = function(postId) {
       if (siteLocked) {
         alert('Please unlock the site to like ideas.');
@@ -815,10 +832,8 @@
       postRef.once('value').then(snapshot => {
         const post = snapshot.val();
         let likes = post.likes || 0;
-        // For simplicity, we record if the current user has liked this post in a child "likesBy" (an object with uid keys)
         let likesBy = post.likesBy || {};
         if (likesBy[user.uid]) {
-          // Unlike
           likes--;
           delete likesBy[user.uid];
         } else {
@@ -829,7 +844,7 @@
       });
     };
 
-    // Show full idea modal (with comments) and allow vertical scrolling
+    // Show full idea modal with comments; ensure vertical scrolling only
     window.showFullIdea = function(postId) {
       const postRef = firebase.database().ref('posts/' + postId);
       postRef.once('value').then(snapshot => {
@@ -839,12 +854,11 @@
         if (post.comments) {
           commentCount = Object.keys(post.comments).reduce((sum, key) => {
             const c = post.comments[key];
-            let replyCount = c.replies ? Object.keys(c.replies).length : 0;
-            return sum + 1 + replyCount;
+            let replies = c.replies ? Object.keys(c.replies).length : 0;
+            return sum + 1 + replies;
           }, 0);
         }
         document.getElementById('fullIdeaTitle').textContent = post.subject;
-        // Build comments HTML recursively
         function renderComments(comments) {
           if (!comments) return '';
           return Object.keys(comments).map(cid => {
@@ -907,13 +921,11 @@
       });
     };
 
-    // Show reply form for a comment
     window.showReplyForm = function(postId, commentId) {
       const form = document.getElementById('reply-form-' + commentId);
       form.style.display = form.style.display === 'block' ? 'none' : 'block';
     };
 
-    // Add a comment to a post
     window.addComment = function(postId) {
       const modal = document.getElementById('fullIdeaModal');
       const commentInput = modal.querySelector('.comment-input');
@@ -931,7 +943,6 @@
       commentInput.value = '';
     };
 
-    // Add a reply to a comment
     window.addReply = function(postId, commentId) {
       const form = document.getElementById('reply-form-' + commentId);
       const replyInput = form.querySelector('.comment-input');
@@ -950,33 +961,19 @@
     };
 
     // ---------------------------
-    // Spotlight Tutorial Functions
+    // Tutorial Spotlight Functions
     // ---------------------------
     let tutorialSteps = [
-      {
-        target: "#newIdeaBtn",
-        text: "Click the '+' button to share your creative idea."
-      },
-      {
-        target: "#filterBtn",
-        text: "Use this filter icon to sort posts by popularity."
-      },
-      {
-        target: "#infoBtn",
-        text: "Click this info icon to learn more about the site."
-      },
-      {
-        target: "#userProfile",
-        text: "Click your name to sign out."
-      }
+      { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
+      { target: "#filterBtn", text: "Use this filter icon to sort posts by popularity." },
+      { target: "#infoBtn", text: "Click this info icon to learn more about the site." },
+      { target: "#userProfile", text: "Click your name to sign out." }
     ];
     let currentTutorialStep = 0;
-
     function startTutorial() {
       currentTutorialStep = 0;
       showTutorialStep();
     }
-
     function showTutorialStep() {
       document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
       if (currentTutorialStep >= tutorialSteps.length) {
@@ -1028,35 +1025,27 @@
       tooltip.style.left = leftPosition + "px";
       showTutorialOverlay();
     }
-
     function nextTutorialStep() {
       currentTutorialStep++;
       showTutorialStep();
     }
-
     function showTutorialOverlay() {
       document.getElementById('tutorialOverlay').style.display = 'block';
     }
-
     function hideTutorial() {
       document.getElementById('tutorialOverlay').style.display = 'none';
       document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
     }
-
     document.getElementById('tutorialOverlay').addEventListener('click', function(e) {
-      if (e.target === this) {
-        hideTutorial();
-      }
+      if (e.target === this) { hideTutorial(); }
     });
     document.getElementById('tutorialNextBtn').addEventListener('click', nextTutorialStep);
 
     // ---------------------------
-    // Sign Out Modal: Position this modal near the userProfile element when user clicks their name
+    // Sign Out Modal: Show near userProfile when clicked
     function showSignOutModal() {
       const profileRect = userProfile.getBoundingClientRect();
-      const modal = document.getElementById('signOutModal');
       const modalContent = document.getElementById('signOutModalContent');
-      // Position the modal right beneath the user profile (adjust as needed)
       modalContent.style.top = (profileRect.bottom + window.scrollY + 5) + "px";
       modalContent.style.left = (profileRect.left + window.scrollX) + "px";
       showModal('signOutModal');
@@ -1065,35 +1054,8 @@
       e.stopPropagation();
       showSignOutModal();
     });
-
-    // ---------------------------
-    // Firebase Realtime Database: Listen for posts
-    function setupPostsListener() {
-      const postsRef = firebase.database().ref('posts');
-      postsRef.on('value', (snapshot) => {
-        renderIdeas(snapshot.val());
-      });
-    }
-
-    // ---------------------------
-    // On page load: Check auth state and force sign-in if not signed in and not first visit
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        document.getElementById('username').textContent = user.displayName;
-        userProfile.style.display = 'flex';
-        unlockSite();
-      } else {
-        // If not first visit (localStorage.visited exists), force locked modal
-        if (localStorage.getItem('visited')) {
-          showModal('lockedModal');
-        }
-      }
-    });
-
-    setupPostsListener();
   </script>
 
-  <!-- Firebase integration using modules for logging in and realtime database -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
@@ -1114,28 +1076,22 @@
     const provider = new GoogleAuthProvider();
     const database = getDatabase(app);
 
-    // Override firebaseLogin to use the new modules
     window.firebaseLogin = function() {
       signInWithPopup(auth, provider)
-        .then((result) => {
-          document.getElementById('username').textContent = result.user.displayName;
-          document.getElementById('userProfile').style.display = 'flex';
-          unlockSite();
-        })
-        .catch((error) => {
-          console.error("Firebase login error:", error);
-        });
+      .then((result) => {
+        document.getElementById('username').textContent = result.user.displayName;
+        document.getElementById('userProfile').style.display = 'flex';
+        unlockSite();
+      })
+      .catch((error) => {
+        console.error("Firebase login error:", error);
+      });
     };
 
-    // Global logout function (already used in the sign-out modal)
     window.logout = function() {
       signOut(auth)
-        .then(() => {
-          location.reload();
-        })
-        .catch((error) => {
-          console.error("Firebase logout error:", error);
-        });
+      .then(() => { location.reload(); })
+      .catch((error) => { console.error("Firebase logout error:", error); });
     };
   </script>
 </body>
