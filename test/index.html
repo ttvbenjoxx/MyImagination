@@ -5,23 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyImagination - Creative Website Ideas Forum</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         :root {
             --primary-color: #8a2be2;
             --secondary-color: #4169e1;
             --text-color: #333;
             --background-color: #f4f4f4;
             --card-background: #ffffff;
-            --modal-background: rgba(0, 0, 0, 0.5);
+            --modal-background: rgba(0, 0, 0, 0.7);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            font-family: Arial, sans-serif;
             line-height: 1.6;
             color: var(--text-color);
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -43,70 +47,95 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
             font-size: 24px;
             font-weight: bold;
             color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .header-buttons {
             display: flex;
-            gap: 10px;
+            gap: 16px;
+            align-items: center;
         }
 
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
         }
 
-        button:hover {
+        .user-profile:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .icon-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .icon-button:hover {
             transform: translateY(-2px);
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .login-btn {
-            background-color: var(--secondary-color);
-            color: #fff;
-        }
-
-        .new-idea-btn, .filter-btn {
-            background-color: var(--primary-color);
-            color: #fff;
+        .icon-button svg {
+            width: 20px;
+            height: 20px;
         }
 
         .ideas-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 24px;
             margin-top: 30px;
         }
 
         .idea-card {
             background-color: var(--card-background);
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: var(--border-radius);
+            padding: 24px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: var(--transition);
         }
 
         .idea-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
         }
 
         .idea-subject {
             font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1a1a1a;
         }
 
         .idea-description {
-            margin-bottom: 15px;
+            color: #4a4a4a;
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
         .idea-meta {
@@ -114,6 +143,27 @@
             justify-content: space-between;
             align-items: center;
             font-size: 14px;
+            color: #666;
+        }
+
+        .idea-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .action-button:hover {
+            color: var(--primary-color);
         }
 
         .modal {
@@ -125,40 +175,170 @@
             height: 100%;
             background-color: var(--modal-background);
             z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+            animation: modalFadeIn 0.3s ease;
         }
 
         .modal-content {
             background-color: var(--card-background);
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 500px;
+            border-radius: var(--border-radius);
+            padding: 32px;
             width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
+            max-width: 600px;
+            margin: auto;
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
         }
 
         .close-modal {
-            float: right;
+            background: none;
+            border: none;
             font-size: 24px;
             cursor: pointer;
+            color: #666;
+            transition: var(--transition);
         }
 
-        .info-icon {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--primary-color);
-            color: #fff;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .close-modal:hover {
+            color: #1a1a1a;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+        }
+
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
             cursor: pointer;
-            font-weight: bold;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .submit-button:hover {
+            background: #7424c1;
+            transform: translateY(-2px);
+        }
+
+        .comments-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e1e1;
+        }
+
+        .comment {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .comment-author {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .comment-date {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .info-tabs {
+            display: flex;
+            gap: 2px;
+            background: #f5f5f5;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         @media (max-width: 768px) {
@@ -166,38 +346,10 @@
                 grid-template-columns: 1fr;
             }
 
-            header {
-                flex-direction: column;
-                gap: 10px;
+            .modal-content {
+                padding: 24px;
+                margin: 20px;
             }
-
-            .header-buttons {
-                width: 100%;
-                justify-content: space-between;
-            }
-        }
-
-        .modal.show {
-            display: flex;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .idea-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        button:hover {
-            filter: brightness(110%);
-        }
-
-        .info-icon:hover {
-            transform: scale(1.1);
         }
     </style>
 </head>
@@ -205,9 +357,31 @@
     <header>
         <div class="logo">MyImagination</div>
         <div class="header-buttons">
-            <button class="login-btn">Login</button>
-            <button class="new-idea-btn">+</button>
-            <button class="filter-btn">Filter</button>
+            <div id="userProfile" class="user-profile" style="display: none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span id="username">DummyUser</span>
+            </div>
+            <button class="login-btn icon-button" id="loginBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                    <polyline points="10 17 15 12 10 7"></polyline>
+                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                </svg>
+            </button>
+            <button class="new-idea-btn icon-button" style="display: none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+            </button>
+            <button class="filter-btn icon-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+            </button>
         </div>
     </header>
 
@@ -217,32 +391,68 @@
         </div>
     </div>
 
-    <div class="info-icon">i</div>
+    <button class="info-icon icon-button" style="position: fixed; bottom: 20px; right: 20px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+    </button>
 
     <!-- Welcome Modal -->
     <div id="welcomeModal" class="modal">
         <div class="modal-content">
-            <h2>Welcome to MyImagination!</h2>
-            <p>This site was built by a student at FCHS to gather and share creative website ideas. Whether big or small, practical or wild, your ideas matter—so share them here!</p>
-            <button class="login-btn">Login to Continue</button>
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome to MyImagination!</h2>
+            </div>
+            <p style="margin-bottom: 24px;">This site was built by a student at FCHS to gather and share creative website ideas. Whether big or small, practical or wild, your ideas matter—so share them here!</p>
+            <button class="submit-button">Login to Continue</button>
         </div>
     </div>
 
     <!-- New Idea Modal -->
     <div id="newIdeaModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Share Your Idea</h2>
-            <input type="text" id="ideaSubject" placeholder="Idea Subject" required>
-            <textarea id="ideaDescription" placeholder="Idea Description" required></textarea>
-            <button id="postIdeaBtn">Post Idea</button>
+            <div class="modal-header">
+                <h2 class="modal-title">Share Your Idea</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="newIdeaForm">
+                <div class="form-group">
+                    <label class="form-label" for="ideaSubject">Subject</label>
+                    <input type="text" id="ideaSubject" class="form-input" placeholder="Give your idea a catchy title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ideaDescription">Description</label>
+                    <textarea id="ideaDescription" class="form-input" placeholder="Describe your idea in detail..." required></textarea>
+                </div>
+                <button type="submit" class="submit-button">Post Idea</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Logout Confirmation</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <p style="margin-bottom: 24px;">Are you sure you want to logout?</p>
+            <div style="display: flex; gap: 16px;">
+                <button class="submit-button" style="background: #666;" id="cancelLogout">Cancel</button>
+                <button class="submit-button" id="confirmLogout">Logout</button>
+            </div>
         </div>
     </div>
 
     <!-- Full Idea Modal -->
     <div id="fullIdeaModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2 class="modal-title" id="fullIdeaTitle"></h2>
+                <button class="close-modal">&times;</button>
+            </div>
             <div id="fullIdeaContent"></div>
         </div>
     </div>
@@ -250,13 +460,15 @@
     <!-- Info Modal -->
     <div id="infoModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Information</h2>
-            <div id="infoTabs">
+            <div class="modal-header">
+                <h2 class="modal-title">Information</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="info-tabs">
                 <button class="tab-btn active" data-tab="faq">FAQs</button>
                 <button class="tab-btn" data-tab="howTo">How to Use</button>
-                <button class="tab-btn" data-tab="about">About Developer</button>
-                <button class="tab-btn" data-tab="purpose">Site Purpose</button>
+                <button class="tab-btn" data-tab="about">About</button>
+                <button class="tab-btn" data-tab="purpose">Purpose</button>
             </div>
             <div id="infoContent"></div>
         </div>
@@ -265,31 +477,63 @@
     <script>
         let isLoggedIn = false;
         let currentUser = null;
-        const dummyIdeas = [
-            { id: 1, subject: "Virtual Reality Classroom", description: "A website that creates immersive virtual classrooms for online learning, complete with interactive 3D models and real-time collaboration tools.", username: "VRLearner", likes: 15, comments: 3 },
-            { id: 2, subject: "AI Writing Assistant", description: "A web app that uses AI to help writers overcome writer's block by suggesting plot ideas, character development, and even generating descriptive paragraphs based on simple prompts.", username: "AIWriter", likes: 22, comments: 7 },
-            { id: 3, subject: "Eco-Friendly Shopping Guide", description: "A website that rates products based on their environmental impact, offering alternatives and tips for sustainable shopping.", username: "GreenShopper", likes: 18, comments: 5 }
+        let dummyIdeas = [
+            {
+                id: 1,
+                subject: "Virtual Reality Classroom",
+                description: "A website that creates immersive virtual classrooms for online learning, complete with interactive 3D models and real-time collaboration tools.",
+                username: "VRLearner",
+                likes: 15,
+                comments: [
+                    { author: "TechTeacher", content: "This would revolutionize online education!", date: "2 days ago" },
+                    { author: "VREnthusiast", content: "Love the idea of 3D models in education.", date: "1 day ago" }
+                ]
+            },
+            {
+                id: 2,
+                subject: "AI Writing Assistant",
+                description: "A web app that uses AI to help writers overcome writer's block by suggesting plot ideas, character development, and even generating descriptive paragraphs based on simple prompts.",
+                username: "AIWriter",
+                likes: 22,
+                comments: [
+                    { author: "StoryTeller", content: "This would be incredibly helpful for creative writing!", date: "3 days ago" }
+                ]
+            },
+            {
+                id: 3,
+                subject: "Eco-Friendly Shopping Guide",
+                description: "A website that rates products based on their environmental impact, offering alternatives and tips for sustainable shopping.",
+                username: "GreenShopper",
+                likes: 18,
+                comments: [
+                    { author: "EcoWarrior", content: "We definitely need more tools like this.", date: "1 day ago" },
+                    { author: "ConsciousConsumer", content: "Would love to see this integrated with major shopping platforms!", date: "12 hours ago" }
+                ]
+            }
         ];
 
+        // DOM Elements
         const loginBtn = document.querySelector('.login-btn');
+        const userProfile = document.getElementById('userProfile');
         const newIdeaBtn = document.querySelector('.new-idea-btn');
         const filterBtn = document.querySelector('.filter-btn');
         const ideasGrid = document.querySelector('.ideas-grid');
         const infoIcon = document.querySelector('.info-icon');
-        const welcomeModal = document.getElementById('welcomeModal');
-        const newIdeaModal = document.getElementById('newIdeaModal');
-        const fullIdeaModal = document.getElementById('fullIdeaModal');
-        const infoModal = document.getElementById('infoModal');
+        const modals = document.querySelectorAll('.modal');
+        const logoutModal = document.getElementById('logoutModal');
 
         function toggleLogin() {
             isLoggedIn = !isLoggedIn;
             if (isLoggedIn) {
                 currentUser = "DummyUser";
-                loginBtn.textContent = "Logout";
-                newIdeaBtn.style.display = "inline-block";
+                loginBtn.style.display = "none";
+                userProfile.style.display = "flex";
+                newIdeaBtn.style.display = "flex";
+                document.getElementById('username').textContent = currentUser;
             } else {
                 currentUser = null;
-                loginBtn.textContent = "Login";
+                loginBtn.style.display = "flex";
+                userProfile.style.display = "none";
                 newIdeaBtn.style.display = "none";
             }
             renderIdeas();
@@ -305,7 +549,20 @@
                     <div class="idea-description">${idea.description.slice(0, 100)}${idea.description.length > 100 ? '... <a href="#" class="more-link">More</a>' : ''}</div>
                     <div class="idea-meta">
                         <span>${idea.username}</span>
-                        <span>❤️ ${idea.likes} | 💬 ${idea.comments}</span>
+                        <div class="idea-actions">
+                            <button class="action-button like-button" data-id="${idea.id}">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                                ${idea.likes}
+                            </button>
+                            <button class="action-button comment-button" data-id="${idea.id}">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                                </svg>
+                                ${idea.comments.length}
+                            </button>
+                        </div>
                     </div>
                 `;
                 ideasGrid.appendChild(ideaCard);
@@ -317,17 +574,47 @@
                         showFullIdea(idea);
                     });
                 }
+
+                const commentButton = ideaCard.querySelector('.comment-button');
+                commentButton.addEventListener('click', () => showFullIdea(idea));
             });
         }
 
         function showFullIdea(idea) {
+            const fullIdeaTitle = document.getElementById('fullIdeaTitle');
             const fullIdeaContent = document.getElementById('fullIdeaContent');
+            
+            fullIdeaTitle.textContent = idea.subject;
             fullIdeaContent.innerHTML = `
-                <h2>${idea.subject}</h2>
-                <p>${idea.description}</p>
-                <div class="idea-meta">
+                <div class="idea-description">${idea.description}</div>
+                <div class="idea-meta" style="margin: 20px 0;">
                     <span>${idea.username}</span>
-                    <span>❤️ ${idea.likes} | 💬 ${idea.comments}</span>
+                    <div class="idea-actions">
+                        <button class="action-button like-button" data-id="${idea.id}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            ${idea.likes}
+                        </button>
+                        <button class="action-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
+                            ${idea.comments.length}
+                        </button>
+                    </div>
+                </div>
+                <div class="comments-section">
+                    <h3 style="margin-bottom: 16px;">Comments</h3>
+                    ${idea.comments.map(comment => `
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">${comment.author}</span>
+                                <span class="comment-date">${comment.date}</span>
+                            </div>
+                            <div class="comment-content">${comment.content}</div>
+                        </div>
+                    `).join('')}
                 </div>
             `;
             showModal(fullIdeaModal);
@@ -341,7 +628,8 @@
             modal.classList.remove('show');
         }
 
-        function addNewIdea() {
+        function addNewIdea(e) {
+            e.preventDefault();
             const subject = document.getElementById('ideaSubject').value;
             const description = document.getElementById('ideaDescription').value;
             if (subject && description) {
@@ -351,11 +639,13 @@
                     description,
                     username: currentUser,
                     likes: 0,
-                    comments: 0
+                    comments: []
                 };
                 dummyIdeas.unshift(newIdea);
                 renderIdeas();
                 hideModal(newIdeaModal);
+                document.getElementById('ideaSubject').value = '';
+                document.getElementById('ideaDescription').value = '';
             }
         }
 
@@ -363,21 +653,61 @@
             const infoContent = document.getElementById('infoContent');
             switch(tab) {
                 case 'faq':
-                    infoContent.innerHTML = '<h3>FAQs</h3><p>Frequently asked questions about MyImagination...</p>';
+                    infoContent.innerHTML = `
+                        <div style="space-y-4">
+                            <div style="margin-bottom: 20px;">
+                                <h3 style="font-weight: 600; margin-bottom: 8px;">How do I share an idea?</h3>
+                                <p>Log in and click the "+" button in the header to create a new idea.</p>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <h3 style="font-weight: 600; margin-bottom: 8px;">Can I edit my ideas?</h3>
+                                <p>Currently, editing is not available in this proof of concept.</p>
+                            </div>
+                        </div>
+                    `;
                     break;
                 case 'howTo':
-                    infoContent.innerHTML = '<h3>How to Use</h3><p>Instructions on how to use MyImagination...</p>';
+                    infoContent.innerHTML = `
+                        <ol style="list-style-type: decimal; padding-left: 20px;">
+                            <li style="margin-bottom: 12px;">Log in using the login button in the header</li>
+                            <li style="margin-bottom: 12px;">Browse existing ideas in the main feed</li>
+                            <li style="margin-bottom: 12px;">Click "+" to add your own idea</li>
+                            <li style="margin-bottom: 12px;">Use the filter button to sort ideas by popularity</li>
+                        </ol>
+                    `;
                     break;
                 case 'about':
-                    infoContent.innerHTML = '<h3>About Developer</h3><p>Information about the FCHS student who developed this site...</p>';
+                    infoContent.innerHTML = `
+                        <div style="line-height: 1.6;">
+                            <p style="margin-bottom: 16px;">MyImagination was created by a student at FCHS as a project to explore web development and foster creativity in the school community.</p>
+                            <p>The platform aims to bring together students interested in web development and design, providing a space to share and discuss innovative ideas.</p>
+                        </div>
+                    `;
                     break;
                 case 'purpose':
-                    infoContent.innerHTML = '<h3>Site Purpose</h3><p>The purpose of MyImagination is to foster creativity and collaboration in web design...</p>';
+                    infoContent.innerHTML = `
+                        <div style="line-height: 1.6;">
+                            <p style="margin-bottom: 16px;">MyImagination serves as a collaborative platform where students can:</p>
+                            <ul style="list-style-type: disc; padding-left: 20px;">
+                                <li style="margin-bottom: 8px;">Share creative website ideas</li>
+                                <li style="margin-bottom: 8px;">Get feedback from peers</li>
+                                <li style="margin-bottom: 8px;">Find inspiration for projects</li>
+                                <li style="margin-bottom: 8px;">Learn about web development trends</li>
+                            </ul>
+                        </div>
+                    `;
                     break;
             }
         }
 
+        // Event Listeners
         loginBtn.addEventListener('click', toggleLogin);
+        userProfile.addEventListener('click', () => showModal(logoutModal));
+        document.getElementById('confirmLogout').addEventListener('click', () => {
+            hideModal(logoutModal);
+            toggleLogin();
+        });
+        document.getElementById('cancelLogout').addEventListener('click', () => hideModal(logoutModal));
         newIdeaBtn.addEventListener('click', () => showModal(newIdeaModal));
         filterBtn.addEventListener('click', () => {
             dummyIdeas.sort((a, b) => b.likes - a.likes);
@@ -392,7 +722,7 @@
             closeBtn.addEventListener('click', () => hideModal(closeBtn.closest('.modal')));
         });
 
-        document.getElementById('postIdeaBtn').addEventListener('click', addNewIdea);
+        document.getElementById('newIdeaForm').addEventListener('submit', addNewIdea);
 
         document.querySelectorAll('.tab-btn').forEach(tabBtn => {
             tabBtn.addEventListener('click', (e) => {
@@ -402,8 +732,24 @@
             });
         });
 
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            modals.forEach(modal => {
+                if (e.target === modal) {
+                    hideModal(modal);
+                }
+            });
+        });
+
+        // Initial render
         renderIdeas();
 
+        // Show welcome modal on first visit
+        if (!localStorage.getItem('visited')) {
+            showModal(welcomeModal);
+            localStorageLet me continue from the exact cut-off point:
+
+```javascript
         if (!localStorage.getItem('visited')) {
             showModal(welcomeModal);
             localStorage.setItem('visited', 'true');
