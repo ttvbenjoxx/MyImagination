@@ -65,7 +65,7 @@
       align-items: center;
     }
 
-    /* User profile (shown after login). Clicking it opens the sign‑out confirmation modal. */
+    /* User profile shown when signed in. Clicking it opens a sign-out confirmation modal. */
     .user-profile {
       display: none;
       align-items: center;
@@ -341,7 +341,7 @@
       background: rgba(138,43,226,0.1);
     }
 
-    /* Info icon: now a simple, clean "i" */
+    /* Info icon: simple, clean "i", fixed to bottom left */
     .info-icon {
       position: fixed;
       bottom: 20px;
@@ -704,23 +704,19 @@
   </div>
 
   <script>
-    // The following functions use Firebase Realtime Database to persist posts, comments, likes, etc.
-    // A helper push() is defined below to mimic push() from the module version.
+    // Helper push function (using Firebase Realtime Database)
     function push(ref, data) {
       return firebase.database().ref(ref.toString()).push(data);
     }
 
-    // Global variable to determine locked state
     let siteLocked = true;
 
-    // Get DOM elements
     const userProfile = document.getElementById('userProfile');
     const newIdeaBtn = document.getElementById('newIdeaBtn');
     const filterBtn = document.getElementById('filterBtn');
     const ideasGrid = document.getElementById('ideasGrid');
     const infoBtn = document.getElementById('infoBtn');
 
-    // Functions to show/hide modals
     function showModal(modalId) {
       document.getElementById(modalId).classList.add('show');
     }
@@ -728,7 +724,6 @@
       document.getElementById(modalId).classList.remove('show');
     }
 
-    // Start locked mode: hide welcome modal, blur posts, hide filter button, show locked modal
     function startLockedMode() {
       hideModal('welcomeModal');
       filterBtn.style.display = 'none';
@@ -736,7 +731,6 @@
       showModal('lockedModal');
     }
 
-    // Unlock site: remove blur, show filter and new idea buttons, hide locked modal, start tutorial
     function unlockSite() {
       siteLocked = false;
       ideasGrid.classList.remove('locked');
@@ -746,7 +740,6 @@
       startTutorial();
     }
 
-    // Render ideas from Firebase data
     function renderIdeas(posts) {
       const postsArr = posts ? Object.keys(posts).map(key => ({ id: key, ...posts[key] })) : [];
       postsArr.sort((a, b) => b.timestamp - a.timestamp);
@@ -789,17 +782,14 @@
       }).join('');
     }
 
-    // Set up real-time listener for posts
     function setupPostsListener() {
       const postsRef = firebase.database().ref('posts');
       postsRef.on('value', (snapshot) => {
         renderIdeas(snapshot.val());
       });
     }
-
     setupPostsListener();
 
-    // Add new idea (post)
     window.addNewIdea = function(event) {
       event.preventDefault();
       const subject = document.getElementById('ideaSubject').value;
@@ -820,7 +810,6 @@
       return false;
     };
 
-    // Toggle like for a post
     window.toggleLike = function(postId) {
       if (siteLocked) {
         alert('Please unlock the site to like ideas.');
@@ -844,7 +833,6 @@
       });
     };
 
-    // Show full idea modal with comments; ensure vertical scrolling only
     window.showFullIdea = function(postId) {
       const postRef = firebase.database().ref('posts/' + postId);
       postRef.once('value').then(snapshot => {
@@ -1042,7 +1030,7 @@
     document.getElementById('tutorialNextBtn').addEventListener('click', nextTutorialStep);
 
     // ---------------------------
-    // Sign Out Modal: Show near userProfile when clicked
+    // Sign Out Modal: Position near userProfile when clicked
     function showSignOutModal() {
       const profileRect = userProfile.getBoundingClientRect();
       const modalContent = document.getElementById('signOutModalContent');
@@ -1078,21 +1066,34 @@
 
     window.firebaseLogin = function() {
       signInWithPopup(auth, provider)
-      .then((result) => {
-        document.getElementById('username').textContent = result.user.displayName;
-        document.getElementById('userProfile').style.display = 'flex';
-        unlockSite();
-      })
-      .catch((error) => {
-        console.error("Firebase login error:", error);
-      });
+        .then((result) => {
+          document.getElementById('username').textContent = result.user.displayName;
+          document.getElementById('userProfile').style.display = 'flex';
+          unlockSite();
+        })
+        .catch((error) => {
+          console.error("Firebase login error:", error);
+        });
     };
 
     window.logout = function() {
       signOut(auth)
-      .then(() => { location.reload(); })
-      .catch((error) => { console.error("Firebase logout error:", error); });
+        .then(() => { location.reload(); })
+        .catch((error) => { console.error("Firebase logout error:", error); });
     };
+
+    // Persist authentication state
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById('username').textContent = user.displayName;
+        document.getElementById('userProfile').style.display = 'flex';
+        unlockSite();
+      } else {
+        if (localStorage.getItem('visited')) {
+          showModal('lockedModal');
+        }
+      }
+    });
   </script>
 </body>
 </html>
