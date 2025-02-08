@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MyImagination - Creative Website Ideas Forum</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -61,7 +61,7 @@
       font-size: 24px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .header-buttons {
@@ -70,7 +70,7 @@
       align-items: center;
     }
 
-    /* Remove login button entirely; only display user profile (if needed) and new idea button after unlock */
+    /* Removed login button; user profile and new idea button appear after unlocking */
     .user-profile {
       display: none;
       align-items: center;
@@ -104,7 +104,7 @@
     .icon-button:hover {
       transform: translateY(-2px);
       background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .ideas-grid {
@@ -115,7 +115,7 @@
       transition: var(--transition);
     }
 
-    /* Locked state: blur and disable pointer events */
+    /* Locked state: blur posts and disable pointer events */
     .ideas-grid.locked {
       filter: blur(8px);
       pointer-events: none;
@@ -186,12 +186,18 @@
     }
 
     @keyframes heartPop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
     }
 
-    /* Modal Styles */
+    /* Modal Styles with backdrop blur */
     .modal {
       display: none;
       position: fixed;
@@ -203,6 +209,7 @@
       z-index: 1000;
       align-items: center;
       justify-content: center;
+      backdrop-filter: blur(8px);
     }
 
     .modal.show {
@@ -394,13 +401,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       transition: var(--transition);
     }
 
     .info-icon:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
 
     .tabs {
@@ -425,7 +432,7 @@
     .tab.active {
       background: white;
       color: var(--primary-color);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .tab-content {
@@ -437,8 +444,12 @@
     }
 
     @keyframes modalFadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
 
     /* Tutorial overlay and tooltip */
@@ -448,7 +459,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.7);
       z-index: 3000;
       display: none;
     }
@@ -459,7 +470,7 @@
       padding: 16px;
       border-radius: var(--border-radius);
       max-width: 300px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       transition: var(--transition);
     }
 
@@ -475,6 +486,7 @@
       .ideas-grid {
         grid-template-columns: 1fr;
       }
+
       .modal-content {
         padding: 24px;
         margin: 20px;
@@ -500,7 +512,7 @@
         </svg>
         <span id="username">DummyUser</span>
       </div>
-      <!-- Removed login button -->
+      <!-- Login button removed -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -550,7 +562,7 @@
       <form id="newIdeaForm" onsubmit="return addNewIdea(event)">
         <div class="form-group">
           <label class="form-label" for="ideaSubject">Subject</label>
-          <input type="text" id="ideaSubject" class="form-input" placeholder="Give your idea a catchy title" required>
+          <input type="text" id="ideaSubject" class="form-input" placeholder="Give your idea a catchy title" required />
         </div>
         <div class="form-group">
           <label class="form-label" for="ideaDescription">Description</label>
@@ -647,7 +659,7 @@
 
   <script>
     // Global state variables
-    let siteLocked = true; // Initially the site is locked (user not unlocked)
+    let siteLocked = true; // Initially, the site is locked (user not unlocked)
     let ideas = [
       {
         id: 1,
@@ -702,9 +714,8 @@
     // When "Get Started" is clicked in welcome modal, lock the site
     function startLockedMode() {
       hideModal('welcomeModal');
-      // Hide the filter button
+      // Hide the filter button and blur posts
       filterBtn.style.display = 'none';
-      // Add blur to ideas grid
       ideasGrid.classList.add('locked');
       // Show the locked modal with "Continue with Google" button
       showModal('lockedModal');
@@ -726,9 +737,10 @@
       ideasGrid.innerHTML = ideas.map(idea => `
         <div class="idea-card">
           <div class="idea-subject">${idea.subject}</div>
-          <div class="idea-description">${idea.description.length > 200 ? 
-            idea.description.slice(0, 200) + '... <a href="#" onclick="showFullIdea(${idea.id}); return false;">More</a>' : 
-            idea.description
+          <div class="idea-description">${
+            idea.description.length > 200
+              ? idea.description.slice(0, 200) + '... <a href="#" onclick="showFullIdea(${idea.id}); return false;">More</a>'
+              : idea.description
           }</div>
           <div class="idea-meta">
             <span>${idea.username}</span>
@@ -792,14 +804,16 @@
             </button>
           </div>
         </div>
-        ${!siteLocked ? `
-          <div class="comment-form">
-            <textarea class="comment-input" placeholder="Write a comment..."></textarea>
-            <div class="comment-actions">
-              <button class="submit-button" onclick="addComment(${idea.id})">Post Comment</button>
-            </div>
+        ${
+          !siteLocked
+            ? `<div class="comment-form">
+          <textarea class="comment-input" placeholder="Write a comment..."></textarea>
+          <div class="comment-actions">
+            <button class="submit-button" onclick="addComment(${idea.id})">Post Comment</button>
           </div>
-        ` : ''}
+        </div>`
+            : ''
+        }
         <div class="comments-section">
           <h3 style="margin-bottom: 16px;">Comments</h3>
           ${renderComments(idea.comments)}
@@ -816,20 +830,24 @@
             <span class="comment-date">${comment.date}</span>
           </div>
           <div class="comment-content">${comment.content}</div>
-          ${!siteLocked ? `
-            <button class="reply-button" onclick="showReplyForm(${comment.id})">Reply</button>
+          ${
+            !siteLocked
+              ? `<button class="reply-button" onclick="showReplyForm(${comment.id})">Reply</button>
             <div class="reply-form" id="reply-form-${comment.id}">
               <textarea class="comment-input" placeholder="Write a reply..."></textarea>
               <div class="comment-actions">
                 <button class="submit-button" onclick="addReply(${comment.id})">Post Reply</button>
               </div>
-            </div>
-          ` : ''}
-          ${comment.replies ? `
-            <div class="comment-replies">
+            </div>`
+              : ''
+          }
+          ${
+            comment.replies
+              ? `<div class="comment-replies">
               ${renderComments(comment.replies)}
-            </div>
-          ` : ''}
+            </div>`
+              : ''
+          }
         </div>
       `).join('');
     }
@@ -980,7 +998,13 @@
       
       // Adjust if the tooltip would go off the right edge of the viewport
       if (leftPosition + tooltipWidth > window.innerWidth + window.scrollX) {
-        leftPosition = window.innerWidth - tooltipWidth - 10 + window.scrollX;
+        // Try positioning tooltip to the left of the target element
+        let altLeft = rect.left - tooltipWidth - 10 + window.scrollX;
+        if (altLeft > window.scrollX + 10) {
+          leftPosition = altLeft;
+        } else {
+          leftPosition = window.innerWidth - tooltipWidth - 10 + window.scrollX;
+        }
       }
       
       // Ensure tooltip doesn't go off the left edge
