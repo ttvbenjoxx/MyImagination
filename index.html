@@ -70,7 +70,7 @@
       align-items: center;
     }
 
-    /* Removed login button; user profile and new idea button appear after unlocking */
+    /* User Profile Pill with Logout Dropdown */
     .user-profile {
       display: none;
       align-items: center;
@@ -81,10 +81,48 @@
       border-radius: var(--border-radius);
       background: rgba(255, 255, 255, 0.1);
       transition: var(--transition);
+      position: relative; /* For dropdown positioning */
     }
-
     .user-profile:hover {
       background: rgba(255, 255, 255, 0.2);
+    }
+    /* Logout Dropdown with Animation */
+    .logout-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #fff;
+      padding: 10px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: max-content;
+      z-index: 110;
+      opacity: 0;
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      margin-top: 8px;
+    }
+    .logout-dropdown.show {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+    .logout-dropdown p {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #333;
+    }
+    .logout-button {
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .logout-button:hover {
+      background-color: #c0392b;
     }
 
     .icon-button {
@@ -100,7 +138,6 @@
       justify-content: center;
       transition: var(--transition);
     }
-
     .icon-button:hover {
       transform: translateY(-2px);
       background: #fff;
@@ -114,8 +151,6 @@
       margin-top: 30px;
       transition: var(--transition);
     }
-
-    /* Locked state: blur posts and disable pointer events */
     .ideas-grid.locked {
       filter: blur(8px);
       pointer-events: none;
@@ -130,26 +165,22 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
-
     .idea-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     }
-
     .idea-subject {
       font-size: 20px;
       font-weight: 600;
       margin-bottom: 12px;
       color: #1a1a1a;
     }
-
     .idea-description {
       color: #4a4a4a;
       margin-bottom: 20px;
       line-height: 1.6;
       white-space: pre-wrap;
     }
-
     .idea-meta {
       display: flex;
       justify-content: space-between;
@@ -157,12 +188,10 @@
       font-size: 14px;
       color: #666;
     }
-
     .idea-actions {
       display: flex;
       gap: 16px;
     }
-
     .action-button {
       display: flex;
       align-items: center;
@@ -174,24 +203,20 @@
       transition: var(--transition);
       padding: 4px;
     }
-
     .action-button:hover {
       color: var(--primary-color);
     }
-
     .action-button.liked svg {
       fill: #ff4b4b;
       stroke: #ff4b4b;
       animation: heartPop 0.3s ease;
     }
-
     @keyframes heartPop {
       0% { transform: scale(1); }
       50% { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
 
-    /* Modal Styles with backdrop blur */
     .modal {
       display: none;
       position: fixed;
@@ -205,12 +230,10 @@
       justify-content: center;
       backdrop-filter: blur(8px);
     }
-
     .modal.show {
       display: flex;
       animation: modalFadeIn 0.3s ease;
     }
-
     .modal-content {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
@@ -224,25 +247,21 @@
       opacity: 0;
       transition: var(--transition);
     }
-
     .modal.show .modal-content {
       transform: translateY(0);
       opacity: 1;
     }
-
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
     }
-
     .modal-title {
       font-size: 24px;
       font-weight: 600;
       color: #1a1a1a;
     }
-
     .close-modal {
       background: none;
       border: none;
@@ -251,22 +270,18 @@
       color: #666;
       transition: var(--transition);
     }
-
     .close-modal:hover {
       color: #1a1a1a;
     }
-
     .form-group {
       margin-bottom: 20px;
     }
-
     .form-label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
       color: #1a1a1a;
     }
-
     .form-input {
       width: 100%;
       padding: 12px 16px;
@@ -275,18 +290,15 @@
       font-size: 16px;
       transition: var(--transition);
     }
-
     .form-input:focus {
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
     }
-
     textarea.form-input {
       min-height: 120px;
       resize: vertical;
     }
-
     .submit-button {
       background: var(--primary-color);
       color: white;
@@ -299,44 +311,36 @@
       transition: var(--transition);
       width: 100%;
     }
-
     .submit-button:hover {
       background: #7424c1;
       transform: translateY(-2px);
     }
-
     .comments-section {
       margin-top: 20px;
       padding-top: 20px;
       border-top: 1px solid #e1e1e1;
     }
-
     .comment {
       padding: 12px 0;
       border-bottom: 1px solid #f0f0f0;
     }
-
     .comment-header {
       display: flex;
       justify-content: space-between;
       margin-bottom: 8px;
     }
-
     .comment-author {
       font-weight: 500;
       color: #1a1a1a;
     }
-
     .comment-date {
       font-size: 14px;
       color: #666;
     }
-
     .comment-form {
       margin-top: 20px;
       margin-bottom: 20px;
     }
-
     .comment-input {
       width: 100%;
       padding: 12px;
@@ -346,28 +350,23 @@
       resize: vertical;
       min-height: 80px;
     }
-
     .comment-actions {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
     }
-
     .reply-form {
       margin-left: 40px;
       margin-top: 12px;
       display: none;
     }
-
     .reply-form.show {
       display: block;
     }
-
     .comment-replies {
       margin-left: 40px;
       margin-top: 12px;
     }
-
     .reply-button {
       background: none;
       border: none;
@@ -378,12 +377,9 @@
       border-radius: 4px;
       transition: var(--transition);
     }
-
     .reply-button:hover {
       background: rgba(138, 43, 226, 0.1);
     }
-
-    /* Info icon using a simple 'i' and styled to look clean, fixed to bottom left */
     .info-icon {
       position: fixed;
       bottom: 20px;
@@ -399,19 +395,16 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       transition: var(--transition);
     }
-
     .info-icon:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
-
     .info-icon .info-text {
       font-size: 24px;
       font-weight: bold;
       color: var(--primary-color);
       line-height: 1;
     }
-
     .tabs {
       display: flex;
       gap: 2px;
@@ -420,7 +413,6 @@
       border-radius: 8px;
       margin-bottom: 24px;
     }
-
     .tab {
       flex: 1;
       padding: 12px;
@@ -430,27 +422,21 @@
       border-radius: 6px;
       transition: var(--transition);
     }
-
     .tab.active {
       background: white;
       color: var(--primary-color);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-
     .tab-content {
       display: none;
     }
-
     .tab-content.active {
       display: block;
     }
-
     @keyframes modalFadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-
-    /* Tutorial overlay and tooltip */
     #tutorialOverlay {
       position: fixed;
       top: 0;
@@ -461,7 +447,6 @@
       z-index: 3000;
       display: none;
     }
-
     #tutorialTooltip {
       position: absolute;
       background: white;
@@ -471,15 +456,12 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       transition: var(--transition);
     }
-
-    /* Highlight effect for spotlight */
     .highlighted {
       position: relative;
       z-index: 3100;
       box-shadow: 0 0 0 4px var(--primary-color);
       border-radius: var(--border-radius);
     }
-
     @media (max-width: 768px) {
       .ideas-grid {
         grid-template-columns: 1fr;
@@ -489,8 +471,6 @@
         margin: 20px;
       }
     }
-
-    /* Styles for the "Continue with Google" button */
     .gsi-material-button {
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -522,14 +502,12 @@
       max-width: 400px;
       min-width: min-content;
     }
-
     .gsi-material-button .gsi-material-button-icon {
       height: 20px;
       margin-right: 12px;
       min-width: 20px;
       width: 20px;
     }
-
     .gsi-material-button .gsi-material-button-content-wrapper {
       -webkit-align-items: center;
       align-items: center;
@@ -543,7 +521,6 @@
       position: relative;
       width: 100%;
     }
-
     .gsi-material-button .gsi-material-button-contents {
       -webkit-flex-grow: 1;
       flex-grow: 1;
@@ -553,7 +530,6 @@
       text-overflow: ellipsis;
       vertical-align: top;
     }
-
     .gsi-material-button .gsi-material-button-state {
       -webkit-transition: opacity .218s;
       transition: opacity .218s;
@@ -564,32 +540,26 @@
       right: 0;
       top: 0;
     }
-
     .gsi-material-button:disabled {
       cursor: default;
       background-color: #ffffff61;
       border-color: #1f1f1f1f;
     }
-
     .gsi-material-button:disabled .gsi-material-button-contents {
       opacity: 38%;
     }
-
     .gsi-material-button:disabled .gsi-material-button-icon {
       opacity: 38%;
     }
-
     .gsi-material-button:not(:disabled):active .gsi-material-button-state, 
     .gsi-material-button:not(:disabled):focus .gsi-material-button-state {
       background-color: #303030;
       opacity: 12%;
     }
-
     .gsi-material-button:not(:disabled):hover {
       -webkit-box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
       box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
     }
-
     .gsi-material-button:not(:disabled):hover .gsi-material-button-state {
       background-color: #303030;
       opacity: 8%;
@@ -607,14 +577,18 @@
       </button>
     </div>
     <div class="header-buttons">
+      <!-- User profile pill with logout dropdown -->
       <div id="userProfile" class="user-profile">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>
         </svg>
         <span id="username">DummyUser</span>
+        <div id="logoutDropdown" class="logout-dropdown">
+          <p>Are you sure you want to sign out?</p>
+          <button id="confirmLogout" class="logout-button">Sign Out</button>
+        </div>
       </div>
-      <!-- Login button removed -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -628,26 +602,39 @@
     <div id="ideasGrid" class="ideas-grid"></div>
   </div>
 
-  <!-- Info icon now using a simple 'i' and fixed to bottom left -->
   <button id="infoBtn" class="info-icon" title="Information">
     <span class="info-text">i</span>
   </button>
 
-  <!-- Welcome Modal -->
-  <div id="welcomeModal" class="modal">
+  <!-- Combined Intro Modal (Welcome + Unlock) -->
+  <div id="introModal" class="modal">
     <div class="modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
-      <p>This site was built by a student at FCHS to gather and share creative website ideas. Whether big or small, practical or wild, your ideas matter—so share them here!</p>
-      <button class="submit-button" onclick="startLockedMode()">Get Started</button>
+      <p>This site was built by a student at FCHS to gather and share creative website ideas. Please continue with Google to unlock full access to the site.</p>
+      <button class="gsi-material-button" onclick="firebaseLogin()">
+        <div class="gsi-material-button-state"></div>
+        <div class="gsi-material-button-content-wrapper">
+          <div class="gsi-material-button-icon">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style="display: block;">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+              <path fill="none" d="M0 0h48v48H0z"></path>
+            </svg>
+          </div>
+          <span class="gsi-material-button-contents">Continue with Google</span>
+          <span style="display: none;">Continue with Google</span>
+        </div>
+      </button>
     </div>
   </div>
 
-  <!-- Locked Modal -->
-  <div id="lockedModal" class="modal">
+  <!-- Signed Out Modal -->
+  <div id="signedOutModal" class="modal">
     <div class="modal-content">
-      <h2 class="modal-title">Unlock MyImagination</h2>
-      <p>Please continue with Google to unlock full access to the site.</p>
-      <!-- Styled "Continue with Google" button using the provided HTML/CSS -->
+      <h2 class="modal-title">Whoops!</h2>
+      <p>Looks like you've been signed out. Let's get you back on track.</p>
       <button class="gsi-material-button" onclick="firebaseLogin()">
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
@@ -688,7 +675,7 @@
     </div>
   </div>
 
-  <!-- Logout Modal -->
+  <!-- Logout Modal (unused now since logout confirmation is in the dropdown) -->
   <div id="logoutModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -773,8 +760,8 @@
   </div>
 
   <script>
-    // Global state variables
-    let siteLocked = true; // Initially, the site is locked (user not unlocked)
+    // Global state variables and site logic
+    let siteLocked = true;
     let ideas = [
       {
         id: 1,
@@ -811,14 +798,12 @@
     ];
     let userLikes = new Set();
 
-    // DOM Elements
     const userProfile = document.getElementById('userProfile');
     const newIdeaBtn = document.getElementById('newIdeaBtn');
     const filterBtn = document.getElementById('filterBtn');
     const ideasGrid = document.getElementById('ideasGrid');
     const infoBtn = document.getElementById('infoBtn');
 
-    // Functions to show/hide modals
     function showModal(modalId) {
       document.getElementById(modalId).classList.add('show');
     }
@@ -826,26 +811,24 @@
       document.getElementById(modalId).classList.remove('show');
     }
 
-    // When "Get Started" is clicked in welcome modal, lock the site
+    // When the intro modal is shown, it prompts sign-in; after sign-in, the site is unlocked.
     function startLockedMode() {
-      hideModal('welcomeModal');
-      // Hide the filter button and blur posts
+      hideModal('introModal');
       filterBtn.style.display = 'none';
       ideasGrid.classList.add('locked');
-      // Show the locked modal with "Continue with Google" button
-      showModal('lockedModal');
     }
 
-    // When the user logs in (via Firebase), unlock the site and start the tutorial
+    // Unlock the site and conditionally start the tutorial if it's the user's first visit.
     function unlockSite() {
       siteLocked = false;
-      // Remove blur and show filter and new idea button
       ideasGrid.classList.remove('locked');
       filterBtn.style.display = 'flex';
       newIdeaBtn.style.display = 'flex';
-      hideModal('lockedModal');
-      // Start the spotlight tutorial
-      startTutorial();
+      hideModal('introModal');
+      if (!localStorage.getItem('visited')) {
+        startTutorial();
+        localStorage.setItem('visited', 'true');
+      }
     }
 
     function renderIdeas() {
@@ -1039,26 +1022,12 @@
       return false;
     }
 
-    // ---------------------------
     // Spotlight Tutorial Functions
-    // ---------------------------
     let tutorialSteps = [
-      {
-        target: "#newIdeaBtn",
-        text: "Click the '+' button to share your creative idea."
-      },
-      {
-        target: "#filterBtn",
-        text: "Use this filter icon to sort posts by popularity."
-      },
-      {
-        target: "#infoBtn",
-        text: "Click this info icon to learn more about the site."
-      },
-      {
-        target: "#userProfile",
-        text: "Click your name to sign out."
-      }
+      { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
+      { target: "#filterBtn", text: "Use this filter icon to sort posts by popularity." },
+      { target: "#infoBtn", text: "Click this info icon to learn more about the site." },
+      { target: "#userProfile", text: "Click your name to sign out." }
     ];
     let currentTutorialStep = 0;
 
@@ -1068,14 +1037,11 @@
     }
 
     function showTutorialStep() {
-      // Remove previous highlights
       document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
-      
       if (currentTutorialStep >= tutorialSteps.length) {
         hideTutorial();
         return;
       }
-      
       let step = tutorialSteps[currentTutorialStep];
       let targetEl = document.querySelector(step.target);
       if (!targetEl) {
@@ -1083,47 +1049,29 @@
         showTutorialStep();
         return;
       }
-      
-      // Highlight the target element
       targetEl.classList.add('highlighted');
-      
-      // Get the bounding rectangle of the target element
       let rect = targetEl.getBoundingClientRect();
       let tooltip = document.getElementById('tutorialTooltip');
       let tooltipText = document.getElementById('tutorialText');
-      
       tooltipText.textContent = step.text;
-      
-      // Calculate initial positions: below the target element
       let topPosition = rect.bottom + 10 + window.scrollY;
       let leftPosition = rect.left + window.scrollX;
-      
-      // For the first tutorial step, shift the tooltip further left (150px offset)
       if (currentTutorialStep === 0) {
         leftPosition = leftPosition - 150;
         if (leftPosition < window.scrollX + 40) {
           leftPosition = window.scrollX + 40;
         }
       }
-      
-      // Temporarily display the tooltip (invisible) to measure its dimensions
       tooltip.style.top = topPosition + "px";
       tooltip.style.left = leftPosition + "px";
       tooltip.style.visibility = "hidden";
       tooltip.style.display = "block";
-      
       let tooltipHeight = tooltip.offsetHeight;
       let tooltipWidth = tooltip.offsetWidth;
-      
-      // Reset visibility
       tooltip.style.visibility = "visible";
-      
-      // Adjust if the tooltip would go off the bottom edge of the viewport
       if (topPosition + tooltipHeight > window.innerHeight + window.scrollY) {
         topPosition = rect.top - tooltipHeight - 10 + window.scrollY;
       }
-      
-      // Adjust if the tooltip would go off the right edge of the viewport
       if (leftPosition + tooltipWidth > window.innerWidth + window.scrollX) {
         let altLeft = rect.left - tooltipWidth - 10 + window.scrollX;
         if (altLeft > window.scrollX + 10) {
@@ -1132,15 +1080,11 @@
           leftPosition = window.innerWidth - tooltipWidth - 10 + window.scrollX;
         }
       }
-      
-      // Ensure tooltip doesn't go off the left edge
       if (leftPosition < window.scrollX + 10) {
         leftPosition = window.scrollX + 10;
       }
-      
       tooltip.style.top = topPosition + "px";
       tooltip.style.left = leftPosition + "px";
-      
       showTutorialOverlay();
     }
 
@@ -1158,7 +1102,6 @@
       document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
     }
 
-    // Close tutorial if clicking outside tooltip
     document.getElementById('tutorialOverlay').addEventListener('click', function(e) {
       if (e.target === this) {
         hideTutorial();
@@ -1166,10 +1109,6 @@
     });
     document.getElementById('tutorialNextBtn').addEventListener('click', nextTutorialStep);
 
-    // ---------------------------
-    // Event Listeners for modals and buttons
-    // ---------------------------
-    // Bind tab event listeners for Info Modal
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1179,7 +1118,6 @@
       });
     });
 
-    // Filter button sorts posts
     filterBtn.addEventListener('click', () => {
       ideas.sort((a, b) => b.likes - a.likes);
       renderIdeas();
@@ -1187,7 +1125,6 @@
     infoBtn.addEventListener('click', () => showModal('infoModal'));
     newIdeaBtn.addEventListener('click', () => showModal('newIdeaModal'));
 
-    // Close modals when clicking outside modal content
     document.querySelectorAll('.modal').forEach(modal => {
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
@@ -1196,20 +1133,38 @@
       });
     });
 
-    // Initial render of ideas
     renderIdeas();
 
-    // Show welcome modal on first visit
+    // Show intro modal on first visit.
     if (!localStorage.getItem('visited')) {
-      showModal('welcomeModal');
-      localStorage.setItem('visited', 'true');
+      showModal('introModal');
     }
+
+    // Logout Dropdown: Toggle dropdown when clicking the user profile pill.
+    document.getElementById('userProfile').addEventListener('click', function(e) {
+      var dropdown = document.getElementById('logoutDropdown');
+      dropdown.classList.toggle("show");
+      e.stopPropagation();
+    });
+
+    // Hide dropdown if clicking elsewhere.
+    document.addEventListener('click', function() {
+      var dropdown = document.getElementById('logoutDropdown');
+      dropdown.classList.remove("show");
+    });
+
+    // When the confirm logout button is clicked, call logout().
+    document.getElementById('confirmLogout').addEventListener('click', function(e) {
+      e.stopPropagation();
+      logout();
+    });
   </script>
   
-  <!-- Firebase integration using modules for logging in -->
+  <!-- Firebase Integration with Auth State Observer -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+    import { getDatabase, ref } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
@@ -1221,36 +1176,51 @@
       appId: "1:945674655787:web:a59ef04ec9e843769bf26e"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
+    const database = getDatabase(app);
+    const dbRef = ref(database);
 
-    // Override the firebaseLogin function defined in the non-module script
+    // Listen for auth state changes and update the UI accordingly.
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // If a user is signed in, hide the signed-out modal in case it's visible.
+        hideModal('signedOutModal');
+        document.getElementById('username').textContent = user.displayName;
+        document.getElementById('userProfile').style.display = 'flex';
+        // Unlock the site; the tutorial will only start if it is the user's first visit.
+        unlockSite();
+      } else {
+        // If the user is signed out and they've visited before, show the "Whoops!" modal.
+        if (localStorage.getItem('visited')) {
+          showModal('signedOutModal');
+        }
+      }
+    });
+
     window.firebaseLogin = function() {
       signInWithPopup(auth, provider)
-      .then((result) => {
-        // Update the UI with the user's display name
-        document.getElementById('username').textContent = result.user.displayName;
-        document.getElementById('userProfile').style.display = 'flex';
-        unlockSite();
-      })
-      .catch((error) => {
-        console.error("Firebase login error:", error);
-      });
-    }
+        .then((result) => {
+          hideModal('signedOutModal'); // Ensure the Whoops modal is hidden when sign-in succeeds.
+          document.getElementById('username').textContent = result.user.displayName;
+          document.getElementById('userProfile').style.display = 'flex';
+          unlockSite();
+        })
+        .catch((error) => {
+          console.error("Firebase login error:", error);
+        });
+    };
 
-    // Define a global logout function
     window.logout = function() {
       signOut(auth)
-      .then(() => {
-        // Reset the UI to logged-out state; for simplicity, reload the page
-        location.reload();
-      })
-      .catch((error) => {
-        console.error("Firebase logout error:", error);
-      });
-    }
+        .then(() => {
+          location.reload();
+        })
+        .catch((error) => {
+          console.error("Firebase logout error:", error);
+        });
+    };
   </script>
 </body>
 </html>
