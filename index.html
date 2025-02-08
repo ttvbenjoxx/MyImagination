@@ -970,9 +970,9 @@
       let topPosition = rect.bottom + 10 + window.scrollY;
       let leftPosition = rect.left + window.scrollX;
       
-      // For the first tutorial step, shift left a little
+      // For the first tutorial step, shift left more so the tooltip is fully on-screen.
       if (currentTutorialStep === 0) {
-        leftPosition -= 20;
+        leftPosition = Math.max(window.scrollX + 10, leftPosition - 50);
       }
       
       // Temporarily display the tooltip (invisible) to measure its dimensions
