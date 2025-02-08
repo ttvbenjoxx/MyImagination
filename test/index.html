@@ -1185,6 +1185,8 @@
     // Listen for auth state changes and update the UI accordingly.
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        // If a user is signed in, hide the signed-out modal in case it's visible.
+        hideModal('signedOutModal');
         document.getElementById('username').textContent = user.displayName;
         document.getElementById('userProfile').style.display = 'flex';
         // Unlock the site; the tutorial will only start if it is the user's first visit.
@@ -1200,6 +1202,7 @@
     window.firebaseLogin = function() {
       signInWithPopup(auth, provider)
         .then((result) => {
+          hideModal('signedOutModal'); // Ensure the Whoops modal is hidden when sign-in succeeds.
           document.getElementById('username').textContent = result.user.displayName;
           document.getElementById('userProfile').style.display = 'flex';
           unlockSite();
