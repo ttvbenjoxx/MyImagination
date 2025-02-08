@@ -70,6 +70,7 @@
       align-items: center;
     }
 
+    /* Remove login button entirely; only display user profile (if needed) and new idea button after unlock */
     .user-profile {
       display: none;
       align-items: center;
@@ -111,6 +112,13 @@
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 24px;
       margin-top: 30px;
+      transition: var(--transition);
+    }
+
+    /* Locked state: blur and disable pointer events */
+    .ideas-grid.locked {
+      filter: blur(8px);
+      pointer-events: none;
     }
 
     .idea-card {
@@ -433,6 +441,35 @@
       to { opacity: 1; }
     }
 
+    /* Tutorial overlay and tooltip */
+    #tutorialOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 3000;
+      display: none;
+    }
+
+    #tutorialTooltip {
+      position: absolute;
+      background: white;
+      padding: 16px;
+      border-radius: var(--border-radius);
+      max-width: 300px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Highlight effect for spotlight */
+    .highlighted {
+      position: relative;
+      z-index: 3100;
+      box-shadow: 0 0 0 4px var(--primary-color);
+      border-radius: var(--border-radius);
+    }
+
     @media (max-width: 768px) {
       .ideas-grid {
         grid-template-columns: 1fr;
@@ -463,13 +500,7 @@
         </svg>
         <span id="username">DummyUser</span>
       </div>
-      <button id="loginBtn" class="icon-button" title="Login">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-          <polyline points="10 17 15 12 10 7"></polyline>
-          <line x1="15" y1="12" x2="3" y2="12"></line>
-        </svg>
-      </button>
+      <!-- The login button is removed -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -496,7 +527,16 @@
     <div class="modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
       <p>This site was built by a student at FCHS to gather and share creative website ideas. Whether big or small, practical or wild, your ideas matter—so share them here!</p>
-      <button class="submit-button" onclick="hideModal('welcomeModal')">Get Started</button>
+      <button class="submit-button" onclick="startLockedMode()">Get Started</button>
+    </div>
+  </div>
+
+  <!-- Locked Modal -->
+  <div id="lockedModal" class="modal">
+    <div class="modal-content">
+      <h2 class="modal-title">Unlock MyImagination</h2>
+      <p>Please continue with Google to unlock full access to the site.</p>
+      <button class="submit-button" onclick="unlockSite()">Continue with Google</button>
     </div>
   </div>
 
@@ -521,7 +561,7 @@
     </div>
   </div>
 
-  <!-- Logout Modal -->
+  <!-- Logout Modal (if needed later) -->
   <div id="logoutModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -564,7 +604,7 @@
         <h3>Frequently Asked Questions</h3>
         <div class="faq-item">
           <h4>How do I share an idea?</h4>
-          <p>Click the + button in the top right after logging in to create a new post.</p>
+          <p>Click the + button in the top right after unlocking to create a new post.</p>
         </div>
         <div class="faq-item">
           <h4>Can I edit my ideas?</h4>
@@ -574,10 +614,10 @@
       <div class="tab-content" id="howTo">
         <h3>How to Use MyImagination</h3>
         <ol>
-          <li>Create an account or log in</li>
-          <li>Browse existing ideas for inspiration</li>
-          <li>Share your own ideas using the + button</li>
-          <li>Engage with others through likes and comments</li>
+          <li>Unlock the site by clicking "Continue with Google".</li>
+          <li>Share your ideas using the + button.</li>
+          <li>Sort posts by popularity with the filter button.</li>
+          <li>Access more information with the info icon.</li>
         </ol>
       </div>
       <div class="tab-content" id="about">
@@ -597,9 +637,17 @@
     </div>
   </div>
 
+  <!-- Tutorial Overlay & Tooltip -->
+  <div id="tutorialOverlay">
+    <div id="tutorialTooltip">
+      <p id="tutorialText"></p>
+      <button id="tutorialNextBtn" class="submit-button">Next</button>
+    </div>
+  </div>
+
   <script>
-    let isLoggedIn = false;
-    let currentUser = null;
+    // Global state variables
+    let siteLocked = true; // Initially the site is locked (user not unlocked)
     let ideas = [
       {
         id: 1,
@@ -638,39 +686,40 @@
 
     // DOM Elements
     const userProfile = document.getElementById('userProfile');
-    const loginBtn = document.getElementById('loginBtn');
     const newIdeaBtn = document.getElementById('newIdeaBtn');
     const filterBtn = document.getElementById('filterBtn');
     const ideasGrid = document.getElementById('ideasGrid');
     const infoBtn = document.getElementById('infoBtn');
 
-    // Functions
+    // Functions to show/hide modals
     function showModal(modalId) {
       document.getElementById(modalId).classList.add('show');
     }
-
     function hideModal(modalId) {
       document.getElementById(modalId).classList.remove('show');
     }
 
-    function login() {
-      isLoggedIn = true;
-      currentUser = "DummyUser";
-      userProfile.style.display = "flex";
-      loginBtn.style.display = "none";
-      newIdeaBtn.style.display = "flex";
-      document.getElementById('username').textContent = currentUser;
-      renderIdeas();
+    // When "Get Started" is clicked in welcome modal, lock the site
+    function startLockedMode() {
+      hideModal('welcomeModal');
+      // Hide the filter button
+      filterBtn.style.display = 'none';
+      // Add blur to ideas grid
+      ideasGrid.classList.add('locked');
+      // Show the locked modal with "Continue with Google" button
+      showModal('lockedModal');
     }
 
-    function logout() {
-      isLoggedIn = false;
-      currentUser = null;
-      userProfile.style.display = "none";
-      loginBtn.style.display = "flex";
-      newIdeaBtn.style.display = "none";
-      hideModal('logoutModal');
-      renderIdeas();
+    // When "Continue with Google" is clicked, unlock the site and start tutorial
+    function unlockSite() {
+      siteLocked = false;
+      // Remove blur and show filter button and new idea button
+      ideasGrid.classList.remove('locked');
+      filterBtn.style.display = 'flex';
+      newIdeaBtn.style.display = 'flex';
+      hideModal('lockedModal');
+      // Start the spotlight tutorial
+      startTutorial();
     }
 
     function renderIdeas() {
@@ -703,8 +752,8 @@
     }
 
     function toggleLike(ideaId) {
-      if (!isLoggedIn) {
-        alert('Please login to like ideas');
+      if (siteLocked) {
+        alert('Please unlock the site to like ideas.');
         return;
       }
       const idea = ideas.find(i => i.id === ideaId);
@@ -743,7 +792,7 @@
             </button>
           </div>
         </div>
-        ${isLoggedIn ? `
+        ${!siteLocked ? `
           <div class="comment-form">
             <textarea class="comment-input" placeholder="Write a comment..."></textarea>
             <div class="comment-actions">
@@ -767,7 +816,7 @@
             <span class="comment-date">${comment.date}</span>
           </div>
           <div class="comment-content">${comment.content}</div>
-          ${isLoggedIn ? `
+          ${!siteLocked ? `
             <button class="reply-button" onclick="showReplyForm(${comment.id})">Reply</button>
             <div class="reply-form" id="reply-form-${comment.id}">
               <textarea class="comment-input" placeholder="Write a reply..."></textarea>
@@ -798,7 +847,7 @@
       if (idea) {
         idea.comments.unshift({
           id: Date.now(),
-          author: currentUser,
+          author: "DummyUser",
           content,
           date: 'Just now',
           replies: []
@@ -819,7 +868,7 @@
               if (!comment.replies) comment.replies = [];
               comment.replies.unshift({
                 id: Date.now(),
-                author: currentUser,
+                author: "DummyUser",
                 content,
                 date: 'Just now'
               });
@@ -845,7 +894,7 @@
           id: ideas.length + 1,
           subject,
           description,
-          username: currentUser,
+          username: "DummyUser",
           likes: 0,
           comments: []
         };
@@ -857,25 +906,88 @@
       return false;
     }
 
-    // Event Listeners
-    loginBtn.addEventListener('click', login);
-    userProfile.addEventListener('click', () => showModal('logoutModal'));
-    newIdeaBtn.addEventListener('click', () => showModal('newIdeaModal'));
+    // ---------------------------
+    // Spotlight Tutorial Functions
+    // ---------------------------
+    let tutorialSteps = [
+      {
+        target: "#newIdeaBtn",
+        text: "Click the '+' button to share your creative idea."
+      },
+      {
+        target: "#filterBtn",
+        text: "Use this filter icon to sort posts by popularity."
+      },
+      {
+        target: "#infoBtn",
+        text: "Click this info icon to learn more about the site."
+      }
+    ];
+    let currentTutorialStep = 0;
+
+    function startTutorial() {
+      currentTutorialStep = 0;
+      showTutorialStep();
+    }
+
+    function showTutorialStep() {
+      // Remove previous highlights
+      document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
+      if (currentTutorialStep >= tutorialSteps.length) {
+        hideTutorial();
+        return;
+      }
+      let step = tutorialSteps[currentTutorialStep];
+      let targetEl = document.querySelector(step.target);
+      if (!targetEl) {
+        currentTutorialStep++;
+        showTutorialStep();
+        return;
+      }
+      targetEl.classList.add('highlighted');
+      // Position tooltip near the target element
+      let rect = targetEl.getBoundingClientRect();
+      let tooltip = document.getElementById('tutorialTooltip');
+      let tooltipText = document.getElementById('tutorialText');
+      tooltipText.textContent = step.text;
+      // For simplicity, position the tooltip below the target element
+      tooltip.style.top = (rect.bottom + 10 + window.scrollY) + "px";
+      tooltip.style.left = (rect.left + window.scrollX) + "px";
+      showTutorialOverlay();
+    }
+
+    function nextTutorialStep() {
+      currentTutorialStep++;
+      showTutorialStep();
+    }
+
+    function showTutorialOverlay() {
+      document.getElementById('tutorialOverlay').style.display = 'block';
+    }
+
+    function hideTutorial() {
+      document.getElementById('tutorialOverlay').style.display = 'none';
+      document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
+    }
+
+    // Close tutorial if clicking outside tooltip
+    document.getElementById('tutorialOverlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        hideTutorial();
+      }
+    });
+    document.getElementById('tutorialNextBtn').addEventListener('click', nextTutorialStep);
+
+    // ---------------------------
+    // Event Listeners for modals and buttons
+    // ---------------------------
+    // Filter button sorts posts
     filterBtn.addEventListener('click', () => {
       ideas.sort((a, b) => b.likes - a.likes);
       renderIdeas();
     });
     infoBtn.addEventListener('click', () => showModal('infoModal'));
-
-    // Tab functionality for Info Modal
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
-      });
-    });
+    newIdeaBtn.addEventListener('click', () => showModal('newIdeaModal'));
 
     // Close modals when clicking outside modal content
     document.querySelectorAll('.modal').forEach(modal => {
@@ -886,7 +998,7 @@
       });
     });
 
-    // Initial render
+    // Initial render of ideas
     renderIdeas();
 
     // Show welcome modal on first visit
