@@ -460,6 +460,7 @@
       border-radius: var(--border-radius);
       max-width: 300px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: var(--transition);
     }
 
     /* Highlight effect for spotlight */
@@ -474,7 +475,6 @@
       .ideas-grid {
         grid-template-columns: 1fr;
       }
-
       .modal-content {
         padding: 24px;
         margin: 20px;
@@ -500,7 +500,7 @@
         </svg>
         <span id="username">DummyUser</span>
       </div>
-      <!-- The login button is removed -->
+      <!-- Removed login button -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -713,7 +713,7 @@
     // When "Continue with Google" is clicked, unlock the site and start tutorial
     function unlockSite() {
       siteLocked = false;
-      // Remove blur and show filter button and new idea button
+      // Remove blur and show filter and new idea button
       ideasGrid.classList.remove('locked');
       filterBtn.style.display = 'flex';
       newIdeaBtn.style.display = 'flex';
@@ -933,10 +933,12 @@
     function showTutorialStep() {
       // Remove previous highlights
       document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
+      
       if (currentTutorialStep >= tutorialSteps.length) {
         hideTutorial();
         return;
       }
+      
       let step = tutorialSteps[currentTutorialStep];
       let targetEl = document.querySelector(step.target);
       if (!targetEl) {
@@ -944,15 +946,52 @@
         showTutorialStep();
         return;
       }
+      
+      // Highlight the target element
       targetEl.classList.add('highlighted');
-      // Position tooltip near the target element
+      
+      // Get the bounding rectangle of the target element
       let rect = targetEl.getBoundingClientRect();
       let tooltip = document.getElementById('tutorialTooltip');
       let tooltipText = document.getElementById('tutorialText');
+      
       tooltipText.textContent = step.text;
-      // For simplicity, position the tooltip below the target element
-      tooltip.style.top = (rect.bottom + 10 + window.scrollY) + "px";
-      tooltip.style.left = (rect.left + window.scrollX) + "px";
+      
+      // Calculate initial positions: below the target element
+      let topPosition = rect.bottom + 10 + window.scrollY;
+      let leftPosition = rect.left + window.scrollX;
+      
+      // Temporarily display the tooltip (invisible) to measure its dimensions
+      tooltip.style.top = topPosition + "px";
+      tooltip.style.left = leftPosition + "px";
+      tooltip.style.visibility = "hidden";
+      tooltip.style.display = "block";
+      
+      let tooltipHeight = tooltip.offsetHeight;
+      let tooltipWidth = tooltip.offsetWidth;
+      
+      // Reset visibility
+      tooltip.style.visibility = "visible";
+      
+      // Adjust if the tooltip would go off the bottom edge of the viewport
+      if (topPosition + tooltipHeight > window.innerHeight + window.scrollY) {
+        topPosition = rect.top - tooltipHeight - 10 + window.scrollY;
+      }
+      
+      // Adjust if the tooltip would go off the right edge of the viewport
+      if (leftPosition + tooltipWidth > window.innerWidth + window.scrollX) {
+        leftPosition = window.innerWidth - tooltipWidth - 10 + window.scrollX;
+      }
+      
+      // Ensure tooltip doesn't go off the left edge
+      if (leftPosition < window.scrollX + 10) {
+        leftPosition = window.scrollX + 10;
+      }
+      
+      // Set the final positions
+      tooltip.style.top = topPosition + "px";
+      tooltip.style.left = leftPosition + "px";
+      
       showTutorialOverlay();
     }
 
