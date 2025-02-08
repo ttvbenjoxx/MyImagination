@@ -70,6 +70,7 @@
       align-items: center;
     }
 
+    /* User Profile Pill (with logout dropdown) */
     .user-profile {
       display: none;
       align-items: center;
@@ -80,10 +81,42 @@
       border-radius: var(--border-radius);
       background: rgba(255, 255, 255, 0.1);
       transition: var(--transition);
+      position: relative; /* For dropdown positioning */
     }
 
     .user-profile:hover {
       background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Logout Dropdown */
+    .logout-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      padding: 10px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+      width: max-content;
+      z-index: 110;
+    }
+    .logout-dropdown p {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #333;
+    }
+    .logout-button {
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .logout-button:hover {
+      background-color: #c0392b;
     }
 
     .icon-button {
@@ -600,12 +633,17 @@
       </button>
     </div>
     <div class="header-buttons">
+      <!-- User profile pill with logout dropdown -->
       <div id="userProfile" class="user-profile">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>
         </svg>
         <span id="username">DummyUser</span>
+        <div id="logoutDropdown" class="logout-dropdown">
+          <p>Are you sure you want to sign out?</p>
+          <button id="confirmLogout" class="logout-button">Sign Out</button>
+        </div>
       </div>
       <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -669,7 +707,7 @@
     </div>
   </div>
 
-  <!-- Logout Modal -->
+  <!-- Logout Modal (unused since logout now appears in the dropdown) -->
   <div id="logoutModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -805,11 +843,11 @@
       document.getElementById(modalId).classList.remove('show');
     }
 
+    // When the intro modal is shown, it prompts sign-in; after sign-in, the site is unlocked.
     function startLockedMode() {
       hideModal('introModal');
       filterBtn.style.display = 'none';
       ideasGrid.classList.add('locked');
-      // Note: The intro modal is used only for first-time visitors.
     }
 
     // Unlock the site and conditionally start the tutorial if it's the user's first visit.
@@ -1129,10 +1167,35 @@
 
     renderIdeas();
 
-    // On page load, if the user hasn't visited before, show the intro modal.
+    // Show intro modal on first visit.
     if (!localStorage.getItem('visited')) {
       showModal('introModal');
     }
+
+    // Logout Dropdown: Toggle dropdown when clicking the user profile pill.
+    document.getElementById('userProfile').addEventListener('click', function(e) {
+      var dropdown = document.getElementById('logoutDropdown');
+      if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+      } else {
+        dropdown.style.display = 'block';
+      }
+      e.stopPropagation();
+    });
+
+    // Hide dropdown if clicking elsewhere.
+    document.addEventListener('click', function() {
+      var dropdown = document.getElementById('logoutDropdown');
+      if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+      }
+    });
+
+    // When the confirm logout button is clicked, call logout().
+    document.getElementById('confirmLogout').addEventListener('click', function(e) {
+      e.stopPropagation();
+      logout();
+    });
   </script>
   
   <!-- Firebase Integration with Auth State Observer -->
@@ -1162,7 +1225,7 @@
       if (user) {
         document.getElementById('username').textContent = user.displayName;
         document.getElementById('userProfile').style.display = 'flex';
-        // Only start the tutorial on the user's first visit.
+        // Unlock the site; the tutorial will only start if it is the user's first visit.
         unlockSite();
       }
     });
