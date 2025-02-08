@@ -164,6 +164,7 @@
       transition: var(--transition);
       word-wrap: break-word;
       overflow-wrap: break-word;
+      position: relative;
     }
     .idea-card:hover {
       transform: translateY(-5px);
@@ -180,6 +181,22 @@
       margin-bottom: 20px;
       line-height: 1.6;
       white-space: pre-wrap;
+    }
+    /* More Button for Idea Cards */
+    .more-button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+      float: right;
+      margin-top: 8px;
+    }
+    .more-button:hover {
+      background: #7424c1;
     }
     .idea-meta {
       display: flex;
@@ -315,6 +332,20 @@
     .submit-button:hover {
       background: #7424c1;
       transform: translateY(-2px);
+    }
+    /* Smaller Post Button for Modal Comment Form */
+    .post-comment-button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .post-comment-button:hover {
+      background: #7424c1;
     }
     .comments-section {
       margin-top: 20px;
@@ -564,6 +595,20 @@
     .gsi-material-button:not(:disabled):hover .gsi-material-button-state {
       background-color: #303030;
       opacity: 8%;
+    }
+
+    /* Comment Toggle Button inside Full Idea Modal */
+    .comment-toggle-button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--primary-color);
+      font-size: 14px;
+      margin-top: 8px;
+      float: right;
+    }
+    .comment-toggle-button:hover {
+      color: var(--secondary-color);
     }
   </style>
 </head>
@@ -836,11 +881,10 @@
       ideasGrid.innerHTML = ideas.map(idea => `
         <div class="idea-card">
           <div class="idea-subject">${idea.subject}</div>
-          <div class="idea-description">${
-            idea.description.length > 200
-              ? idea.description.slice(0, 200) + '... <a href="#" onclick="showFullIdea(${idea.id}); return false;">More</a>'
-              : idea.description
-          }</div>
+          <div class="idea-description">
+            ${idea.description.length > 200 ? idea.description.slice(0,200) + "..." : idea.description}
+            ${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea(${idea.id})">More</button>` : ""}
+          </div>
           <div class="idea-meta">
             <span>${idea.username}</span>
             <div class="idea-actions">
@@ -880,23 +924,27 @@
       }
     }
 
-    // Modified showFullIdea to include a toggleable comment form
+    // Modified showFullIdea now includes a toggleable comment form
     function showFullIdea(ideaId) {
       const idea = ideas.find(i => i.id === ideaId);
       if (!idea) return;
       
-      // Build the comment form toggle and hidden comment form container.
+      // Create a comment toggle button and hidden comment form markup.
       let commentToggleMarkup = `
-        <button class="action-button" onclick="toggleModalCommentForm(${idea.id})">Add Comment</button>
+        <button class="comment-toggle-button" onclick="toggleModalCommentForm(${idea.id})">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
         <div id="modalCommentForm_${idea.id}" style="display: none; margin-top: 10px;">
           <textarea class="comment-input" placeholder="Write a comment..."></textarea>
-          <div class="comment-actions" style="margin-top: 6px;">
-            <button class="submit-button" onclick="addCommentModal(${idea.id})">Post</button>
+          <div class="comment-actions" style="margin-top: 6px; text-align: right;">
+            <button class="post-comment-button" onclick="addCommentModal(${idea.id})">Post</button>
           </div>
         </div>
       `;
       
-      // Build the full idea modal content.
       document.getElementById('fullIdeaTitle').textContent = idea.subject;
       document.getElementById('fullIdeaContent').innerHTML = `
         <div class="idea-description">${idea.description}</div>
@@ -926,14 +974,10 @@
       showModal('fullIdeaModal');
     }
 
-    // Toggle the display of the comment form inside the full idea modal
+    // Toggle the comment form inside the full idea modal
     function toggleModalCommentForm(ideaId) {
       const container = document.getElementById('modalCommentForm_' + ideaId);
-      if (container.style.display === "none" || container.style.display === "") {
-        container.style.display = "block";
-      } else {
-        container.style.display = "none";
-      }
+      container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
     }
 
     // Post a comment from the modal comment form
@@ -950,10 +994,8 @@
           content: content,
           date: 'Just now'
         });
-        // Clear the textarea and hide the comment form
         textarea.value = "";
         container.style.display = "none";
-        // Re-render the modal with updated comments
         showFullIdea(ideaId);
       }
     }
@@ -969,19 +1011,19 @@
           ${
             !siteLocked
               ? `<button class="reply-button" onclick="showReplyForm(${comment.id})">Reply</button>
-            <div class="reply-form" id="reply-form-${comment.id}">
-              <textarea class="comment-input" placeholder="Write a reply..."></textarea>
-              <div class="comment-actions">
-                <button class="submit-button" onclick="addReply(${comment.id})">Post Reply</button>
-              </div>
-            </div>`
+                 <div class="reply-form" id="reply-form-${comment.id}">
+                   <textarea class="comment-input" placeholder="Write a reply..."></textarea>
+                   <div class="comment-actions" style="margin-top: 6px; text-align: right;">
+                     <button class="post-comment-button" onclick="addReply(${comment.id})">Post</button>
+                   </div>
+                 </div>`
               : ''
           }
           ${
             comment.replies
               ? `<div class="comment-replies">
-              ${renderComments(comment.replies)}
-            </div>`
+                   ${renderComments(comment.replies)}
+                 </div>`
               : ''
           }
         </div>
@@ -1028,8 +1070,8 @@
       if (subject && description) {
         const newIdea = {
           id: ideas.length + 1,
-          subject,
-          description,
+          subject: subject,
+          description: description,
           username: "DummyUser",
           likes: 0,
           comments: []
@@ -1205,12 +1247,11 @@
     // Listen for auth state changes and update the UI accordingly.
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        hideModal('signedOutModal'); // Automatically hide the Whoops modal if signed in.
+        hideModal('signedOutModal'); // Hide Whoops modal automatically on sign-in.
         document.getElementById('username').textContent = user.displayName;
         document.getElementById('userProfile').style.display = 'flex';
         unlockSite();
       } else {
-        // If the user is signed out and they've visited before, show the Whoops modal.
         if (localStorage.getItem('visited')) {
           showModal('signedOutModal');
         }
@@ -1220,7 +1261,7 @@
     window.firebaseLogin = function() {
       signInWithPopup(auth, provider)
         .then((result) => {
-          hideModal('signedOutModal'); // Hide the Whoops modal upon successful sign-in.
+          hideModal('signedOutModal'); // Ensure Whoops modal is hidden when sign-in succeeds.
           document.getElementById('username').textContent = result.user.displayName;
           document.getElementById('userProfile').style.display = 'flex';
           unlockSite();
