@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyImagination - Creative Website Ideas Forum</title>
     <style>
-        /* CSS styles will be added here */
         :root {
             --primary-color: #8a2be2;
             --secondary-color: #4169e1;
@@ -178,7 +177,6 @@
             }
         }
 
-        /* Add smooth transitions for modals */
         .modal.show {
             display: flex;
             animation: fadeIn 0.3s;
@@ -189,7 +187,6 @@
             to { opacity: 1; }
         }
 
-        /* Add hover effects for interactive elements */
         .idea-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
@@ -266,8 +263,6 @@
     </div>
 
     <script>
-        // JavaScript code will be added here
-        // Simulated data
         let isLoggedIn = false;
         let currentUser = null;
         const dummyIdeas = [
@@ -276,7 +271,6 @@
             { id: 3, subject: "Eco-Friendly Shopping Guide", description: "A website that rates products based on their environmental impact, offering alternatives and tips for sustainable shopping.", username: "GreenShopper", likes: 18, comments: 5 }
         ];
 
-        // DOM Elements
         const loginBtn = document.querySelector('.login-btn');
         const newIdeaBtn = document.querySelector('.new-idea-btn');
         const filterBtn = document.querySelector('.filter-btn');
@@ -287,7 +281,6 @@
         const fullIdeaModal = document.getElementById('fullIdeaModal');
         const infoModal = document.getElementById('infoModal');
 
-        // Functions
         function toggleLogin() {
             isLoggedIn = !isLoggedIn;
             if (isLoggedIn) {
@@ -317,7 +310,6 @@
                 `;
                 ideasGrid.appendChild(ideaCard);
 
-                // Add event listener for "More" link
                 const moreLink = ideaCard.querySelector('.more-link');
                 if (moreLink) {
                     moreLink.addEventListener('click', (e) => {
@@ -385,7 +377,6 @@
             }
         }
 
-        // Event Listeners
         loginBtn.addEventListener('click', toggleLogin);
         newIdeaBtn.addEventListener('click', () => showModal(newIdeaModal));
         filterBtn.addEventListener('click', () => {
@@ -411,10 +402,8 @@
             });
         });
 
-        // Initial render
         renderIdeas();
 
-        // Show welcome modal on first visit
         if (!localStorage.getItem('visited')) {
             showModal(welcomeModal);
             localStorage.setItem('visited', 'true');
@@ -422,4 +411,3 @@
     </script>
 </body>
 </html>
-
