@@ -51,6 +51,12 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
         .logo {
             font-size: 24px;
             font-weight: bold;
@@ -113,6 +119,8 @@
             padding: 24px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: var(--transition);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .idea-card:hover {
@@ -131,6 +139,7 @@
             color: #4a4a4a;
             margin-bottom: 20px;
             line-height: 1.6;
+            white-space: pre-wrap;
         }
 
         .idea-meta {
@@ -162,6 +171,18 @@
             color: var(--primary-color);
         }
 
+        .action-button.liked svg {
+            fill: #ff4b4b;
+            stroke: #ff4b4b;
+            animation: heartPop 0.3s ease;
+        }
+
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -189,6 +210,8 @@
             transform: translateY(20px);
             opacity: 0;
             transition: var(--transition);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal.show .modal-content {
@@ -216,6 +239,10 @@
             cursor: pointer;
             color: #666;
             transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: #1a1a1a;
         }
 
         .form-group {
@@ -294,6 +321,110 @@
             color: #666;
         }
 
+        .comment-form {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .comment-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .reply-form {
+            margin-left: 40px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .reply-form.show {
+            display: block;
+        }
+
+        .comment-replies {
+            margin-left: 40px;
+            margin-top: 12px;
+        }
+
+        .reply-button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .reply-button:hover {
+            background: rgba(138, 43, 226, 0.1);
+        }
+
+        .info-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: white;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .info-icon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 2px;
+            background: #f5f5f5;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         @keyframes modalFadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -309,27 +440,18 @@
                 margin: 20px;
             }
         }
-
-        .info-icon {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-        }
-
-        #welcomeModal .modal-content {
-            text-align: center;
-        }
-
-        #welcomeModal p {
-            margin: 20px 0;
-            color: #666;
-        }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo">MyImagination</div>
+        <div class="header-left">
+            <div class="logo">MyImagination</div>
+            <button id="filterBtn" class="icon-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+            </button>
+        </div>
         <div class="header-buttons">
             <div id="userProfile" class="user-profile">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -351,11 +473,6 @@
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
             </button>
-            <button id="filterBtn" class="icon-button">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                </svg>
-            </button>
         </div>
     </header>
 
@@ -363,8 +480,16 @@
         <div id="ideasGrid" class="ideas-grid"></div>
     </div>
 
-    <button class="icon-button info-icon" id="infoBtn">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <button id="infoBtn" class="info-icon">
+        <svg<cut_off_point>
+div>
+    </div>
+
+    <button id="infoBtn" class="info-icon">
+        <svg
+</cut_off_point>
+
+ width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="16" x2="12" y2="12"></line>
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -376,7 +501,7 @@
         <div class="modal-content">
             <h2 class="modal-title">Welcome to MyImagination!</h2>
             <p>This site was built by a student at FCHS to gather and share creative website ideas. Whether big or small, practical or wild, your ideas matter—so share them here!</p>
-            <button class="submit-button" onclick="document.getElementById('welcomeModal').classList.remove('show')">Get Started</button>
+            <button class="submit-button" onclick="hideModal('welcomeModal')">Get Started</button>
         </div>
     </div>
 
@@ -427,8 +552,57 @@
         </div>
     </div>
 
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Information</h2>
+                <button class="close-modal" onclick="hideModal('infoModal')">&times;</button>
+            </div>
+            <div class="tabs">
+                <button class="tab active" data-tab="faq">FAQs</button>
+                <button class="tab" data-tab="howTo">How to Use</button>
+                <button class="tab" data-tab="about">About</button>
+                <button class="tab" data-tab="purpose">Purpose</button>
+            </div>
+            <div class="tab-content active" id="faq">
+                <h3>Frequently Asked Questions</h3>
+                <div class="faq-item">
+                    <h4>How do I share an idea?</h4>
+                    <p>Click the + button in the top right after logging in to create a new post.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Can I edit my ideas?</h4>
+                    <p>Currently, editing is not available in this proof of concept.</p>
+                </div>
+            </div>
+            <div class="tab-content" id="howTo">
+                <h3>How to Use MyImagination</h3>
+                <ol>
+                    <li>Create an account or log in</li>
+                    <li>Browse existing ideas for inspiration</li>
+                    <li>Share your own ideas using the + button</li>
+                    <li>Engage with others through likes and comments</li>
+                </ol>
+            </div>
+            <div class="tab-content" id="about">
+                <h3>About MyImagination</h3>
+                <p>MyImagination is a platform created by FCHS students to share and discuss creative website ideas. Our goal is to foster innovation and collaboration among aspiring web developers and designers.</p>
+            </div>
+            <div class="tab-content" id="purpose">
+                <h3>Our Purpose</h3>
+                <p>We aim to create a collaborative space where students can:</p>
+                <ul>
+                    <li>Share creative website ideas</li>
+                    <li>Get feedback from peers</li>
+                    <li>Find inspiration for projects</li>
+                    <li>Learn about web development trends</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Initial data
         let isLoggedIn = false;
         let currentUser = null;
         let ideas = [
@@ -439,8 +613,8 @@
                 username: "VRLearner",
                 likes: 15,
                 comments: [
-                    { author: "TechTeacher", content: "This would revolutionize online education!", date: "2 days ago" },
-                    { author: "VREnthusiast", content: "Love the idea of 3D models in education.", date: "1 day ago" }
+                    { id: 101, author: "TechTeacher", content: "This would revolutionize online education!", date: "2 days ago" },
+                    { id: 102, author: "VREnthusiast", content: "Love the idea of 3D models in education.", date: "1 day ago" }
                 ]
             },
             {
@@ -450,7 +624,7 @@
                 username: "AIWriter",
                 likes: 22,
                 comments: [
-                    { author: "StoryTeller", content: "This would be incredibly helpful for creative writing!", date: "3 days ago" }
+                    { id: 201, author: "StoryTeller", content: "This would be incredibly helpful for creative writing!", date: "3 days ago" }
                 ]
             },
             {
@@ -460,17 +634,20 @@
                 username: "GreenShopper",
                 likes: 18,
                 comments: [
-                    { author: "EcoWarrior", content: "We definitely need more tools like this.", date: "1 day ago" },
-                    { author: "ConsciousConsumer", content: "Would love to see this integrated with major shopping platforms!", date: "12 hours ago" }
+                    { id: 301, author: "EcoWarrior", content: "We definitely need more tools like this.", date: "1 day ago" },
+                    { id: 302, author: "ConsciousConsumer", content: "Would love to see this integrated with major shopping platforms!", date: "12 hours ago" }
                 ]
             }
         ];
+        let userLikes = new Set();
 
         // DOM Elements
         const userProfile = document.getElementById('userProfile');
         const loginBtn = document.getElementById('loginBtn');
         const newIdeaBtn = document.getElementById('newIdeaBtn');
+        const filterBtn = document.getElementById('filterBtn');
         const ideasGrid = document.getElementById('ideasGrid');
+        const infoBtn = document.getElementById('infoBtn');
 
         // Functions
         function showModal(modalId) {
@@ -505,14 +682,14 @@
             ideasGrid.innerHTML = ideas.map(idea => `
                 <div class="idea-card">
                     <div class="idea-subject">${idea.subject}</div>
-                    <div class="idea-description">${idea.description.length > 100 ? 
-                        idea.description.slice(0, 100) + '... <a href="#" onclick="showFullIdea(${idea.id}); return false;">More</a>' : 
+                    <div class="idea-description">${idea.description.length > 200 ? 
+                        idea.description.slice(0, 200) + '... <a href="#" onclick="showFullIdea(${idea.id}); return false;">More</a>' : 
                         idea.description
                     }</div>
                     <div class="idea-meta">
                         <span>${idea.username}</span>
                         <div class="idea-actions">
-                            <button class="action-button" onclick="toggleLike(${idea.id})">
+                            <button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id})">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                 </svg>
@@ -530,6 +707,25 @@
             `).join('');
         }
 
+        function toggleLike(ideaId) {
+            if (!isLoggedIn) {
+                alert('Please login to like ideas');
+                return;
+            }
+
+            const idea = ideas.find(i => i.id === ideaId);
+            if (idea) {
+                if (userLikes.has(ideaId)) {
+                    userLikes.delete(ideaId);
+                    idea.likes--;
+                } else {
+                    userLikes.add(ideaId);
+                    idea.likes++;
+                }
+                renderIdeas();
+            }
+        }
+
         function showFullIdea(ideaId) {
             const idea = ideas.find(i => i.id === ideaId);
             if (!idea) return;
@@ -540,7 +736,7 @@
                 <div class="idea-meta" style="margin: 20px 0;">
                     <span>${idea.username}</span>
                     <div class="idea-actions">
-                        <button class="action-button" onclick="toggleLike(${idea.id})">
+                        <button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id})">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                             </svg>
@@ -554,31 +750,101 @@
                         </button>
                     </div>
                 </div>
+                ${isLoggedIn ? `
+                    <div class="comment-form">
+                        <textarea class="comment-input" placeholder="Write a comment..."></textarea>
+                        <div class="comment-actions">
+                            <button class="submit-button" onclick="addComment(${idea.id})">Post Comment</button>
+                        </div>
+                    </div>
+                ` : ''}
                 <div class="comments-section">
                     <h3 style="margin-bottom: 16px;">Comments</h3>
-                    ${idea.comments.map(comment => `
-                        <div class="comment">
-                            <div class="comment-header">
-                                <span class="comment-author">${comment.author}</span>
-                                <span class="comment-date">${comment.date}</span>
-                            </div>
-                            <div class="comment-content">${comment.content}</div>
-                        </div>
-                    `).join('')}
+                    ${renderComments(idea.comments)}
                 </div>
             `;
             showModal('fullIdeaModal');
         }
 
-        function toggleLike(ideaId) {
-            if (!isLoggedIn) {
-                alert('Please login to like ideas');
-                return;
-            }
+        function renderComments(comments) {
+            return comments.map(comment => `
+                <div class="comment">
+                    <div class="comment-header">
+                        <span class="comment-author">${comment.author}</span>
+                        <span class="comment-date">${comment.date}</span>
+                    </div>
+                    <div class="comment-content">${comment.content}</div>
+                    ${isLoggedIn ? `
+                        <button class="reply-button" onclick="showReplyForm(${comment.id})">Reply</button>
+                        <div class="reply-form" id="reply-form-${comment.id}">
+                            <textarea class="comment-input" placeholder="Write a reply..."></textarea>
+                            <div class="comment-actions">
+                                <button class="submit-button" onclick="addReply(${comment.id})">Post Reply</button>
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${comment.replies ? `
+                        <div class="comment-replies">
+                            ${renderComments(comment.replies)}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function showReplyForm(commentId) {
+            const form = document.getElementById(`reply-form-${commentId}`);
+            form.classList.toggle('show');
+        }
+
+        function addComment(ideaId) {
+            const commentInput = document.querySelector('.comment-input');
+            const content = commentInput.value.trim();
+            
+            if (!content) return;
+
             const idea = ideas.find(i => i.id === ideaId);
             if (idea) {
-                idea.likes++;
-                renderIdeas();
+                idea.comments.unshift({
+                    id: Date.now(),
+                    author: currentUser,
+                    content,
+                    date: 'Just now',
+                    replies: []
+                });
+                showFullIdea(ideaId);
+                commentInput.value = '';
+            }
+        }
+
+        function addReply(commentId) {
+            const replyInput = document.querySelector(`#reply-form-${commentId} .comment-input`);
+            const content = replyInput.value.trim();
+            
+            if (!content) return;
+
+            for (let idea of ideas) {
+                const findAndAddReply = (comments) => {
+                    for (let comment of comments) {
+                        if (comment.id === commentId) {
+                            if (!comment.replies) comment.replies = [];
+                            comment.replies.unshift({
+                                id: Date.now(),
+                                author: currentUser,
+                                content,
+                                date: 'Just now'
+                            });
+                            return true;
+                        }
+                        if (comment.replies && findAndAddReply(comment.replies)) return true;
+                    }
+                    return false;
+                };
+
+                if (findAndAddReply(idea.comments)) {
+                    showFullIdea(idea.id);
+                    break;
+                }
             }
         }
 
@@ -608,11 +874,22 @@
         loginBtn.addEventListener('click', login);
         userProfile.addEventListener('click', () => showModal('logoutModal'));
         newIdeaBtn.addEventListener('click', () => showModal('newIdeaModal'));
-        document.getElementById('filterBtn').addEventListener('click', () => {
+        filterBtn.addEventListener('click', () => {
             ideas.sort((a, b) => b.likes - a.likes);
             renderIdeas();
         });
-        document.getElementById('infoBtn').addEventListener('click', () => showModal('infoModal'));
+        infoBtn.addEventListener('click', () => showModal('infoModal'));
+
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
 
         // Close modals when clicking outside
         document.querySelectorAll('.modal').forEach(modal => {
