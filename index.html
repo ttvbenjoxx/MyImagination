@@ -1,1 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MyImagination</title>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Inline CSS for styling and theme -->
+  <style>
+    /* Gradient Background and Global Styles */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #D8B4FE, #373B44); /* light purple to dark blue */
+      color: #333;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.8);
+    }
+    #user-info {
+      display: flex;
+      align-items: center;
+    }
+    #user-name {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+    button {
+      margin-left: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    #filter-icon {
+      cursor: pointer;
+      font-size: 1.2em;
+    }
+    main {
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    /* Idea Card Styles */
+    .idea-card {
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      width: calc(33% - 20px);
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .idea-card:hover {
+      transform: scale(1.03);
+    }
+    .idea-username {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+    }
+    .idea-subject {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    .idea-description {
+      margin-bottom: 10px;
+    }
+    .idea-icons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .icon {
+      cursor: pointer;
+    }
+    /* Custom Loader (from the prompt) */
+    .container {
+      --uib-size: 28;
+      --uib-color: black;
+      --uib-speed: 3.5s;
+      --uib-stroke: 4;
+      --uib-mult: calc(var(--uib-size) / var(--uib-stroke));
+      --uib-stroke-px: calc(var(--uib-stroke) * 1px);
+      --uib-size-px: calc(var(--uib-size) * 1px);
+      position: relative;
+      height: var(--uib-size-px);
+      width: var(--uib-size-px);
+      margin: 20px auto;
+    }
+    .line {
+      position: absolute;
+      top: calc(50% - var(--uib-stroke-px) / 2);
+      left: calc(50% - var(--uib-stroke-px) / 2);
+      width: var(--uib-stroke-px);
+      height: var(--uib-stroke-px);
+      background-color: var(--uib-color);
+      animation: center-line var(--uib-speed) ease infinite;
+      transition: background-color 0.3s ease;
+    }
+    .container::before,
+    .container::after {
+      content: '';
+      position: absolute;
+      width: var(--uib-stroke-px);
+      height: var(--uib-stroke-px);
+      background-color: var(--uib-color);
+      animation: explore var(--uib-speed) ease infinite;
+      transition: background-color 0.3s ease;
+    }
+    .container::after {
+      animation-delay: calc(var(--uib-speed) * -0.5);
+    }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+      animation: fadeIn 0.5s;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      border-radius: 10px;
+      position: relative;
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    /* Info Icon (Bottom Right) */
+    #info-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    /* Snackbar Notification */
+    #snackbar {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1001;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+    }
+    #snackbar.show {
+      visibility: visible;
+      animation: fadeInOut 3s;
+    }
+    @keyframes fadeInOut {
+      0%, 100% {opacity: 0;}
+      50% {opacity: 1;}
+    }
+  </style>
+</head>
+<body>
 
+  <!-- Custom Loader -->
+  <div id="loader" class="container">
+    <div class="line"></div>
+  </div>
+
+  <!-- Header with Filter, User Info, and New Idea Button -->
+  <header>
+    <div id="filter-icon" title="Sort by most liked">&#128269;</div>
+    <div id="user-info">
+      <span id="user-name"></span>
+      <button id="logout-btn">Logout</button>
+      <button id="new-idea-btn" title="New Idea">+</button>
+    </div>
+  </header>
+
+  <!-- Main Content: Idea Posts -->
+  <main>
+    <div id="posts-container"></div>
+  </main>
+
+  <!-- Info Icon (Bottom Right) -->
+  <div id="info-icon" onclick="openInfoModal()">i</div>
+
+  <!-- Welcome Modal (First-Time Visit) -->
+  <div id="welcome-modal" class="modal">
+    <div class="modal-content">
+      <h2>Welcome to MyImagination!</h2>
+      <p>
+        This site was built by a student at FCHS to gather and share creative <strong>website</strong> ideas.
+        Whether big or small, practical or wild, your ideas matter—so share them here!
+      </p>
+      <button id="login-btn">Login with Google</button>
+    </div>
+  </div>
+
+  <!-- Post-Login Explanation Modal -->
+  <div id="explanation-modal" class="modal">
+    <div class="modal-content">
+      <h2>How It Works</h2>
+      <p>Share your creative ideas, comment, and like posts. Click the plus button to create a new idea thread. More info is available by clicking the info icon.</p>
+      <button id="close-explanation">Got it!</button>
+    </div>
+  </div>
+
+  <!-- New Idea Modal -->
+  <div id="new-idea-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeNewIdeaModal()">×</span>
+      <h2>New Idea Thread</h2>
+      <input type="text" id="idea-subject" placeholder="Idea Subject" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+      <textarea id="idea-description" placeholder="Describe your idea..." style="width: 100%; padding: 8px; height: 100px; margin-bottom: 10px;"></textarea>
+      <button id="post-idea-btn">Post Idea Thread</button>
+    </div>
+  </div>
+
+  <!-- Enlarged Idea Modal (Full Post View) -->
+  <div id="full-idea-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeFullIdeaModal()">×</span>
+      <div id="full-idea-details">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Modal -->
+  <div id="info-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeInfoModal()">×</span>
+      <h2>Information</h2>
+      <div class="tabs">
+        <button onclick="showTab('faqs')">FAQs</button>
+        <button onclick="showTab('how-to')">How to use the site</button>
+        <button onclick="showTab('about')">About the developer</button>
+        <button onclick="showTab('purpose')">Purpose of the site</button>
+      </div>
+      <div id="info-content">
+        <!-- Tab content loads here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Snackbar Notification -->
+  <div id="snackbar"></div>
+
+  <!-- Firebase and App Logic -->
+  <script>
+    // TODO: Replace with your own Firebase configuration details
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Once the DOM is ready, hide the loader and check auth state
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("loader").style.display = "none";
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          document.getElementById("welcome-modal").style.display = "none";
+          document.getElementById("user-name").textContent = user.displayName;
+          loadPosts();
+          if (!localStorage.getItem("explained")) {
+            document.getElementById("explanation-modal").style.display = "block";
+            localStorage.setItem("explained", "true");
+          }
+        } else {
+          document.getElementById("welcome-modal").style.display = "block";
+        }
+      });
+    });
+
+    // --- Authentication ---
+    document.getElementById("login-btn").addEventListener("click", () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(result => {
+          document.getElementById("welcome-modal").style.display = "none";
+        })
+        .catch(error => {
+          console.error("Authentication error:", error);
+        });
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      auth.signOut().then(() => location.reload());
+    });
+
+    // --- New Idea Modal Functions ---
+    document.getElementById("new-idea-btn").addEventListener("click", () => {
+      document.getElementById("new-idea-modal").style.display = "block";
+    });
+
+    function closeNewIdeaModal() {
+      const subject = document.getElementById("idea-subject").value;
+      const description = document.getElementById("idea-description").value;
+      if (subject || description) {
+        if (confirm("You have unsaved changes. Are you sure you want to close?")) {
+          document.getElementById("new-idea-modal").style.display = "none";
+        }
+      } else {
+        document.getElementById("new-idea-modal").style.display = "none";
+      }
+    }
+
+    document.getElementById("post-idea-btn").addEventListener("click", () => {
+      const subject = document.getElementById("idea-subject").value;
+      const description = document.getElementById("idea-description").value;
+      if (!subject || !description) {
+        alert("Please fill out both the subject and description.");
+        return;
+      }
+      const user = auth.currentUser;
+      db.collection("ideas").add({
+        username: user.displayName,
+        email: user.email,
+        subject: subject,
+        description: description,
+        likes: 0,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        document.getElementById("new-idea-modal").style.display = "none";
+        document.getElementById("idea-subject").value = "";
+        document.getElementById("idea-description").value = "";
+        loadPosts();
+      }).catch(error => {
+        console.error("Error posting idea:", error);
+      });
+    });
+
+    // --- Loading Posts ---
+    function loadPosts() {
+      db.collection("ideas").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+        const postsContainer = document.getElementById("posts-container");
+        postsContainer.innerHTML = "";
+        snapshot.forEach(doc => {
+          const idea = doc.data();
+          const card = document.createElement("div");
+          card.className = "idea-card";
+
+          // Username at top-right
+          const usernameEl = document.createElement("div");
+          usernameEl.className = "idea-username";
+          usernameEl.innerHTML = "<strong>" + idea.username + "</strong>";
+          card.appendChild(usernameEl);
+
+          // Idea Subject
+          const subjectEl = document.createElement("div");
+          subjectEl.className = "idea-subject";
+          subjectEl.innerHTML = "<strong>" + idea.subject + "</strong>";
+          card.appendChild(subjectEl);
+
+          // Idea Description (truncate after 30 words)
+          const words = idea.description.split(" ");
+          let descriptionText = idea.description;
+          if (words.length > 30) {
+            descriptionText = words.slice(0, 30).join(" ") + "... <span class='more-link' onclick='openFullIdea(\"" + doc.id + "\")'>More...</span>";
+          }
+          const descriptionEl = document.createElement("div");
+          descriptionEl.className = "idea-description";
+          descriptionEl.innerHTML = descriptionText;
+          card.appendChild(descriptionEl);
+
+          // Icons: Comments and Heart
+          const iconsEl = document.createElement("div");
+          iconsEl.className = "idea-icons";
+          const commentsIcon = document.createElement("span");
+          commentsIcon.className = "icon comment-icon";
+          commentsIcon.textContent = "💬";
+          commentsIcon.onclick = () => openFullIdea(doc.id);
+          iconsEl.appendChild(commentsIcon);
+
+          const heartIcon = document.createElement("span");
+          heartIcon.className = "icon heart-icon";
+          heartIcon.textContent = "❤️";
+          heartIcon.onclick = () => likeIdea(doc.id);
+          iconsEl.appendChild(heartIcon);
+
+          if (idea.likes > 0) {
+            const likeCount = document.createElement("span");
+            likeCount.className = "like-count";
+            likeCount.textContent = idea.likes;
+            iconsEl.appendChild(likeCount);
+          }
+          card.appendChild(iconsEl);
+          postsContainer.appendChild(card);
+        });
+      });
+    }
+
+    // --- Liking an Idea ---
+    function likeIdea(docId) {
+      const ideaRef = db.collection("ideas").doc(docId);
+      db.runTransaction(transaction => {
+        return transaction.get(ideaRef).then(doc => {
+          if (!doc.exists) throw "Document does not exist!";
+          let newLikes = (doc.data().likes || 0) + 1;
+          transaction.update(ideaRef, { likes: newLikes });
+        });
+      }).catch(error => {
+        console.error("Transaction failed: ", error);
+      });
+    }
+
+    // --- Enlarged Idea Modal ---
+    function openFullIdea(docId) {
+      db.collection("ideas").doc(docId).get().then(doc => {
+        if (doc.exists) {
+          const idea = doc.data();
+          const fullIdeaDetails = document.getElementById("full-idea-details");
+          fullIdeaDetails.innerHTML = `
+            <div class="full-idea-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>${idea.username}</strong> (${idea.email})</span>
+              <span>${idea.timestamp ? new Date(idea.timestamp.toDate()).toLocaleString() : ''}</span>
+            </div>
+            <h2>${idea.subject}</h2>
+            <p>${idea.description}</p>
+            <div class="full-idea-icons" style="display: flex; gap: 10px; align-items: center;">
+              <span class="icon heart-icon" onclick="likeIdea('${docId}')">❤️ ${idea.likes > 0 ? idea.likes : ''}</span>
+              <span class="icon comment-icon" onclick="toggleComments()">💬</span>
+            </div>
+            <div id="comments-section" style="display:none; margin-top:10px;">
+              <!-- Comments and replies functionality can be implemented here -->
+              <p>Comments functionality coming soon!</p>
+            </div>
+          `;
+          document.getElementById("full-idea-modal").style.display = "block";
+        }
+      });
+    }
+
+    function closeFullIdeaModal() {
+      document.getElementById("full-idea-modal").style.display = "none";
+    }
+
+    function toggleComments() {
+      const cs = document.getElementById("comments-section");
+      cs.style.display = cs.style.display === "none" ? "block" : "none";
+    }
+
+    // --- Info Modal ---
+    function openInfoModal() {
+      document.getElementById("info-modal").style.display = "block";
+      showTab("faqs");
+    }
+    function closeInfoModal() {
+      document.getElementById("info-modal").style.display = "none";
+    }
+    function showTab(tabName) {
+      const infoContent = document.getElementById("info-content");
+      switch(tabName) {
+        case "faqs":
+          infoContent.innerHTML = "<h3>FAQs</h3><p>Frequently Asked Questions content goes here.</p>";
+          break;
+        case "how-to":
+          infoContent.innerHTML = "<h3>How to Use the Site</h3><p>Instructions on how to use the site go here.</p>";
+          break;
+        case "about":
+          infoContent.innerHTML = "<h3>About the Developer</h3><p>Details about the developer go here.</p>";
+          break;
+        case "purpose":
+          infoContent.innerHTML = "<h3>Purpose of the Site</h3><p>The mission and purpose of MyImagination are explained here.</p>";
+          break;
+      }
+    }
+
+    // --- Explanation Modal ---
+    document.getElementById("close-explanation").addEventListener("click", () => {
+      document.getElementById("explanation-modal").style.display = "none";
+    });
+
+    // --- Filter (Sort by Likes) ---
+    document.getElementById("filter-icon").addEventListener("click", () => {
+      const snackbar = document.getElementById("snackbar");
+      snackbar.textContent = "Posts sorted by most liked";
+      snackbar.className = "show";
+      setTimeout(() => { snackbar.className = snackbar.className.replace("show", ""); }, 3000);
+      db.collection("ideas").orderBy("likes", "desc").onSnapshot(snapshot => {
+        const postsContainer = document.getElementById("posts-container");
+        postsContainer.innerHTML = "";
+        snapshot.forEach(doc => {
+          const idea = doc.data();
+          const card = document.createElement("div");
+          card.className = "idea-card";
+          const usernameEl = document.createElement("div");
+          usernameEl.className = "idea-username";
+          usernameEl.innerHTML = "<strong>" + idea.username + "</strong>";
+          card.appendChild(usernameEl);
+          const subjectEl = document.createElement("div");
+          subjectEl.className = "idea-subject";
+          subjectEl.innerHTML = "<strong>" + idea.subject + "</strong>";
+          card.appendChild(subjectEl);
+          const words = idea.description.split(" ");
+          let descriptionText = idea.description;
+          if (words.length > 30) {
+            descriptionText = words.slice(0, 30).join(" ") + "... <span class='more-link' onclick='openFullIdea(\"" + doc.id + "\")'>More...</span>";
+          }
+          const descriptionEl = document.createElement("div");
+          descriptionEl.className = "idea-description";
+          descriptionEl.innerHTML = descriptionText;
+          card.appendChild(descriptionEl);
+          const iconsEl = document.createElement("div");
+          iconsEl.className = "idea-icons";
+          const commentsIcon = document.createElement("span");
+          commentsIcon.className = "icon comment-icon";
+          commentsIcon.textContent = "💬";
+          commentsIcon.onclick = () => openFullIdea(doc.id);
+          iconsEl.appendChild(commentsIcon);
+          const heartIcon = document.createElement("span");
+          heartIcon.className = "icon heart-icon";
+          heartIcon.textContent = "❤️";
+          heartIcon.onclick = () => likeIdea(doc.id);
+          iconsEl.appendChild(heartIcon);
+          if (idea.likes > 0) {
+            const likeCount = document.createElement("span");
+            likeCount.className = "like-count";
+            likeCount.textContent = idea.likes;
+            iconsEl.appendChild(likeCount);
+          }
+          card.appendChild(iconsEl);
+          postsContainer.appendChild(card);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
