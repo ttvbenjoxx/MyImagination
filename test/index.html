@@ -427,6 +427,12 @@
       background: rgba(138,43,226,0.1);
     }
 
+    /* New: Make author info smaller and add extra spacing */
+    .author-details {
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+    }
+
     /* Align modal header buttons horizontally */
     .header-right-content {
       display: flex;
@@ -849,7 +855,7 @@
 
   <!-- Script for userProfile dropdown (Sign Out) -->
   <script>
-    // Toggle logout dropdown when clicking on the userProfile
+    // Toggle logout dropdown when clicking on userProfile
     document.getElementById('userProfile').addEventListener('click', function(e) {
       document.getElementById('logoutDropdown').classList.toggle("show");
       e.stopPropagation();
@@ -883,7 +889,7 @@
       return count;
     }
 
-    // Listen for changes on /comments to update the global comment count.
+    // Listen for changes on /comments to update global comment count.
     function listenForCommentsCount() {
       const commentsRoot = window.ref(window.database, "comments");
       window.onValue(commentsRoot, (snapshot) => {
@@ -1122,7 +1128,7 @@
 ${commentToggleMarkup}
 <div id="commentsSection" class="comments-section"></div>
       `;
-      // Populate the full idea modal container with one close button (inside header-right-content).
+      // Populate the fullIdeaModal container with one close button.
       document.getElementById('fullIdeaModal').innerHTML = `
 <div class="modal-content">
   <div class="modal-header">
@@ -1355,7 +1361,6 @@ ${commentToggleMarkup}
         fetchIdeas();
         listenForCommentsCount();
       } else {
-        // On mobile, always show sign-in modal if not signed in.
         if (window.innerWidth < 768) {
           window.showModal('signedOutModal');
         } else if (localStorage.getItem('visited')) {
