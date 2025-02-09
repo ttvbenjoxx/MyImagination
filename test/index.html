@@ -18,7 +18,7 @@
       --transition: all 0.3s ease;
     }
 
-    /* Disable body scroll when modal is open */
+    /* When a modal is open, disable body scrolling */
     body.modal-open {
       overflow: hidden;
     }
@@ -148,7 +148,15 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    /* Idea Cards – compact design */
+    /* Ideas Grid: display cards horizontally with minimal gaps */
+    .ideas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    /* Idea Cards: compact layout */
     .idea-card {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
@@ -175,6 +183,7 @@
       line-height: 1.4;
       white-space: pre-wrap;
     }
+    /* More Button for Idea Cards – placed at bottom right of description */
     .more-button {
       background: var(--primary-color);
       color: #fff;
@@ -226,7 +235,7 @@
       100% { transform: scale(1); }
     }
 
-    /* Modal settings */
+    /* Modal styles */
     .modal {
       display: none;
       position: fixed;
@@ -589,7 +598,7 @@
       opacity: 8%;
     }
 
-    /* Comment Toggle Button styling inside the modal (with a rounded square background) */
+    /* Comment Toggle Button with Rounded Square Background */
     .comment-toggle-button {
       background: #f0f0f0;
       border: none;
@@ -605,7 +614,7 @@
       background: #e0e0e0;
     }
 
-    /* Author Email label in the modal */
+    /* Author Email Label in Modal */
     .idea-email {
       font-size: 12px;
       color: #666;
@@ -729,7 +738,7 @@
         <h2 class="modal-title" id="fullIdeaTitle"></h2>
         <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
       </div>
-      <!-- Author's email appears here -->
+      <!-- Author's email will be displayed here -->
       <div id="ideaEmail" class="idea-email"></div>
       <div id="fullIdeaContent"></div>
     </div>
@@ -914,10 +923,10 @@
           idea.likes++;
         }
         renderIdeas();
-        // If the full idea modal is open, update its heart icon animation.
-        if(document.getElementById('fullIdeaModal').classList.contains('show')){
+        // Update heart animation in the expanded modal if it is open.
+        if (document.getElementById('fullIdeaModal').classList.contains('show')) {
           const heartIcon = document.querySelector('#fullIdeaModal .action-button.liked svg');
-          if(heartIcon){
+          if (heartIcon) {
             heartIcon.style.animation = 'none';
             setTimeout(() => { heartIcon.style.animation = 'heartPop 0.3s ease'; }, 10);
           }
@@ -925,17 +934,12 @@
       }
     }
 
-    // Modified showFullIdea now reorders modal content:
-    //  - Idea description
-    //  - Idea meta (username and like/comment buttons)
-    //  - Author's email
-    //  - "Comments" label and the + comment toggle button below it
-    //  - List of comments
+    // Expanded modal: show idea description, meta, author email, then Comments heading and the toggle button below it.
     function showFullIdea(ideaId) {
       const idea = ideas.find(i => i.id === ideaId);
       if (!idea) return;
       
-      // Comment toggle button and hidden comment form markup.
+      // Create a comment toggle button and hidden comment form markup.
       let commentToggleMarkup = `
         <button class="comment-toggle-button" onclick="toggleModalCommentForm(${idea.id})">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
@@ -952,10 +956,9 @@
       `;
       
       document.getElementById('fullIdeaTitle').textContent = idea.subject;
-      // Set the author's email
       document.getElementById('ideaEmail').innerHTML = `Email: ${idea.email}`;
       
-      // Reorder modal content: description, meta, email, then comments section with a toggle button under the Comments label.
+      // Build modal content with wrapped text (word-break: break-word) and vertical scrolling.
       document.getElementById('fullIdeaContent').innerHTML = `
         <div class="idea-description" style="word-break: break-word;">${idea.description}</div>
         <div class="idea-meta" style="margin: 12px 0;">
@@ -1209,12 +1212,10 @@
 
     renderIdeas();
 
-    // Show intro modal on first visit.
     if (!localStorage.getItem('visited')) {
       showModal('introModal');
     }
 
-    // Logout Dropdown: Toggle dropdown when clicking the user profile pill.
     document.getElementById('userProfile').addEventListener('click', function(e) {
       var dropdown = document.getElementById('logoutDropdown');
       dropdown.classList.toggle("show");
