@@ -427,7 +427,7 @@
       background: rgba(138,43,226,0.1);
     }
 
-    /* New: Make author info smaller and add extra spacing */
+    /* New: Author details smaller with extra space */
     .author-details {
       font-size: 0.8rem;
       margin-bottom: 12px;
@@ -765,7 +765,6 @@
   </div>
 
   <!-- Full Idea Modal (Expanded Post) -->
-  <!-- This container is empty; its content is injected dynamically -->
   <div id="fullIdeaModal" class="modal"></div>
 
   <!-- Info Modal -->
@@ -841,7 +840,7 @@
       document.getElementById('ideasGrid').classList.remove('locked');
       document.getElementById('filterBtn').style.display = 'flex';
       document.getElementById('newIdeaBtn').style.display = 'block';
-      hideModal('introModal');
+      hideModal('introModal');  // When unlocking, hide the intro modal.
       if (!localStorage.getItem('visited')) {
         startTutorial();
         localStorage.setItem('visited', 'true');
@@ -1120,6 +1119,7 @@
 ${commentToggleMarkup}
 <div id="commentsSection" class="comments-section"></div>
       `;
+      // Populate fullIdeaModal with one header (with one close button)
       document.getElementById('fullIdeaModal').innerHTML = `
 <div class="modal-content">
   <div class="modal-header">
@@ -1338,9 +1338,10 @@ ${commentToggleMarkup}
         fetchIdeas();
         listenForCommentsCount();
       } else {
-        if (window.innerWidth < 768) {
-          window.showModal('signedOutModal');
-        } else if (localStorage.getItem('visited')) {
+        // If user is not signed in, show the intro modal if not visited; otherwise, show the signedOut modal.
+        if (!localStorage.getItem('visited')) {
+          window.showModal('introModal');
+        } else {
           window.showModal('signedOutModal');
         }
       }
