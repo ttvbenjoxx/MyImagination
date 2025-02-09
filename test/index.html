@@ -75,7 +75,7 @@
       align-items: center;
     }
 
-    /* User Profile Pill & Logout Dropdown */
+    /* User Profile & Logout Dropdown */
     .user-profile {
       display: none;
       align-items: center;
@@ -148,7 +148,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* Ideas Grid: horizontal layout with minimal gaps */
+    /* Ideas Grid: horizontal layout */
     .ideas-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -156,7 +156,7 @@
       margin-top: 20px;
     }
 
-    /* Idea Cards: compact (no extra indent) */
+    /* Idea Cards: compact, no extra indent */
     .idea-card {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
@@ -298,7 +298,7 @@
       font-size: 14px;
       color: #666;
     }
-    /* Modal header right: like button, comment icon, and close button */
+    /* Modal header right: like button, static comments icon, and close button */
     .header-right-content {
       display: flex;
       align-items: center;
@@ -315,10 +315,9 @@
     .close-modal:hover {
       color: #1a1a1a;
     }
-
     /* Modal body */
     .modal-body {
-      /* no extra padding so that the description wraps nicely */
+      /* No extra padding so that description wraps naturally */
     }
     .idea-description {
       word-break: break-word;
@@ -582,6 +581,29 @@
       background-color: #303030;
       opacity: 8%;
     }
+
+    /* Comment Toggle Button with Rounded Square Background */
+    .comment-toggle-button {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--primary-color);
+      font-size: 14px;
+      padding: 4px 8px;
+      margin-top: 8px;
+      display: inline-block;
+    }
+    .comment-toggle-button:hover {
+      background: #e0e0e0;
+    }
+
+    /* Author Email Label in Modal */
+    .idea-email {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 12px;
+    }
   </style>
 </head>
 <body>
@@ -623,7 +645,7 @@
     <span class="info-text">i</span>
   </button>
 
-  <!-- Combined Intro Modal (Welcome + Unlock) -->
+  <!-- Intro Modal (Welcome + Unlock) -->
   <div id="introModal" class="modal">
     <div class="modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
@@ -754,7 +776,7 @@
   </div>
 
   <script>
-    // Attach key functions to window so they are available globally
+    // Attach key functions to window so they are available globally.
     function showModal(modalId) {
       document.getElementById(modalId).classList.add('show');
       document.body.classList.add('modal-open');
@@ -778,11 +800,10 @@
     window.hideModal = hideModal;
     window.unlockSite = unlockSite;
 
-    // Global variables
+    // Global variables for site state and current user details.
     let siteLocked = true;
     window.currentUserEmail = "";
     window.currentUserName = "";
-    // Store the currently expanded idea's ID so we can update it if needed.
     window.currentExpandedIdeaId = null;
 
     let ideas = [
@@ -830,7 +851,7 @@
     const ideasGrid = document.getElementById('ideasGrid');
     const infoBtn = document.getElementById('infoBtn');
 
-    // Render idea cards. The entire card is clickable.
+    // Render idea cards – the entire card is clickable.
     function renderIdeas() {
       ideasGrid.innerHTML = ideas.map(idea => `
         <div class="idea-card" onclick="showFullIdea(${idea.id})">
@@ -875,21 +896,24 @@
           idea.likes++;
         }
         renderIdeas();
-        // If the expanded modal is open and it is for this idea, re-render it
+        // If the expanded modal is open for this idea, re-render and re-trigger heart animation.
         if (document.getElementById('fullIdeaModal').classList.contains('show') &&
             window.currentExpandedIdeaId === ideaId) {
           showFullIdea(ideaId);
+          const heartIcon = document.querySelector('#fullIdeaModal .header-right-content .like-button svg');
+          if (heartIcon) {
+            heartIcon.style.animation = 'none';
+            setTimeout(() => { heartIcon.style.animation = 'heartPop 0.3s ease'; }, 10);
+          }
         }
       }
     }
 
-    // Expanded modal: builds a new modal header with subject, author name and email on left,
-    // and on the right the like button and static comments icon, then the modal body with description and comments.
+    // Build the expanded modal for an idea.
     function showFullIdea(ideaId) {
       const idea = ideas.find(i => i.id === ideaId);
       if (!idea) return;
       window.currentExpandedIdeaId = ideaId;
-      // Build modal header (left: subject and author details; right: like button, comments count, close)
       const modalHeaderHTML = `
         <div class="header-left-content">
           <h2 class="modal-title" id="fullIdeaTitle">${idea.subject}</h2>
@@ -906,7 +930,7 @@
             </svg>
             ${idea.likes}
           </button>
-          <span class="action-button static comment-icon">
+          <span class="action-button static">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
             </svg>
@@ -915,8 +939,6 @@
           <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
         </div>
       `;
-
-      // Build modal body (description, then Comments heading with + comment toggle below it, then comments)
       const commentToggleMarkup = `
         <button class="comment-toggle-button" onclick="toggleModalCommentForm(${idea.id}); event.stopPropagation();">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
@@ -939,8 +961,6 @@
           ${renderComments(idea.comments)}
         </div>
       `;
-
-      // Set the inner HTML of the expanded modal.
       document.getElementById('fullIdeaModal').innerHTML = `
         <div class="modal-content">
           <div class="modal-header">
@@ -954,13 +974,13 @@
       showModal('fullIdeaModal');
     }
 
-    // Toggle the comment form inside the expanded modal.
+    // Toggle the comment form in the expanded modal.
     function toggleModalCommentForm(ideaId) {
       const container = document.getElementById('modalCommentForm_' + ideaId);
       container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
     }
 
-    // Post a comment from the expanded modal comment form.
+    // Post a comment from the expanded modal.
     function addCommentModal(ideaId) {
       const container = document.getElementById('modalCommentForm_' + ideaId);
       const textarea = container.querySelector('.comment-input');
@@ -1073,12 +1093,10 @@
       { target: "#userProfile", text: "Click your name to sign out." }
     ];
     let currentTutorialStep = 0;
-
     function startTutorial() {
       currentTutorialStep = 0;
       showTutorialStep();
     }
-
     function showTutorialStep() {
       document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
       if (currentTutorialStep >= tutorialSteps.length) {
@@ -1130,28 +1148,23 @@
       tooltip.style.left = leftPosition + "px";
       showTutorialOverlay();
     }
-
     function nextTutorialStep() {
       currentTutorialStep++;
       showTutorialStep();
     }
-
     function showTutorialOverlay() {
       document.getElementById('tutorialOverlay').style.display = 'block';
     }
-
     function hideTutorial() {
       document.getElementById('tutorialOverlay').style.display = 'none';
       document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
     }
-
     document.getElementById('tutorialOverlay').addEventListener('click', function(e) {
       if (e.target === this) {
         hideTutorial();
       }
     });
     document.getElementById('tutorialNextBtn').addEventListener('click', nextTutorialStep);
-
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1160,14 +1173,12 @@
         document.getElementById(tab.dataset.tab).classList.add('active');
       });
     });
-
     filterBtn.addEventListener('click', () => {
       ideas.sort((a, b) => b.likes - a.likes);
       renderIdeas();
     });
     infoBtn.addEventListener('click', () => showModal('infoModal'));
     newIdeaBtn.addEventListener('click', () => showModal('newIdeaModal'));
-
     document.querySelectorAll('.modal').forEach(modal => {
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
@@ -1175,14 +1186,10 @@
         }
       });
     });
-
     renderIdeas();
-
     if (!localStorage.getItem('visited')) {
       showModal('introModal');
     }
-
-    // Make entire card clickable; inner buttons call event.stopPropagation()
     document.getElementById('userProfile').addEventListener('click', function(e) {
       var dropdown = document.getElementById('logoutDropdown');
       dropdown.classList.toggle("show");
@@ -1198,7 +1205,7 @@
     });
   </script>
   
-  <!-- Firebase Integration with Auth State Observer (module) -->
+  <!-- Firebase Integration -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
