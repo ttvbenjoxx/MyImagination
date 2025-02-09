@@ -18,7 +18,7 @@
       --transition: all 0.3s ease;
     }
 
-    /* When a modal is open, disable body scrolling */
+    /* Disable body scroll when modal is open */
     body.modal-open {
       overflow: hidden;
     }
@@ -44,7 +44,7 @@
     }
 
     header {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255,255,255,0.1);
       padding: 20px;
       display: flex;
       justify-content: space-between;
@@ -53,7 +53,7 @@
       top: 0;
       z-index: 100;
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     .header-left {
@@ -66,7 +66,7 @@
       font-size: 24px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .header-buttons {
@@ -75,7 +75,7 @@
       align-items: center;
     }
 
-    /* User Profile & Logout Dropdown */
+    /* User Profile Pill and Logout Dropdown */
     .user-profile {
       display: none;
       align-items: center;
@@ -84,12 +84,12 @@
       cursor: pointer;
       padding: 8px 16px;
       border-radius: var(--border-radius);
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       transition: var(--transition);
       position: relative;
     }
     .user-profile:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255,255,255,0.2);
     }
     .logout-dropdown {
       position: absolute;
@@ -98,7 +98,7 @@
       background: #fff;
       padding: 10px;
       border-radius: var(--border-radius);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       width: max-content;
       z-index: 110;
       opacity: 0;
@@ -134,7 +134,7 @@
       height: 40px;
       border: none;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255,255,255,0.9);
       color: var(--primary-color);
       cursor: pointer;
       display: flex;
@@ -145,7 +145,7 @@
     .icon-button:hover {
       transform: translateY(-2px);
       background: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     /* Ideas Grid: horizontal layout */
@@ -156,12 +156,12 @@
       margin-top: 20px;
     }
 
-    /* Idea Cards: compact, no extra indent */
+    /* Idea Cards: compact with no extra indent */
     .idea-card {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
       padding: 8px;
-      margin: 0;  /* Remove any extra margin */
+      margin: 0;
       box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: var(--transition);
       word-wrap: break-word;
@@ -241,7 +241,7 @@
       100% { transform: scale(1); }
     }
 
-    /* Modal styles */
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -283,26 +283,10 @@
       align-items: center;
       margin-bottom: 12px;
     }
-    /* Modal header left: subject and author details */
-    .header-left-content {
-      display: flex;
-      flex-direction: column;
-    }
     .modal-title {
       font-size: 20px;
       font-weight: 600;
       color: #1a1a1a;
-      margin-bottom: 4px;
-    }
-    .author-details {
-      font-size: 14px;
-      color: #666;
-    }
-    /* Modal header right: like button, static comments icon, and close button */
-    .header-right-content {
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
     .close-modal {
       background: none;
@@ -315,15 +299,67 @@
     .close-modal:hover {
       color: #1a1a1a;
     }
-    /* Modal body */
-    .modal-body {
-      /* No extra padding so that description wraps naturally */
+    .form-group {
+      margin-bottom: 12px;
     }
-    .idea-description {
-      word-break: break-word;
-      margin-bottom: 16px;
+    .form-label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #1a1a1a;
     }
-    /* Comments Section */
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid #e1e1e1;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(138,43,226,0.1);
+    }
+    textarea.form-input {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .submit-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+    }
+    .submit-button:hover {
+      background: #7424c1;
+      transform: translateY(-2px);
+    }
+    /* Post Comment Button Style */
+    .post-comment-button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .post-comment-button:hover {
+      background: #7424c1;
+    }
+    /* Modal-specific larger post button */
+    .modal-post-comment-button {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
     .comments-section {
       margin-top: 12px;
       padding-top: 12px;
@@ -350,25 +386,19 @@
       margin-top: 12px;
       margin-bottom: 12px;
     }
-    /* Use form-input styling for all modal textboxes */
-    .form-input {
+    .comment-input {
       width: 100%;
-      padding: 10px 14px;
-      border: 2px solid #e1e1e1;
+      padding: 10px;
+      border: 1px solid #e1e1e1;
       border-radius: 8px;
-      font-size: 14px;
-      transition: var(--transition);
+      margin-bottom: 8px;
       resize: vertical;
       min-height: 60px;
     }
-    .form-input:focus {
+    .comment-input:focus {
       outline: none;
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
-    }
-    /* Override comment-input to include form-input styles */
-    .comment-input {
-      /* Already using form-input class in the HTML below */
+      box-shadow: 0 0 0 3px rgba(138,43,226,0.1);
     }
     .comment-actions {
       display: flex;
@@ -398,7 +428,14 @@
       transition: var(--transition);
     }
     .reply-button:hover {
-      background: rgba(138, 43, 226, 0.1);
+      background: rgba(138,43,226,0.1);
+    }
+
+    /* New CSS for aligning modal header buttons */
+    .header-right-content {
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
 
     /* Info Icon */
@@ -414,12 +451,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: var(--transition);
     }
     .info-icon:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
     }
     .info-icon .info-text {
       font-size: 24px;
@@ -449,7 +486,7 @@
     .tab.active {
       background: white;
       color: var(--primary-color);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .tab-content {
       display: none;
@@ -726,7 +763,56 @@
   </div>
 
   <!-- Full Idea Modal (Expanded Post) -->
-  <div id="fullIdeaModal" class="modal"></div>
+  <div id="fullIdeaModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="header-left-content">
+          <h2 class="modal-title" id="fullIdeaTitle"></h2>
+          <div class="author-details">
+            <span class="author-name"></span>
+            &nbsp;|&nbsp;
+            <span class="author-email"></span>
+          </div>
+        </div>
+        <div class="header-right-content">
+          <button class="action-button like-button ${/* This will be filled in dynamically */''}" onclick="toggleLike(window.currentExpandedIdeaId); event.stopPropagation();">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span id="fullIdeaLikes"></span>
+          </button>
+          <button type="button" class="action-button static comment-button" onclick="scrollToComments(event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            <span id="fullIdeaCommentsCount"></span>
+          </button>
+          <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
+        </div>
+      </div>
+      <div id="fullIdeaContent" class="modal-body">
+        <div class="idea-description"></div>
+        <h3 style="margin: 16px 0 8px 0;">Comments</h3>
+        <!-- Comment toggle and form -->
+        <div>
+          <button class="comment-toggle-button" onclick="toggleModalCommentForm(window.currentExpandedIdeaId); event.stopPropagation();">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <div id="modalCommentForm_" style="display: none; margin-top: 10px;">
+            <textarea class="form-input comment-input" placeholder="Write a comment..."></textarea>
+            <div class="comment-actions" style="margin-top: 6px; text-align: right;">
+              <button class="post-comment-button modal-post-comment-button" onclick="addCommentModal(window.currentExpandedIdeaId); event.stopPropagation();">Post</button>
+            </div>
+          </div>
+        </div>
+        <!-- Add an id to the comments section so we can scroll to it -->
+        <div id="commentsSection" class="comments-section"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Info Modal -->
   <div id="infoModal" class="modal">
@@ -787,7 +873,7 @@
   </div>
 
   <script>
-    // Attach key functions to window so they are available globally.
+    // Global modal functions
     function showModal(modalId) {
       document.getElementById(modalId).classList.add('show');
       document.body.classList.add('modal-open');
@@ -800,7 +886,7 @@
       siteLocked = false;
       ideasGrid.classList.remove('locked');
       filterBtn.style.display = 'flex';
-      newIdeaBtn.style.display = 'flex';
+      newIdeaBtn.style.display = 'block'; // use block display for proper button styling
       hideModal('introModal');
       if (!localStorage.getItem('visited')) {
         startTutorial();
@@ -811,7 +897,7 @@
     window.hideModal = hideModal;
     window.unlockSite = unlockSite;
 
-    // Global variables for site state and current user details.
+    // Global state and user details
     let siteLocked = true;
     window.currentUserEmail = "";
     window.currentUserName = "";
@@ -862,34 +948,33 @@
     const ideasGrid = document.getElementById('ideasGrid');
     const infoBtn = document.getElementById('infoBtn');
 
-    // Render idea cards – the entire card is clickable.
+    // Render idea cards with no extra indent (built as one-line strings)
     function renderIdeas() {
-      ideasGrid.innerHTML = ideas.map(idea => `
-        <div class="idea-card" onclick="showFullIdea(${idea.id})">
-          <div class="idea-subject">${idea.subject}</div>
-          <div class="idea-description">
-            ${idea.description.length > 200 ? idea.description.slice(0,200) + "..." : idea.description}
-            ${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea(${idea.id}); event.stopPropagation();">More</button>` : ""}
-          </div>
-          <div class="idea-meta">
-            <span>${idea.username}</span>
-            <div class="idea-actions">
-              <button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id}); event.stopPropagation();">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-                ${idea.likes}
-              </button>
-              <span class="action-button static">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                </svg>
-                ${idea.comments.length}
-              </span>
-            </div>
-          </div>
-        </div>
-      `).join('');
+      ideasGrid.innerHTML = ideas.map(idea => 
+        `<div class="idea-card" onclick="showFullIdea(${idea.id})">` +
+          `<div class="idea-subject">${idea.subject}</div>` +
+          `<div class="idea-description">${idea.description.length > 200 ? idea.description.slice(0,200) + "..." : idea.description}` +
+          `${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea(${idea.id}); event.stopPropagation();">More</button>` : ""}` +
+          `</div>` +
+          `<div class="idea-meta">` +
+            `<span>${idea.username}</span>` +
+            `<div class="idea-actions">` +
+              `<button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id}); event.stopPropagation();">` +
+                `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">` +
+                  `<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>` +
+                `</svg>` +
+                `${idea.likes}` +
+              `</button>` +
+              `<span class="action-button static">` +
+                `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">` +
+                  `<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>` +
+                `</svg>` +
+                `${idea.comments.length}` +
+              `</span>` +
+            `</div>` +
+          `</div>` +
+        `</div>`
+      ).join('');
     }
 
     function toggleLike(ideaId) {
@@ -907,11 +992,11 @@
           idea.likes++;
         }
         renderIdeas();
-        // If the expanded modal is open for this idea, re-render and trigger heart animation.
+        // If expanded modal is open, re-render it with updated like state and animate the heart.
         if (document.getElementById('fullIdeaModal').classList.contains('show') &&
             window.currentExpandedIdeaId === ideaId) {
           showFullIdea(ideaId);
-          const heartIcon = document.querySelector('#fullIdeaModal .header-right-content .like-button svg');
+          const heartIcon = document.querySelector('#fullIdeaModal .action-button.liked svg');
           if (heartIcon) {
             heartIcon.style.animation = 'none';
             setTimeout(() => { heartIcon.style.animation = 'heartPop 0.3s ease'; }, 10);
@@ -935,19 +1020,18 @@
           </div>
         </div>
         <div class="header-right-content">
-          <button class="action-button like-button" onclick="toggleLike(${idea.id}); event.stopPropagation();">
+          <button class="action-button like-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id}); event.stopPropagation();">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
             ${idea.likes}
           </button>
-          <span class="action-button static">
+          <button type="button" class="action-button static comment-button" onclick="scrollToComments(event)">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
             </svg>
             ${idea.comments.length}
-          </span>
-          <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
+          </button>
         </div>
       `;
       const commentToggleMarkup = `
@@ -960,7 +1044,7 @@
         <div id="modalCommentForm_${idea.id}" style="display: none; margin-top: 10px;">
           <textarea class="form-input comment-input" placeholder="Write a comment..."></textarea>
           <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-            <button class="post-comment-button submit-button" onclick="addCommentModal(${idea.id}); event.stopPropagation();">Post</button>
+            <button class="post-comment-button modal-post-comment-button" onclick="addCommentModal(${idea.id}); event.stopPropagation();">Post</button>
           </div>
         </div>
       `;
@@ -968,7 +1052,7 @@
         <div class="idea-description">${idea.description}</div>
         <h3 style="margin: 16px 0 8px 0;">Comments</h3>
         ${commentToggleMarkup}
-        <div class="comments-section">
+        <div id="commentsSection" class="comments-section">
           ${renderComments(idea.comments)}
         </div>
       `;
@@ -976,6 +1060,7 @@
         <div class="modal-content">
           <div class="modal-header">
             ${modalHeaderHTML}
+            <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
           </div>
           <div id="fullIdeaContent" class="modal-body">
             ${modalBodyHTML}
@@ -985,7 +1070,7 @@
       showModal('fullIdeaModal');
     }
 
-    // Toggle the comment form in the expanded modal.
+    // Toggle comment form in the expanded modal.
     function toggleModalCommentForm(ideaId) {
       const container = document.getElementById('modalCommentForm_' + ideaId);
       container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
@@ -1025,7 +1110,7 @@
                  <div class="reply-form" id="reply-form-${comment.id}">
                    <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
                    <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-                     <button class="post-comment-button submit-button" onclick="addReply(${comment.id}); event.stopPropagation();">Post</button>
+                     <button class="post-comment-button modal-post-comment-button" onclick="addReply(${comment.id}); event.stopPropagation();">Post</button>
                    </div>
                  </div>`
               : ''
@@ -1094,6 +1179,18 @@
         renderIdeas();
       }
       return false;
+    }
+
+    // Scroll to comments section when the comments button is pressed.
+    function scrollToComments(e) {
+      e.stopPropagation();
+      const modalContent = document.querySelector('#fullIdeaModal .modal-content');
+      if (modalContent) {
+        const commentsSection = modalContent.querySelector('#commentsSection');
+        if (commentsSection) {
+          commentsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
     }
 
     // Spotlight Tutorial Functions
