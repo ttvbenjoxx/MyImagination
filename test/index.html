@@ -66,7 +66,7 @@
       font-size: 24px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .header-buttons {
@@ -84,12 +84,12 @@
       cursor: pointer;
       padding: 8px 16px;
       border-radius: var(--border-radius);
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       transition: var(--transition);
       position: relative;
     }
     .user-profile:hover {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.2);
     }
     .logout-dropdown {
       position: absolute;
@@ -98,7 +98,7 @@
       background: #fff;
       padding: 10px;
       border-radius: var(--border-radius);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       width: max-content;
       z-index: 110;
       opacity: 0;
@@ -134,7 +134,7 @@
       height: 40px;
       border: none;
       border-radius: 50%;
-      background: rgba(255,255,255,0.9);
+      background: rgba(255, 255, 255, 0.9);
       color: var(--primary-color);
       cursor: pointer;
       display: flex;
@@ -145,10 +145,10 @@
     .icon-button:hover {
       transform: translateY(-2px);
       background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    /* Ideas Grid: horizontal layout with minimal gaps */
+    /* Ideas Grid: horizontal layout */
     .ideas-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -161,7 +161,7 @@
       background-color: var(--card-background);
       border-radius: var(--border-radius);
       padding: 8px;
-      margin: 0; /* Ensure no extra indent */
+      margin: 0;  /* Remove any extra margin */
       box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: var(--transition);
       word-wrap: break-word;
@@ -350,8 +350,8 @@
       margin-top: 12px;
       margin-bottom: 12px;
     }
-    /* Apply form-input styling to comment textareas */
-    .comment-input {
+    /* Use form-input styling for all modal textboxes */
+    .form-input {
       width: 100%;
       padding: 10px 14px;
       border: 2px solid #e1e1e1;
@@ -361,10 +361,14 @@
       resize: vertical;
       min-height: 60px;
     }
-    .comment-input:focus {
+    .form-input:focus {
       outline: none;
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(138,43,226,0.1);
+      box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+    }
+    /* Override comment-input to include form-input styles */
+    .comment-input {
+      /* Already using form-input class in the HTML below */
     }
     .comment-actions {
       display: flex;
@@ -394,7 +398,7 @@
       transition: var(--transition);
     }
     .reply-button:hover {
-      background: rgba(138,43,226,0.1);
+      background: rgba(138, 43, 226, 0.1);
     }
 
     /* Info Icon */
@@ -410,12 +414,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       transition: var(--transition);
     }
     .info-icon:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
     .info-icon .info-text {
       font-size: 24px;
@@ -445,7 +449,7 @@
     .tab.active {
       background: white;
       color: var(--primary-color);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     .tab-content {
       display: none;
@@ -946,7 +950,6 @@
           <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
         </div>
       `;
-      // Comment toggle button with textarea now uses the "form-input" class for styling.
       const commentToggleMarkup = `
         <button class="comment-toggle-button" onclick="toggleModalCommentForm(${idea.id}); event.stopPropagation();">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
@@ -957,7 +960,7 @@
         <div id="modalCommentForm_${idea.id}" style="display: none; margin-top: 10px;">
           <textarea class="form-input comment-input" placeholder="Write a comment..."></textarea>
           <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-            <button class="post-comment-button" onclick="addCommentModal(${idea.id}); event.stopPropagation();">Post</button>
+            <button class="post-comment-button submit-button" onclick="addCommentModal(${idea.id}); event.stopPropagation();">Post</button>
           </div>
         </div>
       `;
@@ -1022,7 +1025,7 @@
                  <div class="reply-form" id="reply-form-${comment.id}">
                    <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
                    <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-                     <button class="post-comment-button" onclick="addReply(${comment.id}); event.stopPropagation();">Post</button>
+                     <button class="post-comment-button submit-button" onclick="addReply(${comment.id}); event.stopPropagation();">Post</button>
                    </div>
                  </div>`
               : ''
