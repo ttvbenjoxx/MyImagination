@@ -75,7 +75,7 @@
       align-items: center;
     }
 
-    /* User Profile Pill and Logout Dropdown */
+    /* User Profile and Logout Dropdown */
     .user-profile {
       display: none;
       align-items: center;
@@ -156,7 +156,7 @@
       margin-top: 20px;
     }
 
-    /* Idea Cards: compact with no extra indent */
+    /* Idea Cards */
     .idea-card {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
@@ -185,7 +185,6 @@
       line-height: 1.4;
       white-space: pre-wrap;
     }
-    /* More Button on Card */
     .more-button {
       background: var(--primary-color);
       color: #fff;
@@ -226,7 +225,6 @@
     .action-button:hover {
       color: var(--primary-color);
     }
-    /* In expanded modal, the comments icon is static */
     .action-button.static {
       cursor: default;
     }
@@ -341,7 +339,6 @@
       background: #7424c1;
       transform: translateY(-2px);
     }
-    /* Post Comment Button Style */
     .post-comment-button {
       background: var(--primary-color);
       color: #fff;
@@ -355,7 +352,6 @@
     .post-comment-button:hover {
       background: #7424c1;
     }
-    /* Modal-specific larger post button */
     .modal-post-comment-button {
       padding: 8px 12px;
       font-size: 14px;
@@ -763,54 +759,8 @@
   </div>
 
   <!-- Full Idea Modal (Expanded Post) -->
-  <div id="fullIdeaModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="header-left-content">
-          <h2 class="modal-title" id="fullIdeaTitle"></h2>
-          <div class="author-details">
-            <span class="author-name"></span>
-            &nbsp;|&nbsp;
-            <span class="author-email"></span>
-          </div>
-        </div>
-        <div class="header-right-content">
-          <button class="action-button like-button" onclick="toggleLike(window.currentExpandedIdeaId); event.stopPropagation();">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
-            <span id="fullIdeaLikes"></span>
-          </button>
-          <button type="button" class="action-button static comment-button" onclick="scrollToComments(event)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-            </svg>
-            <span id="fullIdeaCommentsCount"></span>
-          </button>
-          <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
-        </div>
-      </div>
-      <div id="fullIdeaContent" class="modal-body">
-        <div class="idea-description"></div>
-        <h3 style="margin: 16px 0 8px 0;">Comments</h3>
-        <div>
-          <button class="comment-toggle-button" onclick="toggleModalCommentForm(window.currentExpandedIdeaId); event.stopPropagation();">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </button>
-          <div id="modalCommentForm_" style="display: none; margin-top: 10px;">
-            <textarea class="form-input comment-input" placeholder="Write a comment..."></textarea>
-            <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-              <button class="post-comment-button modal-post-comment-button" onclick="addCommentModal(window.currentExpandedIdeaId); event.stopPropagation();">Post</button>
-            </div>
-          </div>
-        </div>
-        <div id="commentsSection" class="comments-section"></div>
-      </div>
-    </div>
-  </div>
+  <!-- Note: The modal container is now empty and will be populated dynamically -->
+  <div id="fullIdeaModal" class="modal"></div>
 
   <!-- Info Modal -->
   <div id="infoModal" class="modal">
@@ -870,7 +820,7 @@
     </div>
   </div>
 
-  <!-- Global Script: Define modal functions and globals -->
+  <!-- Global Script: Modal functions and globals -->
   <script>
     function showModal(modalId) {
       document.getElementById(modalId).classList.add('show');
@@ -891,16 +841,60 @@
         localStorage.setItem('visited', 'true');
       }
     }
-    // Expose global functions
     window.showModal = showModal;
     window.hideModal = hideModal;
     window.unlockSite = unlockSite;
     window.siteLocked = true;
   </script>
 
-  <!-- Main Script: Post rendering and Firebase integration for ideas -->
+  <!-- Script for userProfile dropdown (Sign Out) -->
+  <script>
+    // Toggle logout dropdown when clicking on userProfile
+    document.getElementById('userProfile').addEventListener('click', function(e) {
+      document.getElementById('logoutDropdown').classList.toggle("show");
+      e.stopPropagation();
+    });
+    // Hide logout dropdown when clicking elsewhere
+    document.addEventListener('click', function() {
+      document.getElementById('logoutDropdown').classList.remove("show");
+    });
+    // Call logout() when Sign Out is clicked
+    document.getElementById('confirmLogout').addEventListener('click', function(e) {
+      e.stopPropagation();
+      logout();
+    });
+  </script>
+
+  <!-- Main Script: Idea rendering and comment functionality -->
   <script>
     let ideas = [];
+    window.commentsCount = {};
+
+    // Recursively count comments and replies.
+    function countComments(obj) {
+      let count = 0;
+      for (const key in obj) {
+        if (key === "_next") continue;
+        count++;
+        if (obj[key].replies) {
+          count += countComments(obj[key].replies);
+        }
+      }
+      return count;
+    }
+
+    // Listen for changes on /comments to update the global comment count.
+    function listenForCommentsCount() {
+      const commentsRoot = window.ref(window.database, "comments");
+      window.onValue(commentsRoot, (snapshot) => {
+        const data = snapshot.val() || {};
+        window.commentsCount = {};
+        for (const postId in data) {
+          window.commentsCount[postId] = countComments(data[postId]);
+        }
+        renderIdeas();
+      });
+    }
 
     function fetchIdeas() {
       const ideasRef = window.ref(window.database, "ideas");
@@ -910,12 +904,8 @@
         if (data) {
           for (const key in data) {
             const idea = data[key];
-            if (idea.comments) {
-              idea.comments = Object.values(idea.comments);
-            } else {
-              idea.comments = [];
-            }
-            ideas.push({ ...idea, id: key });
+            idea.id = key;
+            ideas.push(idea);
           }
         }
         renderIdeas();
@@ -925,7 +915,7 @@
     function renderIdeas() {
       const ideasGrid = document.getElementById('ideasGrid');
       ideasGrid.innerHTML = ideas.map(idea => {
-        // Use a trimmed template literal to avoid extra whitespace.
+        const commentCount = window.commentsCount[idea.id] || 0;
         return `
 <div class="idea-card" onclick="showFullIdea('${idea.id}')">
   <div class="idea-subject">${idea.subject}</div>
@@ -946,7 +936,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
         </svg>
-        ${idea.comments.length}
+        ${commentCount}
       </span>
     </div>
   </div>
@@ -972,6 +962,8 @@
           idea.likes++;
         }
         renderIdeas();
+        window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes })
+          .catch((error) => { console.error("Error updating likes in Firebase:", error); });
         if (document.getElementById('fullIdeaModal').classList.contains('show') &&
             window.currentExpandedIdeaId === ideaId) {
           showFullIdea(ideaId);
@@ -982,6 +974,103 @@
           }
         }
       }
+    }
+
+    // Recursive function to render comments (and nested replies).
+    function renderComments(comments, parentPath) {
+      parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
+      return comments.map(comment => {
+        const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
+        let repliesHtml = "";
+        if (comment.replies) {
+          const repliesArray = Object.entries(comment.replies).map(([key, value]) => ({ id: key, ...value }));
+          repliesArray.sort((a, b) => {
+            const numA = parseInt(a.id.split("_")[1] || "0");
+            const numB = parseInt(b.id.split("_")[1] || "0");
+            return numA - numB;
+          });
+          repliesHtml = `<div class="comment-replies">${renderComments(repliesArray, parentPath + "/" + comment.id + "/replies")}</div>`;
+        }
+        return `
+<div class="comment">
+  <div class="comment-header">
+    <span class="comment-author">${comment.commenter || comment.replier}</span>
+    <span class="comment-date">${comment.timestamp}</span>
+  </div>
+  <div class="comment-content">${comment.content}</div>
+  ${!window.siteLocked ? `
+  <button class="reply-button" onclick="showReplyForm('${parentPath}', '${comment.id}'); event.stopPropagation();">Reply</button>
+  <div class="reply-form" id="reply-form-${parentPath.replace(/[\/:]/g, "_")}_${comment.id}" style="display: none; margin-top: 10px;">
+    <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
+    <div class="comment-actions" style="margin-top: 6px; text-align: right;">
+      <button class="post-comment-button modal-post-comment-button" onclick="addReply('${parentPath}', '${comment.id}'); event.stopPropagation();">Post</button>
+    </div>
+  </div>
+  ` : ""}
+  ${repliesHtml}
+</div>
+        `;
+      }).join('');
+    }
+
+    function showReplyForm(parentPath, commentId) {
+      const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
+      const form = document.getElementById(replyFormId);
+      if (form) {
+        form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
+      }
+    }
+
+    // Use a transaction on a "_next" child for unique comment keys.
+    function addCommentModal(postId) {
+      const container = document.getElementById('modalCommentForm_' + postId);
+      const textarea = container.querySelector('.comment-input');
+      const content = textarea.value.trim();
+      if (!content) return;
+      const nextRef = window.ref(window.database, "comments/" + postId + "/_next");
+      window.runTransaction(nextRef, (current) => {
+        return (current === null ? 0 : current) + 1;
+      }).then((result) => {
+        const commentNumber = result.snapshot.val();
+        const newCommentId = "Comment_" + commentNumber;
+        const commentData = {
+          commenter: window.currentUserName || "DummyUser",
+          timestamp: new Date().toLocaleString(),
+          content: content,
+          replies: {}
+        };
+        return window.set(window.ref(window.database, "comments/" + postId + "/" + newCommentId), commentData);
+      }).then(() => {
+        textarea.value = "";
+        container.style.display = "none";
+      }).catch((error) => {
+        console.error("Error posting comment:", error);
+      });
+    }
+
+    // Use a transaction on a "_next" child for unique reply keys.
+    function addReply(parentPath, commentId) {
+      const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
+      const replyInput = document.querySelector("#" + replyFormId + " .comment-input");
+      const content = replyInput.value.trim();
+      if (!content) return;
+      const nextRef = window.ref(window.database, parentPath + "/" + commentId + "/_next");
+      window.runTransaction(nextRef, (current) => {
+        return (current === null ? 0 : current) + 1;
+      }).then((result) => {
+        const replyNumber = result.snapshot.val();
+        const newReplyId = "Reply_" + replyNumber;
+        const replyData = {
+          replier: window.currentUserName || "DummyUser",
+          timestamp: new Date().toLocaleString(),
+          content: content
+        };
+        return window.set(window.ref(window.database, parentPath + "/" + commentId + "/replies/" + newReplyId), replyData);
+      }).then(() => {
+        replyInput.value = "";
+      }).catch((error) => {
+        console.error("Error posting reply:", error);
+      });
     }
 
     function showFullIdea(ideaId) {
@@ -1008,7 +1097,7 @@
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
     </svg>
-    ${idea.comments.length}
+    <span id="fullIdeaCommentsCount">0</span>
   </button>
   <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
 </div>
@@ -1031,10 +1120,9 @@
 <div class="idea-description">${idea.description}</div>
 <h3 style="margin: 16px 0 8px 0;">Comments</h3>
 ${commentToggleMarkup}
-<div id="commentsSection" class="comments-section">
-  ${renderComments(idea.comments)}
-</div>
+<div id="commentsSection" class="comments-section"></div>
       `;
+      // Populate the fullIdeaModal container (which is now empty in the static HTML)
       document.getElementById('fullIdeaModal').innerHTML = `
 <div class="modal-content">
   <div class="modal-header">
@@ -1047,6 +1135,7 @@ ${commentToggleMarkup}
 </div>
       `.trim();
       showModal('fullIdeaModal');
+      fetchComments(idea.id);
     }
 
     function toggleModalCommentForm(ideaId) {
@@ -1054,87 +1143,35 @@ ${commentToggleMarkup}
       container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
     }
 
-    function addCommentModal(ideaId) {
-      const container = document.getElementById('modalCommentForm_' + ideaId);
-      const textarea = container.querySelector('.comment-input');
-      const content = textarea.value.trim();
-      if (!content) return;
-      const idea = ideas.find(i => i.id === ideaId);
-      if (idea) {
-        if (!idea.comments) idea.comments = [];
-        idea.comments.unshift({
-          id: Date.now(),
-          author: window.currentUserName || "DummyUser",
-          content: content,
-          date: 'Just now'
-        });
-        textarea.value = "";
-        container.style.display = "none";
-        showFullIdea(ideaId);
-      }
-    }
-
-    function renderComments(comments) {
-      return comments.map(comment => `
-<div class="comment">
-  <div class="comment-header">
-    <span class="comment-author">${comment.author}</span>
-    <span class="comment-date">${comment.date}</span>
-  </div>
-  <div class="comment-content">${comment.content}</div>
-  ${
-    !window.siteLocked
-      ? `<button class="reply-button" onclick="showReplyForm(${comment.id}); event.stopPropagation();">Reply</button>
-<div class="reply-form" id="reply-form-${comment.id}">
-  <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
-  <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-    <button class="post-comment-button modal-post-comment-button" onclick="addReply(${comment.id}); event.stopPropagation();">Post</button>
-  </div>
-</div>`
-      : ''
-  }
-  ${
-    comment.replies
-      ? `<div class="comment-replies">
-    ${renderComments(comment.replies)}
-  </div>`
-      : ''
-  }
-</div>
-      `).join('');
-    }
-
-    function showReplyForm(commentId) {
-      const form = document.getElementById(`reply-form-${commentId}`);
-      form.classList.toggle('show');
-    }
-
-    function addReply(commentId) {
-      const replyInput = document.querySelector(`#reply-form-${commentId} .comment-input`);
-      const content = replyInput.value.trim();
-      if (!content) return;
-      for (let idea of ideas) {
-        const findAndAddReply = (comments) => {
-          for (let comment of comments) {
-            if (comment.id === commentId) {
-              if (!comment.replies) comment.replies = [];
-              comment.replies.unshift({
-                id: Date.now(),
-                author: window.currentUserName || "DummyUser",
-                content: content,
-                date: 'Just now'
-              });
-              return true;
+    function fetchComments(postId) {
+      const commentsRef = window.ref(window.database, "comments/" + postId);
+      window.onValue(commentsRef, (snapshot) => {
+        const data = snapshot.val();
+        let commentsHtml = "";
+        if (data) {
+          // Exclude the special "_next" property
+          const commentsObj = {};
+          for (const key in data) {
+            if (key !== "_next") {
+              commentsObj[key] = data[key];
             }
-            if (comment.replies && findAndAddReply(comment.replies)) return true;
           }
-          return false;
-        };
-        if (findAndAddReply(idea.comments)) {
-          showFullIdea(idea.id);
-          break;
+          const commentsArray = Object.entries(commentsObj).map(([key, value]) => ({ id: key, ...value }));
+          commentsArray.sort((a, b) => {
+            const numA = parseInt(a.id.split("_")[1] || "0");
+            const numB = parseInt(b.id.split("_")[1] || "0");
+            return numA - numB;
+          });
+          commentsHtml = renderComments(commentsArray, "comments/" + postId);
+          document.getElementById("fullIdeaCommentsCount").textContent = countComments(data);
+        } else {
+          document.getElementById("fullIdeaCommentsCount").textContent = 0;
         }
-      }
+        const commentsSection = document.getElementById('commentsSection');
+        if (commentsSection) {
+          commentsSection.innerHTML = commentsHtml;
+        }
+      });
     }
 
     function addNewIdea(event) {
@@ -1142,15 +1179,15 @@ ${commentToggleMarkup}
       const subject = document.getElementById('ideaSubject').value;
       const description = document.getElementById('ideaDescription').value;
       if (subject && description) {
+        const encodedSubject = encodeURIComponent(subject);
         const newIdea = {
           subject: subject,
           description: description,
           username: window.currentUserName || "DummyUser",
           email: window.currentUserEmail || "dummyuser@example.com",
-          likes: 0,
-          comments: {}
+          likes: 0
         };
-        window.push(window.ref(window.database, "ideas"), newIdea)
+        window.set(window.ref(window.database, "ideas/" + encodedSubject), newIdea)
           .then(() => {
             hideModal('newIdeaModal');
             document.getElementById('newIdeaForm').reset();
@@ -1172,7 +1209,7 @@ ${commentToggleMarkup}
         }
       }
     }
-
+    
     // Tutorial functions
     let tutorialSteps = [
       { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
@@ -1281,7 +1318,7 @@ ${commentToggleMarkup}
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+    import { getDatabase, ref, onValue, push, update, set, get, runTransaction } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
@@ -1303,6 +1340,10 @@ ${commentToggleMarkup}
     window.ref = ref;
     window.onValue = onValue;
     window.push = push;
+    window.update = update;
+    window.set = set;
+    window.get = get;
+    window.runTransaction = runTransaction;
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -1313,8 +1354,12 @@ ${commentToggleMarkup}
         window.currentUserName = user.displayName;
         window.unlockSite();
         fetchIdeas();
+        listenForCommentsCount();
       } else {
-        if (localStorage.getItem('visited')) {
+        // On mobile, always show sign-in modal if not signed in.
+        if(window.innerWidth < 768) {
+          window.showModal('signedOutModal');
+        } else if (localStorage.getItem('visited')) {
           window.showModal('signedOutModal');
         }
       }
@@ -1330,6 +1375,7 @@ ${commentToggleMarkup}
           window.currentUserName = result.user.displayName;
           window.unlockSite();
           fetchIdeas();
+          listenForCommentsCount();
         })
         .catch((error) => {
           console.error("Firebase login error:", error);
