@@ -427,7 +427,7 @@
       background: rgba(138,43,226,0.1);
     }
 
-    /* New: Author details smaller with extra space */
+    /* New: Author details smaller with extra spacing */
     .author-details {
       font-size: 0.8rem;
       margin-bottom: 12px;
@@ -840,7 +840,7 @@
       document.getElementById('ideasGrid').classList.remove('locked');
       document.getElementById('filterBtn').style.display = 'flex';
       document.getElementById('newIdeaBtn').style.display = 'block';
-      hideModal('introModal');  // When unlocking, hide the intro modal.
+      hideModal('introModal');
       if (!localStorage.getItem('visited')) {
         startTutorial();
         localStorage.setItem('visited', 'true');
@@ -1119,7 +1119,6 @@
 ${commentToggleMarkup}
 <div id="commentsSection" class="comments-section"></div>
       `;
-      // Populate fullIdeaModal with one header (with one close button)
       document.getElementById('fullIdeaModal').innerHTML = `
 <div class="modal-content">
   <div class="modal-header">
@@ -1182,7 +1181,15 @@ ${commentToggleMarkup}
           email: window.currentUserEmail || "dummyuser@example.com",
           likes: 0
         };
-        window.set(window.ref(window.database, "ideas/" + encodedSubject), newIdea)
+        // If an idea with this key exists, append a unique suffix
+        window.get(window.ref(window.database, "ideas/" + encodedSubject))
+          .then((snapshot) => {
+            let key = encodedSubject;
+            if (snapshot.exists()) {
+              key = encodedSubject + "_" + Date.now();
+            }
+            return window.set(window.ref(window.database, "ideas/" + key), newIdea);
+          })
           .then(() => {
             hideModal('newIdeaModal');
             document.getElementById('newIdeaForm').reset();
@@ -1338,7 +1345,7 @@ ${commentToggleMarkup}
         fetchIdeas();
         listenForCommentsCount();
       } else {
-        // If user is not signed in, show the intro modal if not visited; otherwise, show the signedOut modal.
+        // If the user hasn't "visited" before, show the intro modal.
         if (!localStorage.getItem('visited')) {
           window.showModal('introModal');
         } else {
