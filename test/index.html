@@ -626,7 +626,7 @@
       opacity: 8%;
     }
 
-    /* Comment Toggle Button with Rounded Square Background */
+    /* Comment Toggle Button */
     .comment-toggle-button {
       background: #f0f0f0;
       border: none;
@@ -642,7 +642,7 @@
       background: #e0e0e0;
     }
 
-    /* Author Email Label in Modal */
+    /* Author Email Label */
     .idea-email {
       font-size: 12px;
       color: #666;
@@ -759,7 +759,7 @@
   </div>
 
   <!-- Full Idea Modal (Expanded Post) -->
-  <!-- Note: The modal container is now empty and will be populated dynamically -->
+  <!-- The container is empty; it will be populated dynamically -->
   <div id="fullIdeaModal" class="modal"></div>
 
   <!-- Info Modal -->
@@ -849,7 +849,7 @@
 
   <!-- Script for userProfile dropdown (Sign Out) -->
   <script>
-    // Toggle logout dropdown when clicking on userProfile
+    // Toggle logout dropdown when clicking on the userProfile
     document.getElementById('userProfile').addEventListener('click', function(e) {
       document.getElementById('logoutDropdown').classList.toggle("show");
       e.stopPropagation();
@@ -858,7 +858,7 @@
     document.addEventListener('click', function() {
       document.getElementById('logoutDropdown').classList.remove("show");
     });
-    // Call logout() when Sign Out is clicked
+    // Sign Out when the button is clicked
     document.getElementById('confirmLogout').addEventListener('click', function(e) {
       e.stopPropagation();
       logout();
@@ -870,7 +870,7 @@
     let ideas = [];
     window.commentsCount = {};
 
-    // Recursively count comments and replies.
+    // Recursively count comments and nested replies.
     function countComments(obj) {
       let count = 0;
       for (const key in obj) {
@@ -976,7 +976,7 @@
       }
     }
 
-    // Recursive function to render comments (and nested replies).
+    // Recursive renderComments: parentPath tracks Firebase location.
     function renderComments(comments, parentPath) {
       parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
       return comments.map(comment => {
@@ -994,7 +994,7 @@
         return `
 <div class="comment">
   <div class="comment-header">
-    <span class="comment-author">${comment.commenter || comment.replier}</span>
+    <span class="comment-author">${comment.commenter || comment.replier || "Unknown"}</span>
     <span class="comment-date">${comment.timestamp}</span>
   </div>
   <div class="comment-content">${comment.content}</div>
@@ -1021,7 +1021,7 @@
       }
     }
 
-    // Use a transaction on a "_next" child for unique comment keys.
+    // Transaction for unique comment keys.
     function addCommentModal(postId) {
       const container = document.getElementById('modalCommentForm_' + postId);
       const textarea = container.querySelector('.comment-input');
@@ -1048,7 +1048,7 @@
       });
     }
 
-    // Use a transaction on a "_next" child for unique reply keys.
+    // Transaction for unique reply keys.
     function addReply(parentPath, commentId) {
       const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
       const replyInput = document.querySelector("#" + replyFormId + " .comment-input");
@@ -1122,12 +1122,11 @@
 ${commentToggleMarkup}
 <div id="commentsSection" class="comments-section"></div>
       `;
-      // Populate the fullIdeaModal container (which is now empty in the static HTML)
+      // Populate the full idea modal container with one close button (inside header-right-content).
       document.getElementById('fullIdeaModal').innerHTML = `
 <div class="modal-content">
   <div class="modal-header">
     ${modalHeaderHTML}
-    <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
   </div>
   <div id="fullIdeaContent" class="modal-body">
     ${modalBodyHTML}
@@ -1149,7 +1148,7 @@ ${commentToggleMarkup}
         const data = snapshot.val();
         let commentsHtml = "";
         if (data) {
-          // Exclude the special "_next" property
+          // Exclude the special "_next" property.
           const commentsObj = {};
           for (const key in data) {
             if (key !== "_next") {
@@ -1210,7 +1209,7 @@ ${commentToggleMarkup}
       }
     }
     
-    // Tutorial functions
+    // Tutorial functions (unchanged)
     let tutorialSteps = [
       { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
       { target: "#filterBtn", text: "Use this filter icon to sort posts by popularity." },
@@ -1357,7 +1356,7 @@ ${commentToggleMarkup}
         listenForCommentsCount();
       } else {
         // On mobile, always show sign-in modal if not signed in.
-        if(window.innerWidth < 768) {
+        if (window.innerWidth < 768) {
           window.showModal('signedOutModal');
         } else if (localStorage.getItem('visited')) {
           window.showModal('signedOutModal');
