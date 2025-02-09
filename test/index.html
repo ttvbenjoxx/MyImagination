@@ -925,7 +925,6 @@
     function renderIdeas() {
       const ideasGrid = document.getElementById('ideasGrid');
       ideasGrid.innerHTML = ideas.map(idea => {
-        // Use a trimmed template literal to avoid extra whitespace.
         return `
 <div class="idea-card" onclick="showFullIdea('${idea.id}')">
   <div class="idea-subject">${idea.subject}</div>
@@ -972,6 +971,9 @@
           idea.likes++;
         }
         renderIdeas();
+        // Update likes in Firebase
+        window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes })
+          .catch((error) => { console.error("Error updating likes in Firebase:", error); });
         if (document.getElementById('fullIdeaModal').classList.contains('show') &&
             window.currentExpandedIdeaId === ideaId) {
           showFullIdea(ideaId);
@@ -1281,7 +1283,7 @@ ${commentToggleMarkup}
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+    import { getDatabase, ref, onValue, push, update } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
@@ -1303,6 +1305,7 @@ ${commentToggleMarkup}
     window.ref = ref;
     window.onValue = onValue;
     window.push = push;
+    window.update = update;
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
