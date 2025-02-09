@@ -431,7 +431,7 @@
       background: rgba(138,43,226,0.1);
     }
 
-    /* New CSS for aligning modal header buttons */
+    /* Align modal header buttons horizontally */
     .header-right-content {
       display: flex;
       gap: 10px;
@@ -775,7 +775,7 @@
           </div>
         </div>
         <div class="header-right-content">
-          <button class="action-button like-button ${/* This will be filled in dynamically */''}" onclick="toggleLike(window.currentExpandedIdeaId); event.stopPropagation();">
+          <button class="action-button like-button" onclick="toggleLike(window.currentExpandedIdeaId); event.stopPropagation();">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
@@ -793,7 +793,6 @@
       <div id="fullIdeaContent" class="modal-body">
         <div class="idea-description"></div>
         <h3 style="margin: 16px 0 8px 0;">Comments</h3>
-        <!-- Comment toggle and form -->
         <div>
           <button class="comment-toggle-button" onclick="toggleModalCommentForm(window.currentExpandedIdeaId); event.stopPropagation();">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
@@ -808,7 +807,6 @@
             </div>
           </div>
         </div>
-        <!-- Add an id to the comments section so we can scroll to it -->
         <div id="commentsSection" class="comments-section"></div>
       </div>
     </div>
@@ -872,8 +870,8 @@
     </div>
   </div>
 
+  <!-- Global Script: Define modal functions and other globals -->
   <script>
-    // Global modal functions
     function showModal(modalId) {
       document.getElementById(modalId).classList.add('show');
       document.body.classList.add('modal-open');
@@ -883,83 +881,63 @@
       document.body.classList.remove('modal-open');
     }
     function unlockSite() {
-      siteLocked = false;
-      ideasGrid.classList.remove('locked');
-      filterBtn.style.display = 'flex';
-      newIdeaBtn.style.display = 'block'; // use block display for proper button styling
+      window.siteLocked = false;
+      document.getElementById('ideasGrid').classList.remove('locked');
+      document.getElementById('filterBtn').style.display = 'flex';
+      document.getElementById('newIdeaBtn').style.display = 'block';
       hideModal('introModal');
       if (!localStorage.getItem('visited')) {
         startTutorial();
         localStorage.setItem('visited', 'true');
       }
     }
+    // Expose global functions
     window.showModal = showModal;
     window.hideModal = hideModal;
     window.unlockSite = unlockSite;
+    window.siteLocked = true;
+  </script>
 
-    // Global state and user details
-    let siteLocked = true;
-    window.currentUserEmail = "";
-    window.currentUserName = "";
-    window.currentExpandedIdeaId = null;
+  <!-- Main Script: Post rendering and Firebase integration for ideas -->
+  <script>
+    // Start with an empty ideas array.
+    let ideas = [];
 
-    let ideas = [
-      {
-        id: 1,
-        subject: "Virtual Reality Classroom",
-        description: "A website that creates immersive virtual classrooms for online learning, complete with interactive 3D models and real-time collaboration tools.",
-        username: "VRLearner",
-        email: "vrlearner@example.com",
-        likes: 15,
-        comments: [
-          { id: 101, author: "TechTeacher", content: "This would revolutionize online education!", date: "2 days ago" },
-          { id: 102, author: "VREnthusiast", content: "Love the idea of 3D models in education.", date: "1 day ago" }
-        ]
-      },
-      {
-        id: 2,
-        subject: "AI Writing Assistant",
-        description: "A web app that uses AI to help writers overcome writer's block by suggesting plot ideas, character development, and even generating descriptive paragraphs based on simple prompts.",
-        username: "AIWriter",
-        email: "aiwriter@example.com",
-        likes: 22,
-        comments: [
-          { id: 201, author: "StoryTeller", content: "This would be incredibly helpful for creative writing!", date: "3 days ago" }
-        ]
-      },
-      {
-        id: 3,
-        subject: "Eco-Friendly Shopping Guide",
-        description: "A website that rates products based on their environmental impact, offering alternatives and tips for sustainable shopping.",
-        username: "GreenShopper",
-        email: "greenshopper@example.com",
-        likes: 18,
-        comments: [
-          { id: 301, author: "EcoWarrior", content: "We definitely need more tools like this.", date: "1 day ago" },
-          { id: 302, author: "ConsciousConsumer", content: "Would love to see this integrated with major shopping platforms!", date: "12 hours ago" }
-        ]
-      }
-    ];
-    let userLikes = new Set();
+    // Fetch ideas from Firebase and update the ideas array.
+    function fetchIdeas() {
+      const ideasRef = window.ref(window.database, "ideas");
+      window.onValue(ideasRef, (snapshot) => {
+        const data = snapshot.val();
+        ideas = [];
+        if (data) {
+          for (const key in data) {
+            const idea = data[key];
+            // Convert comments (if any) from object to array.
+            if (idea.comments) {
+              idea.comments = Object.values(idea.comments);
+            } else {
+              idea.comments = [];
+            }
+            ideas.push({ ...idea, id: key });
+          }
+        }
+        renderIdeas();
+      });
+    }
 
-    const userProfile = document.getElementById('userProfile');
-    const newIdeaBtn = document.getElementById('newIdeaBtn');
-    const filterBtn = document.getElementById('filterBtn');
-    const ideasGrid = document.getElementById('ideasGrid');
-    const infoBtn = document.getElementById('infoBtn');
-
-    // Render idea cards with no extra indent (built as one-line strings)
+    // Render idea cards as one-line strings.
     function renderIdeas() {
+      const ideasGrid = document.getElementById('ideasGrid');
       ideasGrid.innerHTML = ideas.map(idea => 
-        `<div class="idea-card" onclick="showFullIdea(${idea.id})">` +
+        `<div class="idea-card" onclick="showFullIdea('${idea.id}')">` +
           `<div class="idea-subject">${idea.subject}</div>` +
           `<div class="idea-description">${idea.description.length > 200 ? idea.description.slice(0,200) + "..." : idea.description}` +
-          `${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea(${idea.id}); event.stopPropagation();">More</button>` : ""}` +
+          `${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>` : ""}` +
           `</div>` +
           `<div class="idea-meta">` +
             `<span>${idea.username}</span>` +
             `<div class="idea-actions">` +
-              `<button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id}); event.stopPropagation();">` +
+              `<button class="action-button ${window.userLikes && window.userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike('${idea.id}'); event.stopPropagation();">` +
                 `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">` +
                   `<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>` +
                 `</svg>` +
@@ -977,22 +955,24 @@
       ).join('');
     }
 
+    window.userLikes = new Set();
+
     function toggleLike(ideaId) {
-      if (siteLocked) {
+      if (window.siteLocked) {
         alert('Please unlock the site to like ideas.');
         return;
       }
       const idea = ideas.find(i => i.id === ideaId);
       if (idea) {
-        if (userLikes.has(ideaId)) {
-          userLikes.delete(ideaId);
+        if (window.userLikes.has(ideaId)) {
+          window.userLikes.delete(ideaId);
           idea.likes--;
         } else {
-          userLikes.add(ideaId);
+          window.userLikes.add(ideaId);
           idea.likes++;
         }
+        // In a full implementation you would update Firebase here.
         renderIdeas();
-        // If expanded modal is open, re-render it with updated like state and animate the heart.
         if (document.getElementById('fullIdeaModal').classList.contains('show') &&
             window.currentExpandedIdeaId === ideaId) {
           showFullIdea(ideaId);
@@ -1005,7 +985,6 @@
       }
     }
 
-    // Build the expanded modal for an idea.
     function showFullIdea(ideaId) {
       const idea = ideas.find(i => i.id === ideaId);
       if (!idea) return;
@@ -1020,7 +999,7 @@
           </div>
         </div>
         <div class="header-right-content">
-          <button class="action-button like-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id}); event.stopPropagation();">
+          <button class="action-button like-button ${window.userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike('${idea.id}'); event.stopPropagation();">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
@@ -1032,10 +1011,11 @@
             </svg>
             ${idea.comments.length}
           </button>
+          <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
         </div>
       `;
       const commentToggleMarkup = `
-        <button class="comment-toggle-button" onclick="toggleModalCommentForm(${idea.id}); event.stopPropagation();">
+        <button class="comment-toggle-button" onclick="toggleModalCommentForm('${idea.id}'); event.stopPropagation();">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -1044,7 +1024,7 @@
         <div id="modalCommentForm_${idea.id}" style="display: none; margin-top: 10px;">
           <textarea class="form-input comment-input" placeholder="Write a comment..."></textarea>
           <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-            <button class="post-comment-button modal-post-comment-button" onclick="addCommentModal(${idea.id}); event.stopPropagation();">Post</button>
+            <button class="post-comment-button modal-post-comment-button" onclick="addCommentModal('${idea.id}'); event.stopPropagation();">Post</button>
           </div>
         </div>
       `;
@@ -1070,13 +1050,11 @@
       showModal('fullIdeaModal');
     }
 
-    // Toggle comment form in the expanded modal.
     function toggleModalCommentForm(ideaId) {
       const container = document.getElementById('modalCommentForm_' + ideaId);
       container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
     }
 
-    // Post a comment from the expanded modal.
     function addCommentModal(ideaId) {
       const container = document.getElementById('modalCommentForm_' + ideaId);
       const textarea = container.querySelector('.comment-input');
@@ -1084,6 +1062,7 @@
       if (!content) return;
       const idea = ideas.find(i => i.id === ideaId);
       if (idea) {
+        if (!idea.comments) idea.comments = [];
         idea.comments.unshift({
           id: Date.now(),
           author: window.currentUserName || "DummyUser",
@@ -1105,7 +1084,7 @@
           </div>
           <div class="comment-content">${comment.content}</div>
           ${
-            !siteLocked
+            !window.siteLocked
               ? `<button class="reply-button" onclick="showReplyForm(${comment.id}); event.stopPropagation();">Reply</button>
                  <div class="reply-form" id="reply-form-${comment.id}">
                    <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
@@ -1165,23 +1144,25 @@
       const description = document.getElementById('ideaDescription').value;
       if (subject && description) {
         const newIdea = {
-          id: ideas.length + 1,
           subject: subject,
           description: description,
           username: window.currentUserName || "DummyUser",
           email: window.currentUserEmail || "dummyuser@example.com",
           likes: 0,
-          comments: []
+          comments: {}
         };
-        ideas.unshift(newIdea);
-        hideModal('newIdeaModal');
-        document.getElementById('newIdeaForm').reset();
-        renderIdeas();
+        window.push(window.ref(window.database, "ideas"), newIdea)
+          .then(() => {
+            hideModal('newIdeaModal');
+            document.getElementById('newIdeaForm').reset();
+          })
+          .catch((error) => {
+            console.error("Error posting idea:", error);
+          });
       }
       return false;
     }
 
-    // Scroll to comments section when the comments button is pressed.
     function scrollToComments(e) {
       e.stopPropagation();
       const modalContent = document.querySelector('#fullIdeaModal .modal-content');
@@ -1193,7 +1174,7 @@
       }
     }
 
-    // Spotlight Tutorial Functions
+    // Tutorial functions
     let tutorialSteps = [
       { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
       { target: "#filterBtn", text: "Use this filter icon to sort posts by popularity." },
@@ -1281,12 +1262,12 @@
         document.getElementById(tab.dataset.tab).classList.add('active');
       });
     });
-    filterBtn.addEventListener('click', () => {
+    document.getElementById('filterBtn').addEventListener('click', () => {
       ideas.sort((a, b) => b.likes - a.likes);
       renderIdeas();
     });
-    infoBtn.addEventListener('click', () => showModal('infoModal'));
-    newIdeaBtn.addEventListener('click', () => showModal('newIdeaModal'));
+    document.getElementById('infoBtn').addEventListener('click', () => showModal('infoModal'));
+    document.getElementById('newIdeaBtn').addEventListener('click', () => showModal('newIdeaModal'));
     document.querySelectorAll('.modal').forEach(modal => {
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
@@ -1294,30 +1275,14 @@
         }
       });
     });
-    renderIdeas();
-    if (!localStorage.getItem('visited')) {
-      showModal('introModal');
-    }
-    document.getElementById('userProfile').addEventListener('click', function(e) {
-      var dropdown = document.getElementById('logoutDropdown');
-      dropdown.classList.toggle("show");
-      e.stopPropagation();
-    });
-    document.addEventListener('click', function() {
-      var dropdown = document.getElementById('logoutDropdown');
-      dropdown.classList.remove("show");
-    });
-    document.getElementById('confirmLogout').addEventListener('click', function(e) {
-      e.stopPropagation();
-      logout();
-    });
+    window.siteLocked = true;
   </script>
-  
-  <!-- Firebase Integration -->
+
+  <!-- Firebase Integration Module -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
-    import { getDatabase, ref } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+    import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
@@ -1333,19 +1298,25 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
     const database = getDatabase(app);
-    const dbRef = ref(database);
+
+    // Expose Firebase functions to global scope.
+    window.database = database;
+    window.ref = ref;
+    window.onValue = onValue;
+    window.push = push;
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        hideModal('signedOutModal');
+        window.hideModal('signedOutModal');
         document.getElementById('username').textContent = user.displayName;
         document.getElementById('userProfile').style.display = 'flex';
         window.currentUserEmail = user.email;
         window.currentUserName = user.displayName;
-        unlockSite();
+        window.unlockSite();
+        fetchIdeas();
       } else {
         if (localStorage.getItem('visited')) {
-          showModal('signedOutModal');
+          window.showModal('signedOutModal');
         }
       }
     });
@@ -1353,12 +1324,13 @@
     window.firebaseLogin = function() {
       signInWithPopup(auth, provider)
         .then((result) => {
-          hideModal('signedOutModal');
+          window.hideModal('signedOutModal');
           document.getElementById('username').textContent = result.user.displayName;
           document.getElementById('userProfile').style.display = 'flex';
           window.currentUserEmail = result.user.email;
           window.currentUserName = result.user.displayName;
-          unlockSite();
+          window.unlockSite();
+          fetchIdeas();
         })
         .catch((error) => {
           console.error("Firebase login error:", error);
