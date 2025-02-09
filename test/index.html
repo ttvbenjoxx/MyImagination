@@ -44,7 +44,7 @@
     }
 
     header {
-      background-color: rgba(255,255,255,0.1);
+      background-color: rgba(255, 255, 255, 0.1);
       padding: 20px;
       display: flex;
       justify-content: space-between;
@@ -53,7 +53,7 @@
       top: 0;
       z-index: 100;
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .header-left {
@@ -148,7 +148,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* Ideas Grid: horizontal layout */
+    /* Ideas Grid: horizontal layout with minimal gaps */
     .ideas-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -161,7 +161,7 @@
       background-color: var(--card-background);
       border-radius: var(--border-radius);
       padding: 8px;
-      margin: 0;
+      margin: 0; /* Ensure no extra indent */
       box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: var(--transition);
       word-wrap: break-word;
@@ -350,14 +350,21 @@
       margin-top: 12px;
       margin-bottom: 12px;
     }
+    /* Apply form-input styling to comment textareas */
     .comment-input {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #e1e1e1;
+      padding: 10px 14px;
+      border: 2px solid #e1e1e1;
       border-radius: 8px;
-      margin-bottom: 8px;
+      font-size: 14px;
+      transition: var(--transition);
       resize: vertical;
       min-height: 60px;
+    }
+    .comment-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(138,43,226,0.1);
     }
     .comment-actions {
       display: flex;
@@ -487,7 +494,7 @@
       }
     }
 
-    /* Google Sign-In Button (unchanged) */
+    /* Google Sign-In Button */
     .gsi-material-button {
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -896,7 +903,7 @@
           idea.likes++;
         }
         renderIdeas();
-        // If the expanded modal is open for this idea, re-render and re-trigger heart animation.
+        // If the expanded modal is open for this idea, re-render and trigger heart animation.
         if (document.getElementById('fullIdeaModal').classList.contains('show') &&
             window.currentExpandedIdeaId === ideaId) {
           showFullIdea(ideaId);
@@ -939,6 +946,7 @@
           <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
         </div>
       `;
+      // Comment toggle button with textarea now uses the "form-input" class for styling.
       const commentToggleMarkup = `
         <button class="comment-toggle-button" onclick="toggleModalCommentForm(${idea.id}); event.stopPropagation();">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
@@ -947,7 +955,7 @@
           </svg>
         </button>
         <div id="modalCommentForm_${idea.id}" style="display: none; margin-top: 10px;">
-          <textarea class="comment-input" placeholder="Write a comment..."></textarea>
+          <textarea class="form-input comment-input" placeholder="Write a comment..."></textarea>
           <div class="comment-actions" style="margin-top: 6px; text-align: right;">
             <button class="post-comment-button" onclick="addCommentModal(${idea.id}); event.stopPropagation();">Post</button>
           </div>
@@ -1012,7 +1020,7 @@
             !siteLocked
               ? `<button class="reply-button" onclick="showReplyForm(${comment.id}); event.stopPropagation();">Reply</button>
                  <div class="reply-form" id="reply-form-${comment.id}">
-                   <textarea class="comment-input" placeholder="Write a reply..."></textarea>
+                   <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
                    <div class="comment-actions" style="margin-top: 6px; text-align: right;">
                      <button class="post-comment-button" onclick="addReply(${comment.id}); event.stopPropagation();">Post</button>
                    </div>
