@@ -899,20 +899,27 @@
     let ideas = [];
     window.commentsCount = {};
 
-    // Listen for changes in the /comments branch to update comment counts
+    // Recursive function to count a comment and all nested replies.
+    function countComments(obj) {
+      let count = 0;
+      for (const key in obj) {
+        if (key === "_next") continue;
+        count++;
+        if (obj[key].replies) {
+          count += countComments(obj[key].replies);
+        }
+      }
+      return count;
+    }
+
+    // Listen for changes on /comments to update counts.
     function listenForCommentsCount() {
       const commentsRoot = window.ref(window.database, "comments");
       window.onValue(commentsRoot, (snapshot) => {
         const data = snapshot.val() || {};
         window.commentsCount = {};
         for (const postId in data) {
-          let count = 0;
-          for (const key in data[postId]) {
-            if (key !== "_next") {
-              count++;
-            }
-          }
-          window.commentsCount[postId] = count;
+          window.commentsCount[postId] = countComments(data[postId]);
         }
         renderIdeas();
       });
@@ -998,11 +1005,10 @@
       }
     }
 
-    // Recursive renderComments function; parentPath is passed in to track the location in Firebase.
+    // Recursive renderComments function. For each comment, use "commenter" if available, else "replier".
     function renderComments(comments, parentPath) {
       parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
       return comments.map(comment => {
-        // Generate a safe id for the reply form.
         const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
         let repliesHtml = "";
         if (comment.replies) {
@@ -1017,13 +1023,13 @@
         return `
 <div class="comment">
   <div class="comment-header">
-    <span class="comment-author">${comment.commenter}</span>
+    <span class="comment-author">${comment.commenter || comment.replier}</span>
     <span class="comment-date">${comment.timestamp}</span>
   </div>
   <div class="comment-content">${comment.content}</div>
   ${!window.siteLocked ? `
   <button class="reply-button" onclick="showReplyForm('${parentPath}', '${comment.id}'); event.stopPropagation();">Reply</button>
-  <div class="reply-form" id="${replyFormId}" style="display: none; margin-top: 10px;">
+  <div class="reply-form" id="reply-form-${parentPath.replace(/[\/:]/g, "_")}_${comment.id}" style="display: none; margin-top: 10px;">
     <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
     <div class="comment-actions" style="margin-top: 6px; text-align: right;">
       <button class="post-comment-button modal-post-comment-button" onclick="addReply('${parentPath}', '${comment.id}'); event.stopPropagation();">Post</button>
@@ -1044,7 +1050,7 @@
       }
     }
 
-    // Use a transaction on a "_next" child to get a unique comment index.
+    // Use a transaction on the "_next" child for comments.
     function addCommentModal(postId) {
       const container = document.getElementById('modalCommentForm_' + postId);
       const textarea = container.querySelector('.comment-input');
@@ -1052,9 +1058,9 @@
       if (!content) return;
       const nextRef = window.ref(window.database, "comments/" + postId + "/_next");
       window.runTransaction(nextRef, (current) => {
-        return (current || 1) + 1;
+        return (current === null ? 0 : current) + 1;
       }).then((result) => {
-        const commentNumber = (result.snapshot.val() || 1) - 1;
+        const commentNumber = result.snapshot.val();
         const newCommentId = "Comment_" + commentNumber;
         const commentData = {
           commenter: window.currentUserName || "DummyUser",
@@ -1071,7 +1077,7 @@
       });
     }
 
-    // Use a transaction on a "_next" child to get a unique reply index.
+    // Use a transaction on the "_next" child for replies.
     function addReply(parentPath, commentId) {
       const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
       const replyInput = document.querySelector("#" + replyFormId + " .comment-input");
@@ -1079,9 +1085,9 @@
       if (!content) return;
       const nextRef = window.ref(window.database, parentPath + "/" + commentId + "/_next");
       window.runTransaction(nextRef, (current) => {
-        return (current || 1) + 1;
+        return (current === null ? 0 : current) + 1;
       }).then((result) => {
-        const replyNumber = (result.snapshot.val() || 1) - 1;
+        const replyNumber = result.snapshot.val();
         const newReplyId = "Reply_" + replyNumber;
         const replyData = {
           replier: window.currentUserName || "DummyUser",
@@ -1157,7 +1163,6 @@ ${commentToggleMarkup}
 </div>
       `.trim();
       showModal('fullIdeaModal');
-      // Start listening for comments for this post.
       fetchComments(idea.id);
     }
 
@@ -1186,8 +1191,7 @@ ${commentToggleMarkup}
             return numA - numB;
           });
           commentsHtml = renderComments(commentsArray, "comments/" + postId);
-          // Update the comments count in the modal header.
-          document.getElementById("fullIdeaCommentsCount").textContent = commentsArray.length;
+          document.getElementById("fullIdeaCommentsCount").textContent = countComments(data);
         } else {
           document.getElementById("fullIdeaCommentsCount").textContent = 0;
         }
@@ -1233,7 +1237,7 @@ ${commentToggleMarkup}
         }
       }
     }
-
+    
     // Tutorial functions (unchanged)
     let tutorialSteps = [
       { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
@@ -1378,8 +1382,7 @@ ${commentToggleMarkup}
         window.currentUserName = user.displayName;
         window.unlockSite();
         fetchIdeas();
-        // Start listening for comment counts.
-        if(window.listenForCommentsCount) window.listenForCommentsCount();
+        listenForCommentsCount();
       } else {
         if (localStorage.getItem('visited')) {
           window.showModal('signedOutModal');
@@ -1397,7 +1400,7 @@ ${commentToggleMarkup}
           window.currentUserName = result.user.displayName;
           window.unlockSite();
           fetchIdeas();
-          if(window.listenForCommentsCount) window.listenForCommentsCount();
+          listenForCommentsCount();
         })
         .catch((error) => {
           console.error("Firebase login error:", error);
