@@ -18,6 +18,11 @@
       --transition: all 0.3s ease;
     }
 
+    /* Disable body scroll when modal is open */
+    body.modal-open {
+      overflow: hidden;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -86,7 +91,6 @@
     .user-profile:hover {
       background: rgba(255, 255, 255, 0.2);
     }
-    /* Logout Dropdown with Animation */
     .logout-dropdown {
       position: absolute;
       top: 100%;
@@ -108,7 +112,7 @@
       transform: scaleY(1);
     }
     .logout-dropdown p {
-      margin: 0 0 10px 0;
+      margin-bottom: 10px;
       font-size: 14px;
       color: #333;
     }
@@ -144,41 +148,40 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    /* Idea Card – streamlined appearance */
+    /* Idea Cards – compact design */
     .idea-card {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
-      padding: 16px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 8px;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
       transition: var(--transition);
       word-wrap: break-word;
       overflow-wrap: break-word;
       position: relative;
     }
     .idea-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
     .idea-subject {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       color: #1a1a1a;
     }
     .idea-description {
       color: #4a4a4a;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       line-height: 1.4;
       white-space: pre-wrap;
     }
-    /* More Button for Idea Cards – positioned at bottom right of description */
     .more-button {
       background: var(--primary-color);
       color: #fff;
       border: none;
       border-radius: 4px;
-      padding: 4px 8px;
-      font-size: 12px;
+      padding: 2px 6px;
+      font-size: 10px;
       cursor: pointer;
       transition: var(--transition);
       float: right;
@@ -191,23 +194,23 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 14px;
+      font-size: 12px;
       color: #666;
     }
     .idea-actions {
       display: flex;
-      gap: 16px;
+      gap: 12px;
     }
     .action-button {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       background: none;
       border: none;
       color: #666;
       cursor: pointer;
       transition: var(--transition);
-      padding: 4px;
+      padding: 2px;
     }
     .action-button:hover {
       color: var(--primary-color);
@@ -223,6 +226,7 @@
       100% { transform: scale(1); }
     }
 
+    /* Modal settings */
     .modal {
       display: none;
       position: fixed;
@@ -243,7 +247,7 @@
     .modal-content {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
-      padding: 32px;
+      padding: 24px;
       width: 90%;
       max-width: 600px;
       max-height: 90vh;
@@ -262,10 +266,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .modal-title {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 600;
       color: #1a1a1a;
     }
@@ -281,20 +285,20 @@
       color: #1a1a1a;
     }
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .form-label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-weight: 500;
       color: #1a1a1a;
     }
     .form-input {
       width: 100%;
-      padding: 12px 16px;
+      padding: 10px 14px;
       border: 2px solid #e1e1e1;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 14px;
       transition: var(--transition);
     }
     .form-input:focus {
@@ -303,16 +307,16 @@
       box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
     }
     textarea.form-input {
-      min-height: 120px;
+      min-height: 100px;
       resize: vertical;
     }
     .submit-button {
       background: var(--primary-color);
       color: white;
       border: none;
-      padding: 12px 24px;
+      padding: 10px 20px;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       transition: var(--transition);
@@ -322,14 +326,13 @@
       background: #7424c1;
       transform: translateY(-2px);
     }
-    /* Smaller Post Button for Modal Comment Form */
     .post-comment-button {
       background: var(--primary-color);
       color: #fff;
       border: none;
       border-radius: 4px;
-      padding: 6px 12px;
-      font-size: 14px;
+      padding: 4px 8px;
+      font-size: 12px;
       cursor: pointer;
       transition: var(--transition);
     }
@@ -337,39 +340,39 @@
       background: #7424c1;
     }
     .comments-section {
-      margin-top: 16px;
-      padding-top: 16px;
+      margin-top: 12px;
+      padding-top: 12px;
       border-top: 1px solid #e1e1e1;
     }
     .comment {
-      padding: 12px 0;
+      padding: 10px 0;
       border-bottom: 1px solid #f0f0f0;
     }
     .comment-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     .comment-author {
       font-weight: 500;
       color: #1a1a1a;
     }
     .comment-date {
-      font-size: 14px;
+      font-size: 12px;
       color: #666;
     }
     .comment-form {
-      margin-top: 16px;
-      margin-bottom: 16px;
+      margin-top: 12px;
+      margin-bottom: 12px;
     }
     .comment-input {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       border: 1px solid #e1e1e1;
       border-radius: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       resize: vertical;
-      min-height: 80px;
+      min-height: 60px;
     }
     .comment-actions {
       display: flex;
@@ -378,7 +381,7 @@
     }
     .reply-form {
       margin-left: 40px;
-      margin-top: 12px;
+      margin-top: 8px;
       display: none;
     }
     .reply-form.show {
@@ -386,14 +389,14 @@
     }
     .comment-replies {
       margin-left: 40px;
-      margin-top: 12px;
+      margin-top: 8px;
     }
     .reply-button {
       background: none;
       border: none;
       color: var(--primary-color);
       cursor: pointer;
-      font-size: 14px;
+      font-size: 12px;
       padding: 4px 8px;
       border-radius: 4px;
       transition: var(--transition);
@@ -432,7 +435,7 @@
       background: #f5f5f5;
       padding: 4px;
       border-radius: 8px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .tab {
       flex: 1;
@@ -586,27 +589,27 @@
       opacity: 8%;
     }
 
-    /* Comment Toggle Button styling inside the modal */
+    /* Comment Toggle Button styling inside the modal (with a rounded square background) */
     .comment-toggle-button {
       background: #f0f0f0;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       color: var(--primary-color);
       font-size: 14px;
       padding: 4px 8px;
-      margin-top: 12px;
+      margin-top: 8px;
       display: inline-block;
     }
     .comment-toggle-button:hover {
       background: #e0e0e0;
     }
 
-    /* Email label styling in the modal */
+    /* Author Email label in the modal */
     .idea-email {
-      font-size: 14px;
+      font-size: 12px;
       color: #666;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
   </style>
 </head>
@@ -719,21 +722,6 @@
     </div>
   </div>
 
-  <!-- Logout Modal (unused since logout confirmation is in the dropdown) -->
-  <div id="logoutModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Logout</h2>
-        <button class="close-modal" onclick="hideModal('logoutModal')">&times;</button>
-      </div>
-      <p style="margin-bottom: 24px;">Are you sure you want to logout?</p>
-      <div style="display: flex; gap: 16px;">
-        <button class="submit-button" style="background: #666;" onclick="hideModal('logoutModal')">Cancel</button>
-        <button class="submit-button" onclick="logout()">Logout</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Full Idea Modal -->
   <div id="fullIdeaModal" class="modal">
     <div class="modal-content">
@@ -741,7 +729,8 @@
         <h2 class="modal-title" id="fullIdeaTitle"></h2>
         <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
       </div>
-      <!-- Email of the author will appear below the meta info -->
+      <!-- Author's email appears here -->
+      <div id="ideaEmail" class="idea-email"></div>
       <div id="fullIdeaContent"></div>
     </div>
   </div>
@@ -854,9 +843,11 @@
 
     function showModal(modalId) {
       document.getElementById(modalId).classList.add('show');
+      document.body.classList.add('modal-open');
     }
     function hideModal(modalId) {
       document.getElementById(modalId).classList.remove('show');
+      document.body.classList.remove('modal-open');
     }
 
     // When the intro modal is shown, it prompts sign-in; after sign-in, the site is unlocked.
@@ -923,15 +914,28 @@
           idea.likes++;
         }
         renderIdeas();
+        // If the full idea modal is open, update its heart icon animation.
+        if(document.getElementById('fullIdeaModal').classList.contains('show')){
+          const heartIcon = document.querySelector('#fullIdeaModal .action-button.liked svg');
+          if(heartIcon){
+            heartIcon.style.animation = 'none';
+            setTimeout(() => { heartIcon.style.animation = 'heartPop 0.3s ease'; }, 10);
+          }
+        }
       }
     }
 
-    // Modified showFullIdea now includes the author's email and a toggleable comment form.
+    // Modified showFullIdea now reorders modal content:
+    //  - Idea description
+    //  - Idea meta (username and like/comment buttons)
+    //  - Author's email
+    //  - "Comments" label and the + comment toggle button below it
+    //  - List of comments
     function showFullIdea(ideaId) {
       const idea = ideas.find(i => i.id === ideaId);
       if (!idea) return;
       
-      // Create a comment toggle button and hidden comment form markup.
+      // Comment toggle button and hidden comment form markup.
       let commentToggleMarkup = `
         <button class="comment-toggle-button" onclick="toggleModalCommentForm(${idea.id})">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
@@ -948,13 +952,13 @@
       `;
       
       document.getElementById('fullIdeaTitle').textContent = idea.subject;
+      // Set the author's email
+      document.getElementById('ideaEmail').innerHTML = `Email: ${idea.email}`;
       
-      // Include the author's email in the modal (styled as a subtle label)
-      const emailMarkup = `<div class="idea-email">Email: ${idea.email}</div>`;
-      
+      // Reorder modal content: description, meta, email, then comments section with a toggle button under the Comments label.
       document.getElementById('fullIdeaContent').innerHTML = `
-        <div class="idea-description">${idea.description}</div>
-        <div class="idea-meta" style="margin: 16px 0;">
+        <div class="idea-description" style="word-break: break-word;">${idea.description}</div>
+        <div class="idea-meta" style="margin: 12px 0;">
           <span>${idea.username}</span>
           <div class="idea-actions">
             <button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id})">
@@ -971,10 +975,10 @@
             </button>
           </div>
         </div>
-        ${emailMarkup}
+        <div class="idea-email">Email: ${idea.email}</div>
+        <h3 style="margin: 16px 0 8px 0;">Comments</h3>
         ${commentToggleMarkup}
         <div class="comments-section">
-          <h3 style="margin-bottom: 16px;">Comments</h3>
           ${renderComments(idea.comments)}
         </div>
       `;
@@ -1014,7 +1018,7 @@
             <span class="comment-author">${comment.author}</span>
             <span class="comment-date">${comment.date}</span>
           </div>
-          <div class="comment-content">${comment.content}</div>
+          <div class="comment-content" style="word-break: break-word;">${comment.content}</div>
           ${
             !siteLocked
               ? `<button class="reply-button" onclick="showReplyForm(${comment.id})">Reply</button>
@@ -1216,14 +1220,10 @@
       dropdown.classList.toggle("show");
       e.stopPropagation();
     });
-
-    // Hide dropdown if clicking elsewhere.
     document.addEventListener('click', function() {
       var dropdown = document.getElementById('logoutDropdown');
       dropdown.classList.remove("show");
     });
-
-    // When the confirm logout button is clicked, call logout().
     document.getElementById('confirmLogout').addEventListener('click', function(e) {
       e.stopPropagation();
       logout();
@@ -1252,7 +1252,6 @@
     const database = getDatabase(app);
     const dbRef = ref(database);
 
-    // Listen for auth state changes and update the UI accordingly.
     onAuthStateChanged(auth, (user) => {
       if (user) {
         hideModal('signedOutModal');
