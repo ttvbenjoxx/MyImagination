@@ -161,7 +161,7 @@
       background-color: var(--card-background);
       border-radius: var(--border-radius);
       padding: 8px;
-      margin: 0; /* Remove extra indent */
+      margin: 0;  /* Remove any extra margin */
       box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: var(--transition);
       word-wrap: break-word;
@@ -241,7 +241,7 @@
       100% { transform: scale(1); }
     }
 
-    /* Modal Styles – using the correct styling from your provided code */
+    /* Modal Styles (as provided) */
     .modal {
       display: none;
       position: fixed;
@@ -380,15 +380,13 @@
       margin-top: 12px;
       margin-bottom: 12px;
     }
-    /* For comment textareas, we use the form-input class */
+    /* Use form-input styling for all comment textareas */
     .comment-input {
-      /* This element will get the same styling as .form-input */
       width: 100%;
-      padding: 10px 14px;
-      border: 2px solid #e1e1e1;
+      padding: 10px;
+      border: 1px solid #e1e1e1;
       border-radius: 8px;
-      font-size: 14px;
-      transition: var(--transition);
+      margin-bottom: 8px;
       resize: vertical;
       min-height: 60px;
     }
@@ -754,13 +752,12 @@
 
   <!-- Full Idea Modal (Expanded Post) -->
   <div id="fullIdeaModal" class="modal">
-    <!-- The full idea modal will be built dynamically -->
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title" id="fullIdeaTitle"></h2>
         <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
       </div>
-      <!-- Author's email will display here -->
+      <!-- Author's email display -->
       <div id="ideaEmail" class="idea-email"></div>
       <div id="fullIdeaContent" class="modal-body"></div>
     </div>
@@ -825,7 +822,7 @@
   </div>
 
   <script>
-    // Global functions for modals – expose these so they can be called from anywhere.
+    // Global modal functions
     function showModal(modalId) {
       document.getElementById(modalId).classList.add('show');
       document.body.classList.add('modal-open');
@@ -849,7 +846,7 @@
     window.hideModal = hideModal;
     window.unlockSite = unlockSite;
 
-    // Global variables for site state and user details.
+    // Global state and user details
     let siteLocked = true;
     window.currentUserEmail = "";
     window.currentUserName = "";
@@ -945,7 +942,6 @@
           idea.likes++;
         }
         renderIdeas();
-        // In case the expanded modal is open, update its like count and trigger heart animation.
         if (document.getElementById('fullIdeaModal').classList.contains('show') &&
             window.currentExpandedIdeaId === ideaId) {
           showFullIdea(ideaId);
@@ -958,12 +954,11 @@
       }
     }
 
-    // Build and show the expanded modal for an idea.
+    // Build the expanded modal for an idea.
     function showFullIdea(ideaId) {
       const idea = ideas.find(i => i.id === ideaId);
       if (!idea) return;
       window.currentExpandedIdeaId = ideaId;
-      // Build modal header with subject and author details.
       const modalHeaderHTML = `
         <div class="header-left-content">
           <h2 class="modal-title" id="fullIdeaTitle">${idea.subject}</h2>
@@ -988,7 +983,6 @@
           </span>
         </div>
       `;
-      // Build comment toggle markup using the "form-input" class for the textarea.
       const commentToggleMarkup = `
         <button class="comment-toggle-button" onclick="toggleModalCommentForm(${idea.id}); event.stopPropagation();">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
@@ -1011,7 +1005,6 @@
           ${renderComments(idea.comments)}
         </div>
       `;
-      // Build the expanded modal (header, optional email display, body)
       document.getElementById('fullIdeaModal').innerHTML = `
         <div class="modal-content">
           <div class="modal-header">
@@ -1026,7 +1019,7 @@
       showModal('fullIdeaModal');
     }
 
-    // Toggle comment form in expanded modal.
+    // Toggle comment form in the expanded modal.
     function toggleModalCommentForm(ideaId) {
       const container = document.getElementById('modalCommentForm_' + ideaId);
       container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
