@@ -18,6 +18,11 @@
       --transition: all 0.3s ease;
     }
 
+    /* Disable body scroll when modal is open */
+    body.modal-open {
+      overflow: hidden;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -39,7 +44,7 @@
     }
 
     header {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255,255,255,0.1);
       padding: 20px;
       display: flex;
       justify-content: space-between;
@@ -48,7 +53,7 @@
       top: 0;
       z-index: 100;
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     .header-left {
@@ -61,7 +66,7 @@
       font-size: 24px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .header-buttons {
@@ -70,7 +75,7 @@
       align-items: center;
     }
 
-    /* User Profile Pill with Logout Dropdown */
+    /* User Profile Pill and Logout Dropdown */
     .user-profile {
       display: none;
       align-items: center;
@@ -79,14 +84,13 @@
       cursor: pointer;
       padding: 8px 16px;
       border-radius: var(--border-radius);
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       transition: var(--transition);
-      position: relative; /* For dropdown positioning */
+      position: relative;
     }
     .user-profile:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255,255,255,0.2);
     }
-    /* Logout Dropdown with Animation */
     .logout-dropdown {
       position: absolute;
       top: 100%;
@@ -94,7 +98,7 @@
       background: #fff;
       padding: 10px;
       border-radius: var(--border-radius);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       width: max-content;
       z-index: 110;
       opacity: 0;
@@ -108,7 +112,7 @@
       transform: scaleY(1);
     }
     .logout-dropdown p {
-      margin: 0 0 10px 0;
+      margin-bottom: 10px;
       font-size: 14px;
       color: #333;
     }
@@ -119,7 +123,7 @@
       padding: 8px 16px;
       border-radius: 4px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: var(--transition);
     }
     .logout-button:hover {
       background-color: #c0392b;
@@ -130,7 +134,7 @@
       height: 40px;
       border: none;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255,255,255,0.9);
       color: var(--primary-color);
       cursor: pointer;
       display: flex;
@@ -141,70 +145,90 @@
     .icon-button:hover {
       transform: translateY(-2px);
       background: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
+    /* Ideas Grid: horizontal layout */
     .ideas-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 24px;
-      margin-top: 30px;
-      transition: var(--transition);
-    }
-    .ideas-grid.locked {
-      filter: blur(8px);
-      pointer-events: none;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 8px;
+      margin-top: 20px;
     }
 
+    /* Idea Cards: compact with no extra indent */
     .idea-card {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
-      padding: 24px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 8px;
+      margin: 0;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: var(--transition);
       word-wrap: break-word;
       overflow-wrap: break-word;
+      position: relative;
+      cursor: pointer;
     }
     .idea-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
     .idea-subject {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 4px;
       color: #1a1a1a;
     }
     .idea-description {
       color: #4a4a4a;
-      margin-bottom: 20px;
-      line-height: 1.6;
+      margin-bottom: 4px;
+      line-height: 1.4;
       white-space: pre-wrap;
+    }
+    /* More Button on Card */
+    .more-button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      float: right;
+      margin-top: 4px;
+    }
+    .more-button:hover {
+      background: #7424c1;
     }
     .idea-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 14px;
+      font-size: 12px;
       color: #666;
     }
     .idea-actions {
       display: flex;
-      gap: 16px;
+      gap: 12px;
     }
     .action-button {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       background: none;
       border: none;
       color: #666;
       cursor: pointer;
       transition: var(--transition);
-      padding: 4px;
+      padding: 2px;
     }
     .action-button:hover {
       color: var(--primary-color);
+    }
+    /* In expanded modal, the comments icon is now a static span */
+    .action-button.static {
+      cursor: default;
     }
     .action-button.liked svg {
       fill: #ff4b4b;
@@ -217,6 +241,7 @@
       100% { transform: scale(1); }
     }
 
+    /* Modal styles */
     .modal {
       display: none;
       position: fixed;
@@ -237,11 +262,12 @@
     .modal-content {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
-      padding: 32px;
+      padding: 24px;
       width: 90%;
       max-width: 600px;
       max-height: 90vh;
       overflow-y: auto;
+      overflow-x: hidden;
       position: relative;
       transform: translateY(20px);
       opacity: 0;
@@ -255,10 +281,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 12px;
     }
     .modal-title {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 600;
       color: #1a1a1a;
     }
@@ -274,38 +300,38 @@
       color: #1a1a1a;
     }
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
     .form-label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-weight: 500;
       color: #1a1a1a;
     }
     .form-input {
       width: 100%;
-      padding: 12px 16px;
+      padding: 10px 14px;
       border: 2px solid #e1e1e1;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 14px;
       transition: var(--transition);
     }
     .form-input:focus {
       outline: none;
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+      box-shadow: 0 0 0 3px rgba(138,43,226,0.1);
     }
     textarea.form-input {
-      min-height: 120px;
+      min-height: 100px;
       resize: vertical;
     }
     .submit-button {
       background: var(--primary-color);
       color: white;
       border: none;
-      padding: 12px 24px;
+      padding: 10px 20px;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       transition: var(--transition);
@@ -315,40 +341,53 @@
       background: #7424c1;
       transform: translateY(-2px);
     }
+    .post-comment-button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .post-comment-button:hover {
+      background: #7424c1;
+    }
     .comments-section {
-      margin-top: 20px;
-      padding-top: 20px;
+      margin-top: 12px;
+      padding-top: 12px;
       border-top: 1px solid #e1e1e1;
     }
     .comment {
-      padding: 12px 0;
+      padding: 10px 0;
       border-bottom: 1px solid #f0f0f0;
     }
     .comment-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     .comment-author {
       font-weight: 500;
       color: #1a1a1a;
     }
     .comment-date {
-      font-size: 14px;
+      font-size: 12px;
       color: #666;
     }
     .comment-form {
-      margin-top: 20px;
-      margin-bottom: 20px;
+      margin-top: 12px;
+      margin-bottom: 12px;
     }
     .comment-input {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       border: 1px solid #e1e1e1;
       border-radius: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       resize: vertical;
-      min-height: 80px;
+      min-height: 60px;
     }
     .comment-actions {
       display: flex;
@@ -357,7 +396,7 @@
     }
     .reply-form {
       margin-left: 40px;
-      margin-top: 12px;
+      margin-top: 8px;
       display: none;
     }
     .reply-form.show {
@@ -365,20 +404,20 @@
     }
     .comment-replies {
       margin-left: 40px;
-      margin-top: 12px;
+      margin-top: 8px;
     }
     .reply-button {
       background: none;
       border: none;
       color: var(--primary-color);
       cursor: pointer;
-      font-size: 14px;
+      font-size: 12px;
       padding: 4px 8px;
       border-radius: 4px;
       transition: var(--transition);
     }
     .reply-button:hover {
-      background: rgba(138, 43, 226, 0.1);
+      background: rgba(138,43,226,0.1);
     }
     .info-icon {
       position: fixed;
@@ -392,12 +431,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: var(--transition);
     }
     .info-icon:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
     }
     .info-icon .info-text {
       font-size: 24px;
@@ -411,7 +450,7 @@
       background: #f5f5f5;
       padding: 4px;
       border-radius: 8px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .tab {
       flex: 1;
@@ -425,7 +464,7 @@
     .tab.active {
       background: white;
       color: var(--primary-color);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .tab-content {
       display: none;
@@ -443,7 +482,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0,0,0,0.7);
       z-index: 3000;
       display: none;
     }
@@ -453,7 +492,7 @@
       padding: 16px;
       border-radius: var(--border-radius);
       max-width: 300px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transition: var(--transition);
     }
     .highlighted {
@@ -557,12 +596,35 @@
       opacity: 12%;
     }
     .gsi-material-button:not(:disabled):hover {
-      -webkit-box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
-      box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+      -webkit-box-shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
     }
     .gsi-material-button:not(:disabled):hover .gsi-material-button-state {
       background-color: #303030;
       opacity: 8%;
+    }
+
+    /* Comment Toggle Button with Rounded Square Background */
+    .comment-toggle-button {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--primary-color);
+      font-size: 14px;
+      padding: 4px 8px;
+      margin-top: 8px;
+      display: inline-block;
+    }
+    .comment-toggle-button:hover {
+      background: #e0e0e0;
+    }
+
+    /* Author Email Label in Modal */
+    .idea-email {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 12px;
     }
   </style>
 </head>
@@ -675,21 +737,6 @@
     </div>
   </div>
 
-  <!-- Logout Modal (unused now since logout confirmation is in the dropdown) -->
-  <div id="logoutModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Logout</h2>
-        <button class="close-modal" onclick="hideModal('logoutModal')">&times;</button>
-      </div>
-      <p style="margin-bottom: 24px;">Are you sure you want to logout?</p>
-      <div style="display: flex; gap: 16px;">
-        <button class="submit-button" style="background: #666;" onclick="hideModal('logoutModal')">Cancel</button>
-        <button class="submit-button" onclick="logout()">Logout</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Full Idea Modal -->
   <div id="fullIdeaModal" class="modal">
     <div class="modal-content">
@@ -697,6 +744,8 @@
         <h2 class="modal-title" id="fullIdeaTitle"></h2>
         <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
       </div>
+      <!-- Author's email will display once -->
+      <div id="ideaEmail" class="idea-email"></div>
       <div id="fullIdeaContent"></div>
     </div>
   </div>
@@ -760,14 +809,43 @@
   </div>
 
   <script>
-    // Global state variables and site logic
+    // Attach key functions to window so modules can call them
+    function showModal(modalId) {
+      document.getElementById(modalId).classList.add('show');
+      document.body.classList.add('modal-open');
+    }
+    function hideModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
+      document.body.classList.remove('modal-open');
+    }
+    function unlockSite() {
+      siteLocked = false;
+      ideasGrid.classList.remove('locked');
+      filterBtn.style.display = 'flex';
+      newIdeaBtn.style.display = 'flex';
+      hideModal('introModal');
+      if (!localStorage.getItem('visited')) {
+        startTutorial();
+        localStorage.setItem('visited', 'true');
+      }
+    }
+    // Expose these functions globally
+    window.showModal = showModal;
+    window.hideModal = hideModal;
+    window.unlockSite = unlockSite;
+
+    // Global variable for modal state and current user's email
     let siteLocked = true;
+    // Attach currentUserEmail to window (only declare once)
+    window.currentUserEmail = "";
+
     let ideas = [
       {
         id: 1,
         subject: "Virtual Reality Classroom",
         description: "A website that creates immersive virtual classrooms for online learning, complete with interactive 3D models and real-time collaboration tools.",
         username: "VRLearner",
+        email: "vrlearner@example.com",
         likes: 15,
         comments: [
           { id: 101, author: "TechTeacher", content: "This would revolutionize online education!", date: "2 days ago" },
@@ -779,6 +857,7 @@
         subject: "AI Writing Assistant",
         description: "A web app that uses AI to help writers overcome writer's block by suggesting plot ideas, character development, and even generating descriptive paragraphs based on simple prompts.",
         username: "AIWriter",
+        email: "aiwriter@example.com",
         likes: 22,
         comments: [
           { id: 201, author: "StoryTeller", content: "This would be incredibly helpful for creative writing!", date: "3 days ago" }
@@ -789,6 +868,7 @@
         subject: "Eco-Friendly Shopping Guide",
         description: "A website that rates products based on their environmental impact, offering alternatives and tips for sustainable shopping.",
         username: "GreenShopper",
+        email: "greenshopper@example.com",
         likes: 18,
         comments: [
           { id: 301, author: "EcoWarrior", content: "We definitely need more tools like this.", date: "1 day ago" },
@@ -804,57 +884,30 @@
     const ideasGrid = document.getElementById('ideasGrid');
     const infoBtn = document.getElementById('infoBtn');
 
-    function showModal(modalId) {
-      document.getElementById(modalId).classList.add('show');
-    }
-    function hideModal(modalId) {
-      document.getElementById(modalId).classList.remove('show');
-    }
-
-    // When the intro modal is shown, it prompts sign-in; after sign-in, the site is unlocked.
-    function startLockedMode() {
-      hideModal('introModal');
-      filterBtn.style.display = 'none';
-      ideasGrid.classList.add('locked');
-    }
-
-    // Unlock the site and conditionally start the tutorial if it's the user's first visit.
-    function unlockSite() {
-      siteLocked = false;
-      ideasGrid.classList.remove('locked');
-      filterBtn.style.display = 'flex';
-      newIdeaBtn.style.display = 'flex';
-      hideModal('introModal');
-      if (!localStorage.getItem('visited')) {
-        startTutorial();
-        localStorage.setItem('visited', 'true');
-      }
-    }
-
+    // Render idea cards – the entire card is clickable.
     function renderIdeas() {
       ideasGrid.innerHTML = ideas.map(idea => `
-        <div class="idea-card">
+        <div class="idea-card" onclick="showFullIdea(${idea.id})">
           <div class="idea-subject">${idea.subject}</div>
-          <div class="idea-description">${
-            idea.description.length > 200
-              ? idea.description.slice(0, 200) + '... <a href="#" onclick="showFullIdea(${idea.id}); return false;">More</a>'
-              : idea.description
-          }</div>
+          <div class="idea-description">
+            ${idea.description.length > 200 ? idea.description.slice(0,200) + "..." : idea.description}
+            ${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea(${idea.id}); event.stopPropagation();">More</button>` : ""}
+          </div>
           <div class="idea-meta">
             <span>${idea.username}</span>
             <div class="idea-actions">
-              <button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id})">
+              <button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id}); event.stopPropagation();">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
                 ${idea.likes}
               </button>
-              <button class="action-button" onclick="showFullIdea(${idea.id})">
+              <span class="action-button static">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                 </svg>
                 ${idea.comments.length}
-              </button>
+              </span>
             </div>
           </div>
         </div>
@@ -876,48 +929,93 @@
           idea.likes++;
         }
         renderIdeas();
+        // Update heart animation in the expanded modal if open.
+        if (document.getElementById('fullIdeaModal').classList.contains('show')) {
+          const heartIcon = document.querySelector('#fullIdeaModal .action-button.liked svg');
+          if (heartIcon) {
+            heartIcon.style.animation = 'none';
+            setTimeout(() => { heartIcon.style.animation = 'heartPop 0.3s ease'; }, 10);
+          }
+        }
       }
     }
 
+    // Expanded modal content – shows description, meta (like button only), author's email, and comments section.
     function showFullIdea(ideaId) {
       const idea = ideas.find(i => i.id === ideaId);
       if (!idea) return;
+      
+      // Comment toggle button markup.
+      let commentToggleMarkup = `
+        <button class="comment-toggle-button" onclick="toggleModalCommentForm(${idea.id}); event.stopPropagation();">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <div id="modalCommentForm_${idea.id}" style="display: none; margin-top: 10px;">
+          <textarea class="comment-input" placeholder="Write a comment..."></textarea>
+          <div class="comment-actions" style="margin-top: 6px; text-align: right;">
+            <button class="post-comment-button" onclick="addCommentModal(${idea.id}); event.stopPropagation();">Post</button>
+          </div>
+        </div>
+      `;
+      
       document.getElementById('fullIdeaTitle').textContent = idea.subject;
+      document.getElementById('ideaEmail').innerHTML = `Email: ${idea.email}`;
+      
       document.getElementById('fullIdeaContent').innerHTML = `
-        <div class="idea-description">${idea.description}</div>
-        <div class="idea-meta" style="margin: 20px 0;">
+        <div class="idea-description" style="word-break: break-word;">${idea.description}</div>
+        <div class="idea-meta" style="margin: 12px 0;">
           <span>${idea.username}</span>
           <div class="idea-actions">
-            <button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id})">
+            <button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id}); event.stopPropagation();">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
               ${idea.likes}
             </button>
-            <button class="action-button" onclick="showFullIdea(${idea.id})">
+            <span class="action-button static">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
               </svg>
               ${idea.comments.length}
-            </button>
+            </span>
           </div>
         </div>
-        ${
-          !siteLocked
-            ? `<div class="comment-form">
-          <textarea class="comment-input" placeholder="Write a comment..."></textarea>
-          <div class="comment-actions">
-            <button class="submit-button" onclick="addComment(${idea.id})">Post Comment</button>
-          </div>
-        </div>`
-            : ''
-        }
+        <h3 style="margin: 16px 0 8px 0;">Comments</h3>
+        ${commentToggleMarkup}
         <div class="comments-section">
-          <h3 style="margin-bottom: 16px;">Comments</h3>
           ${renderComments(idea.comments)}
         </div>
       `;
       showModal('fullIdeaModal');
+    }
+
+    // Toggle comment form in expanded modal.
+    function toggleModalCommentForm(ideaId) {
+      const container = document.getElementById('modalCommentForm_' + ideaId);
+      container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
+    }
+
+    // Post a comment from the modal comment form.
+    function addCommentModal(ideaId) {
+      const container = document.getElementById('modalCommentForm_' + ideaId);
+      const textarea = container.querySelector('.comment-input');
+      const content = textarea.value.trim();
+      if (!content) return;
+      const idea = ideas.find(i => i.id === ideaId);
+      if (idea) {
+        idea.comments.unshift({
+          id: Date.now(),
+          author: "DummyUser",
+          content: content,
+          date: 'Just now'
+        });
+        textarea.value = "";
+        container.style.display = "none";
+        showFullIdea(ideaId);
+      }
     }
 
     function renderComments(comments) {
@@ -927,23 +1025,23 @@
             <span class="comment-author">${comment.author}</span>
             <span class="comment-date">${comment.date}</span>
           </div>
-          <div class="comment-content">${comment.content}</div>
+          <div class="comment-content" style="word-break: break-word;">${comment.content}</div>
           ${
             !siteLocked
-              ? `<button class="reply-button" onclick="showReplyForm(${comment.id})">Reply</button>
-            <div class="reply-form" id="reply-form-${comment.id}">
-              <textarea class="comment-input" placeholder="Write a reply..."></textarea>
-              <div class="comment-actions">
-                <button class="submit-button" onclick="addReply(${comment.id})">Post Reply</button>
-              </div>
-            </div>`
+              ? `<button class="reply-button" onclick="showReplyForm(${comment.id}); event.stopPropagation();">Reply</button>
+                 <div class="reply-form" id="reply-form-${comment.id}">
+                   <textarea class="comment-input" placeholder="Write a reply..."></textarea>
+                   <div class="comment-actions" style="margin-top: 6px; text-align: right;">
+                     <button class="post-comment-button" onclick="addReply(${comment.id}); event.stopPropagation();">Post</button>
+                   </div>
+                 </div>`
               : ''
           }
           ${
             comment.replies
               ? `<div class="comment-replies">
-              ${renderComments(comment.replies)}
-            </div>`
+                   ${renderComments(comment.replies)}
+                 </div>`
               : ''
           }
         </div>
@@ -953,24 +1051,6 @@
     function showReplyForm(commentId) {
       const form = document.getElementById(`reply-form-${commentId}`);
       form.classList.toggle('show');
-    }
-
-    function addComment(ideaId) {
-      const commentInput = document.querySelector('.comment-input');
-      const content = commentInput.value.trim();
-      if (!content) return;
-      const idea = ideas.find(i => i.id === ideaId);
-      if (idea) {
-        idea.comments.unshift({
-          id: Date.now(),
-          author: "DummyUser",
-          content,
-          date: 'Just now',
-          replies: []
-        });
-        showFullIdea(ideaId);
-        commentInput.value = '';
-      }
     }
 
     function addReply(commentId) {
@@ -985,7 +1065,7 @@
               comment.replies.unshift({
                 id: Date.now(),
                 author: "DummyUser",
-                content,
+                content: content,
                 date: 'Just now'
               });
               return true;
@@ -1008,9 +1088,10 @@
       if (subject && description) {
         const newIdea = {
           id: ideas.length + 1,
-          subject,
-          description,
+          subject: subject,
+          description: description,
           username: "DummyUser",
+          email: window.currentUserEmail || "dummyuser@example.com",
           likes: 0,
           comments: []
         };
@@ -1135,32 +1216,27 @@
 
     renderIdeas();
 
-    // Show intro modal on first visit.
     if (!localStorage.getItem('visited')) {
       showModal('introModal');
     }
 
-    // Logout Dropdown: Toggle dropdown when clicking the user profile pill.
+    // Make the entire card clickable; inner buttons call event.stopPropagation()
     document.getElementById('userProfile').addEventListener('click', function(e) {
       var dropdown = document.getElementById('logoutDropdown');
       dropdown.classList.toggle("show");
       e.stopPropagation();
     });
-
-    // Hide dropdown if clicking elsewhere.
     document.addEventListener('click', function() {
       var dropdown = document.getElementById('logoutDropdown');
       dropdown.classList.remove("show");
     });
-
-    // When the confirm logout button is clicked, call logout().
     document.getElementById('confirmLogout').addEventListener('click', function(e) {
       e.stopPropagation();
       logout();
     });
   </script>
   
-  <!-- Firebase Integration with Auth State Observer -->
+  <!-- Firebase Integration (module) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
@@ -1182,17 +1258,14 @@
     const database = getDatabase(app);
     const dbRef = ref(database);
 
-    // Listen for auth state changes and update the UI accordingly.
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // If a user is signed in, hide the signed-out modal in case it's visible.
         hideModal('signedOutModal');
         document.getElementById('username').textContent = user.displayName;
         document.getElementById('userProfile').style.display = 'flex';
-        // Unlock the site; the tutorial will only start if it is the user's first visit.
+        window.currentUserEmail = user.email;
         unlockSite();
       } else {
-        // If the user is signed out and they've visited before, show the "Whoops!" modal.
         if (localStorage.getItem('visited')) {
           showModal('signedOutModal');
         }
@@ -1202,9 +1275,10 @@
     window.firebaseLogin = function() {
       signInWithPopup(auth, provider)
         .then((result) => {
-          hideModal('signedOutModal'); // Ensure the Whoops modal is hidden when sign-in succeeds.
+          hideModal('signedOutModal');
           document.getElementById('username').textContent = result.user.displayName;
           document.getElementById('userProfile').style.display = 'flex';
+          window.currentUserEmail = result.user.email;
           unlockSite();
         })
         .catch((error) => {
