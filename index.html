@@ -161,7 +161,7 @@
       background-color: var(--card-background);
       border-radius: var(--border-radius);
       padding: 8px;
-      margin: 0;
+      margin: 0; /* Remove extra indent */
       box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: var(--transition);
       word-wrap: break-word;
@@ -226,7 +226,7 @@
     .action-button:hover {
       color: var(--primary-color);
     }
-    /* In expanded modal, the comments icon is now a static span */
+    /* In expanded modal, the comments icon is static */
     .action-button.static {
       cursor: default;
     }
@@ -241,7 +241,7 @@
       100% { transform: scale(1); }
     }
 
-    /* Modal styles */
+    /* Modal Styles – using the correct styling from your provided code */
     .modal {
       display: none;
       position: fixed;
@@ -380,14 +380,22 @@
       margin-top: 12px;
       margin-bottom: 12px;
     }
+    /* For comment textareas, we use the form-input class */
     .comment-input {
+      /* This element will get the same styling as .form-input */
       width: 100%;
-      padding: 10px;
-      border: 1px solid #e1e1e1;
+      padding: 10px 14px;
+      border: 2px solid #e1e1e1;
       border-radius: 8px;
-      margin-bottom: 8px;
+      font-size: 14px;
+      transition: var(--transition);
       resize: vertical;
       min-height: 60px;
+    }
+    .comment-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(138,43,226,0.1);
     }
     .comment-actions {
       display: flex;
@@ -419,6 +427,8 @@
     .reply-button:hover {
       background: rgba(138,43,226,0.1);
     }
+
+    /* Info Icon */
     .info-icon {
       position: fixed;
       bottom: 20px;
@@ -444,6 +454,8 @@
       color: var(--primary-color);
       line-height: 1;
     }
+
+    /* Tabs (for Info Modal) */
     .tabs {
       display: flex;
       gap: 2px;
@@ -472,10 +484,12 @@
     .tab-content.active {
       display: block;
     }
+
     @keyframes modalFadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
+
     #tutorialOverlay {
       position: fixed;
       top: 0;
@@ -510,6 +524,8 @@
         margin: 20px;
       }
     }
+
+    /* Google Sign-In Button */
     .gsi-material-button {
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -639,7 +655,6 @@
       </button>
     </div>
     <div class="header-buttons">
-      <!-- User profile pill with logout dropdown -->
       <div id="userProfile" class="user-profile">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -668,7 +683,7 @@
     <span class="info-text">i</span>
   </button>
 
-  <!-- Combined Intro Modal (Welcome + Unlock) -->
+  <!-- Intro Modal (Welcome + Unlock) -->
   <div id="introModal" class="modal">
     <div class="modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
@@ -737,16 +752,17 @@
     </div>
   </div>
 
-  <!-- Full Idea Modal -->
+  <!-- Full Idea Modal (Expanded Post) -->
   <div id="fullIdeaModal" class="modal">
+    <!-- The full idea modal will be built dynamically -->
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title" id="fullIdeaTitle"></h2>
         <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
       </div>
-      <!-- Author's email will display once -->
+      <!-- Author's email will display here -->
       <div id="ideaEmail" class="idea-email"></div>
-      <div id="fullIdeaContent"></div>
+      <div id="fullIdeaContent" class="modal-body"></div>
     </div>
   </div>
 
@@ -809,7 +825,7 @@
   </div>
 
   <script>
-    // Attach key functions to window so modules can call them
+    // Global functions for modals – expose these so they can be called from anywhere.
     function showModal(modalId) {
       document.getElementById(modalId).classList.add('show');
       document.body.classList.add('modal-open');
@@ -829,15 +845,15 @@
         localStorage.setItem('visited', 'true');
       }
     }
-    // Expose these functions globally
     window.showModal = showModal;
     window.hideModal = hideModal;
     window.unlockSite = unlockSite;
 
-    // Global variable for modal state and current user's email
+    // Global variables for site state and user details.
     let siteLocked = true;
-    // Attach currentUserEmail to window (only declare once)
     window.currentUserEmail = "";
+    window.currentUserName = "";
+    window.currentExpandedIdeaId = null;
 
     let ideas = [
       {
@@ -884,7 +900,7 @@
     const ideasGrid = document.getElementById('ideasGrid');
     const infoBtn = document.getElementById('infoBtn');
 
-    // Render idea cards – the entire card is clickable.
+    // Render idea cards with no extra indent.
     function renderIdeas() {
       ideasGrid.innerHTML = ideas.map(idea => `
         <div class="idea-card" onclick="showFullIdea(${idea.id})">
@@ -929,8 +945,10 @@
           idea.likes++;
         }
         renderIdeas();
-        // Update heart animation in the expanded modal if open.
-        if (document.getElementById('fullIdeaModal').classList.contains('show')) {
+        // In case the expanded modal is open, update its like count and trigger heart animation.
+        if (document.getElementById('fullIdeaModal').classList.contains('show') &&
+            window.currentExpandedIdeaId === ideaId) {
+          showFullIdea(ideaId);
           const heartIcon = document.querySelector('#fullIdeaModal .action-button.liked svg');
           if (heartIcon) {
             heartIcon.style.animation = 'none';
@@ -940,13 +958,38 @@
       }
     }
 
-    // Expanded modal content – shows description, meta (like button only), author's email, and comments section.
+    // Build and show the expanded modal for an idea.
     function showFullIdea(ideaId) {
       const idea = ideas.find(i => i.id === ideaId);
       if (!idea) return;
-      
-      // Comment toggle button markup.
-      let commentToggleMarkup = `
+      window.currentExpandedIdeaId = ideaId;
+      // Build modal header with subject and author details.
+      const modalHeaderHTML = `
+        <div class="header-left-content">
+          <h2 class="modal-title" id="fullIdeaTitle">${idea.subject}</h2>
+          <div class="author-details">
+            <span class="author-name">${idea.username}</span>
+            &nbsp;|&nbsp;
+            <span class="author-email">${idea.email}</span>
+          </div>
+        </div>
+        <div class="header-right-content">
+          <button class="action-button like-button" onclick="toggleLike(${idea.id}); event.stopPropagation();">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            ${idea.likes}
+          </button>
+          <span class="action-button static">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            ${idea.comments.length}
+          </span>
+        </div>
+      `;
+      // Build comment toggle markup using the "form-input" class for the textarea.
+      const commentToggleMarkup = `
         <button class="comment-toggle-button" onclick="toggleModalCommentForm(${idea.id}); event.stopPropagation();">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -954,39 +997,30 @@
           </svg>
         </button>
         <div id="modalCommentForm_${idea.id}" style="display: none; margin-top: 10px;">
-          <textarea class="comment-input" placeholder="Write a comment..."></textarea>
+          <textarea class="form-input comment-input" placeholder="Write a comment..."></textarea>
           <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-            <button class="post-comment-button" onclick="addCommentModal(${idea.id}); event.stopPropagation();">Post</button>
+            <button class="post-comment-button submit-button" onclick="addCommentModal(${idea.id}); event.stopPropagation();">Post</button>
           </div>
         </div>
       `;
-      
-      document.getElementById('fullIdeaTitle').textContent = idea.subject;
-      document.getElementById('ideaEmail').innerHTML = `Email: ${idea.email}`;
-      
-      document.getElementById('fullIdeaContent').innerHTML = `
-        <div class="idea-description" style="word-break: break-word;">${idea.description}</div>
-        <div class="idea-meta" style="margin: 12px 0;">
-          <span>${idea.username}</span>
-          <div class="idea-actions">
-            <button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id}); event.stopPropagation();">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-              </svg>
-              ${idea.likes}
-            </button>
-            <span class="action-button static">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-              </svg>
-              ${idea.comments.length}
-            </span>
-          </div>
-        </div>
+      const modalBodyHTML = `
+        <div class="idea-description">${idea.description}</div>
         <h3 style="margin: 16px 0 8px 0;">Comments</h3>
         ${commentToggleMarkup}
         <div class="comments-section">
           ${renderComments(idea.comments)}
+        </div>
+      `;
+      // Build the expanded modal (header, optional email display, body)
+      document.getElementById('fullIdeaModal').innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            ${modalHeaderHTML}
+            <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
+          </div>
+          <div id="fullIdeaContent" class="modal-body">
+            ${modalBodyHTML}
+          </div>
         </div>
       `;
       showModal('fullIdeaModal');
@@ -998,7 +1032,7 @@
       container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
     }
 
-    // Post a comment from the modal comment form.
+    // Post a comment from the expanded modal.
     function addCommentModal(ideaId) {
       const container = document.getElementById('modalCommentForm_' + ideaId);
       const textarea = container.querySelector('.comment-input');
@@ -1008,7 +1042,7 @@
       if (idea) {
         idea.comments.unshift({
           id: Date.now(),
-          author: "DummyUser",
+          author: window.currentUserName || "DummyUser",
           content: content,
           date: 'Just now'
         });
@@ -1025,14 +1059,14 @@
             <span class="comment-author">${comment.author}</span>
             <span class="comment-date">${comment.date}</span>
           </div>
-          <div class="comment-content" style="word-break: break-word;">${comment.content}</div>
+          <div class="comment-content">${comment.content}</div>
           ${
             !siteLocked
               ? `<button class="reply-button" onclick="showReplyForm(${comment.id}); event.stopPropagation();">Reply</button>
                  <div class="reply-form" id="reply-form-${comment.id}">
-                   <textarea class="comment-input" placeholder="Write a reply..."></textarea>
+                   <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
                    <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-                     <button class="post-comment-button" onclick="addReply(${comment.id}); event.stopPropagation();">Post</button>
+                     <button class="post-comment-button submit-button" onclick="addReply(${comment.id}); event.stopPropagation();">Post</button>
                    </div>
                  </div>`
               : ''
@@ -1064,7 +1098,7 @@
               if (!comment.replies) comment.replies = [];
               comment.replies.unshift({
                 id: Date.now(),
-                author: "DummyUser",
+                author: window.currentUserName || "DummyUser",
                 content: content,
                 date: 'Just now'
               });
@@ -1090,7 +1124,7 @@
           id: ideas.length + 1,
           subject: subject,
           description: description,
-          username: "DummyUser",
+          username: window.currentUserName || "DummyUser",
           email: window.currentUserEmail || "dummyuser@example.com",
           likes: 0,
           comments: []
@@ -1111,12 +1145,10 @@
       { target: "#userProfile", text: "Click your name to sign out." }
     ];
     let currentTutorialStep = 0;
-
     function startTutorial() {
       currentTutorialStep = 0;
       showTutorialStep();
     }
-
     function showTutorialStep() {
       document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
       if (currentTutorialStep >= tutorialSteps.length) {
@@ -1168,28 +1200,23 @@
       tooltip.style.left = leftPosition + "px";
       showTutorialOverlay();
     }
-
     function nextTutorialStep() {
       currentTutorialStep++;
       showTutorialStep();
     }
-
     function showTutorialOverlay() {
       document.getElementById('tutorialOverlay').style.display = 'block';
     }
-
     function hideTutorial() {
       document.getElementById('tutorialOverlay').style.display = 'none';
       document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
     }
-
     document.getElementById('tutorialOverlay').addEventListener('click', function(e) {
       if (e.target === this) {
         hideTutorial();
       }
     });
     document.getElementById('tutorialNextBtn').addEventListener('click', nextTutorialStep);
-
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1198,14 +1225,12 @@
         document.getElementById(tab.dataset.tab).classList.add('active');
       });
     });
-
     filterBtn.addEventListener('click', () => {
       ideas.sort((a, b) => b.likes - a.likes);
       renderIdeas();
     });
     infoBtn.addEventListener('click', () => showModal('infoModal'));
     newIdeaBtn.addEventListener('click', () => showModal('newIdeaModal'));
-
     document.querySelectorAll('.modal').forEach(modal => {
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
@@ -1213,14 +1238,10 @@
         }
       });
     });
-
     renderIdeas();
-
     if (!localStorage.getItem('visited')) {
       showModal('introModal');
     }
-
-    // Make the entire card clickable; inner buttons call event.stopPropagation()
     document.getElementById('userProfile').addEventListener('click', function(e) {
       var dropdown = document.getElementById('logoutDropdown');
       dropdown.classList.toggle("show");
@@ -1236,7 +1257,7 @@
     });
   </script>
   
-  <!-- Firebase Integration (module) -->
+  <!-- Firebase Integration -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
@@ -1264,6 +1285,7 @@
         document.getElementById('username').textContent = user.displayName;
         document.getElementById('userProfile').style.display = 'flex';
         window.currentUserEmail = user.email;
+        window.currentUserName = user.displayName;
         unlockSite();
       } else {
         if (localStorage.getItem('visited')) {
@@ -1279,6 +1301,7 @@
           document.getElementById('username').textContent = result.user.displayName;
           document.getElementById('userProfile').style.display = 'flex';
           window.currentUserEmail = result.user.email;
+          window.currentUserName = result.user.displayName;
           unlockSite();
         })
         .catch((error) => {
