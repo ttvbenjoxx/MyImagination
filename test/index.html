@@ -144,22 +144,11 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .ideas-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 24px;
-      margin-top: 30px;
-      transition: var(--transition);
-    }
-    .ideas-grid.locked {
-      filter: blur(8px);
-      pointer-events: none;
-    }
-
+    /* Idea Card – streamlined appearance */
     .idea-card {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
-      padding: 24px;
+      padding: 16px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       transition: var(--transition);
       word-wrap: break-word;
@@ -167,22 +156,22 @@
       position: relative;
     }
     .idea-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
     .idea-subject {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       color: #1a1a1a;
     }
     .idea-description {
       color: #4a4a4a;
-      margin-bottom: 20px;
-      line-height: 1.6;
+      margin-bottom: 8px;
+      line-height: 1.4;
       white-space: pre-wrap;
     }
-    /* More Button for Idea Cards */
+    /* More Button for Idea Cards – positioned at bottom right of description */
     .more-button {
       background: var(--primary-color);
       color: #fff;
@@ -193,7 +182,7 @@
       cursor: pointer;
       transition: var(--transition);
       float: right;
-      margin-top: 8px;
+      margin-top: 4px;
     }
     .more-button:hover {
       background: #7424c1;
@@ -273,10 +262,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .modal-title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 600;
       color: #1a1a1a;
     }
@@ -292,7 +281,7 @@
       color: #1a1a1a;
     }
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     .form-label {
       display: block;
@@ -348,8 +337,8 @@
       background: #7424c1;
     }
     .comments-section {
-      margin-top: 20px;
-      padding-top: 20px;
+      margin-top: 16px;
+      padding-top: 16px;
       border-top: 1px solid #e1e1e1;
     }
     .comment {
@@ -370,8 +359,8 @@
       color: #666;
     }
     .comment-form {
-      margin-top: 20px;
-      margin-bottom: 20px;
+      margin-top: 16px;
+      margin-bottom: 16px;
     }
     .comment-input {
       width: 100%;
@@ -597,18 +586,27 @@
       opacity: 8%;
     }
 
-    /* Comment Toggle Button inside Full Idea Modal */
+    /* Comment Toggle Button styling inside the modal */
     .comment-toggle-button {
-      background: transparent;
+      background: #f0f0f0;
       border: none;
+      border-radius: 4px;
       cursor: pointer;
       color: var(--primary-color);
       font-size: 14px;
-      margin-top: 8px;
-      float: right;
+      padding: 4px 8px;
+      margin-top: 12px;
+      display: inline-block;
     }
     .comment-toggle-button:hover {
-      color: var(--secondary-color);
+      background: #e0e0e0;
+    }
+
+    /* Email label styling in the modal */
+    .idea-email {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 16px;
     }
   </style>
 </head>
@@ -743,6 +741,7 @@
         <h2 class="modal-title" id="fullIdeaTitle"></h2>
         <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
       </div>
+      <!-- Email of the author will appear below the meta info -->
       <div id="fullIdeaContent"></div>
     </div>
   </div>
@@ -814,6 +813,7 @@
         subject: "Virtual Reality Classroom",
         description: "A website that creates immersive virtual classrooms for online learning, complete with interactive 3D models and real-time collaboration tools.",
         username: "VRLearner",
+        email: "vrlearner@example.com",
         likes: 15,
         comments: [
           { id: 101, author: "TechTeacher", content: "This would revolutionize online education!", date: "2 days ago" },
@@ -825,6 +825,7 @@
         subject: "AI Writing Assistant",
         description: "A web app that uses AI to help writers overcome writer's block by suggesting plot ideas, character development, and even generating descriptive paragraphs based on simple prompts.",
         username: "AIWriter",
+        email: "aiwriter@example.com",
         likes: 22,
         comments: [
           { id: 201, author: "StoryTeller", content: "This would be incredibly helpful for creative writing!", date: "3 days ago" }
@@ -835,6 +836,7 @@
         subject: "Eco-Friendly Shopping Guide",
         description: "A website that rates products based on their environmental impact, offering alternatives and tips for sustainable shopping.",
         username: "GreenShopper",
+        email: "greenshopper@example.com",
         likes: 18,
         comments: [
           { id: 301, author: "EcoWarrior", content: "We definitely need more tools like this.", date: "1 day ago" },
@@ -924,7 +926,7 @@
       }
     }
 
-    // Modified showFullIdea now includes a toggleable comment form
+    // Modified showFullIdea now includes the author's email and a toggleable comment form.
     function showFullIdea(ideaId) {
       const idea = ideas.find(i => i.id === ideaId);
       if (!idea) return;
@@ -946,9 +948,13 @@
       `;
       
       document.getElementById('fullIdeaTitle').textContent = idea.subject;
+      
+      // Include the author's email in the modal (styled as a subtle label)
+      const emailMarkup = `<div class="idea-email">Email: ${idea.email}</div>`;
+      
       document.getElementById('fullIdeaContent').innerHTML = `
         <div class="idea-description">${idea.description}</div>
-        <div class="idea-meta" style="margin: 20px 0;">
+        <div class="idea-meta" style="margin: 16px 0;">
           <span>${idea.username}</span>
           <div class="idea-actions">
             <button class="action-button ${userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike(${idea.id})">
@@ -965,6 +971,7 @@
             </button>
           </div>
         </div>
+        ${emailMarkup}
         ${commentToggleMarkup}
         <div class="comments-section">
           <h3 style="margin-bottom: 16px;">Comments</h3>
@@ -1073,6 +1080,7 @@
           subject: subject,
           description: description,
           username: "DummyUser",
+          email: "dummyuser@example.com",
           likes: 0,
           comments: []
         };
@@ -1247,7 +1255,7 @@
     // Listen for auth state changes and update the UI accordingly.
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        hideModal('signedOutModal'); // Hide Whoops modal automatically on sign-in.
+        hideModal('signedOutModal');
         document.getElementById('username').textContent = user.displayName;
         document.getElementById('userProfile').style.display = 'flex';
         unlockSite();
@@ -1261,7 +1269,7 @@
     window.firebaseLogin = function() {
       signInWithPopup(auth, provider)
         .then((result) => {
-          hideModal('signedOutModal'); // Ensure Whoops modal is hidden when sign-in succeeds.
+          hideModal('signedOutModal');
           document.getElementById('username').textContent = result.user.displayName;
           document.getElementById('userProfile').style.display = 'flex';
           unlockSite();
