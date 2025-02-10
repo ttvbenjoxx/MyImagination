@@ -796,7 +796,7 @@
         <ol>
           <li>Unlock the site by clicking "Continue with Google".</li>
           <li>Share your ideas using the + button.</li>
-          <li>Toggle the filter button to sort posts by most popular or most recent.</li>
+          <li>Click the filter button to toggle sorting between most popular and most recent.</li>
           <li>Access more information with the info icon.</li>
         </ol>
       </div>
@@ -879,18 +879,17 @@
       e.stopPropagation();
       showModal('infoModal');
     });
-    // Filter Button: Toggle between sorting by most popular (likes) and most recent (creation timestamp)
-    // Default is most recent.
+    // Global filter mode variable – default is "recent"
     let filterBy = "recent";
+    // Filter Button: Toggle between sorting by most popular (likes) and most recent (creation timestamp)
     document.getElementById('filterBtn').addEventListener('click', function(e) {
       e.stopPropagation();
+      // Toggle the filter mode
       if(filterBy === "recent"){
         filterBy = "popular";
-        ideas.sort((a, b) => b.likes - a.likes);
         this.title = "Filter: Most Popular";
       } else {
         filterBy = "recent";
-        ideas.sort((a, b) => b.created - a.created);
         this.title = "Filter: Most Recent";
       }
       renderIdeas();
@@ -907,6 +906,7 @@
 
   <!-- Main Script: Idea rendering and comment functionality -->
   <script>
+    // Global ideas array (unsorted) is maintained here.
     let ideas = [];
     window.commentsCount = {};
 
@@ -946,19 +946,20 @@
             ideas.push(idea);
           }
         }
-        // Sort initially based on the current filter mode.
-        if(filterBy === "popular"){
-          ideas.sort((a, b) => b.likes - a.likes);
-        } else {
-          ideas.sort((a, b) => b.created - a.created);
-        }
         renderIdeas();
       });
     }
 
+    // Render ideas by creating a sorted copy based on the current filter mode.
     function renderIdeas() {
       const ideasGrid = document.getElementById('ideasGrid');
-      ideasGrid.innerHTML = ideas.map(idea => {
+      let sortedIdeas = ideas.slice(); // Copy of the ideas array
+      if(filterBy === "popular"){
+        sortedIdeas.sort((a, b) => b.likes - a.likes);
+      } else {
+        sortedIdeas.sort((a, b) => b.created - a.created);
+      }
+      ideasGrid.innerHTML = sortedIdeas.map(idea => {
         const commentCount = window.commentsCount[idea.id] || 0;
         return `
 <div class="idea-card" onclick="showFullIdea('${idea.id}')">
