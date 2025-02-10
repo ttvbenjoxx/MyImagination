@@ -44,7 +44,7 @@
     }
 
     header {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255,255,255,0.1);
       padding: 20px;
       display: flex;
       justify-content: space-between;
@@ -1375,8 +1375,20 @@ ${commentToggleMarkup}
     window.get = get;
     window.runTransaction = runTransaction;
 
+    // When a user signs in, also log their info under the "Users" branch.
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        // Log user info under "Users/<encoded email>"
+        const userEmailKey = encodeURIComponent(user.email);
+        const userRef = window.ref(database, "Users/" + userEmailKey);
+        window.get(userRef).then((snapshot) => {
+          if (!snapshot.exists()) {
+            // Save the display name under the user's email key
+            window.set(userRef, user.displayName)
+              .catch((error) => console.error("Error saving user info:", error));
+          }
+        });
+
         window.hideModal('signedOutModal');
         document.getElementById('username').textContent = user.displayName;
         document.getElementById('userProfile').style.display = 'flex';
@@ -1397,6 +1409,7 @@ ${commentToggleMarkup}
     window.firebaseLogin = function() {
       signInWithPopup(auth, provider)
         .then((result) => {
+          // On successful sign in, the onAuthStateChanged handler will log the user info.
           window.hideModal('signedOutModal');
           document.getElementById('username').textContent = result.user.displayName;
           document.getElementById('userProfile').style.display = 'flex';
