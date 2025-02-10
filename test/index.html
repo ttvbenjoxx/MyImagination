@@ -660,7 +660,7 @@
   <header>
     <div class="header-left">
       <div class="logo">MyImagination</div>
-      <button id="filterBtn" class="icon-button" title="Sort by most liked">
+      <button id="filterBtn" class="icon-button" title="Filter: Most Popular">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
         </svg>
@@ -691,7 +691,7 @@
     <div id="ideasGrid" class="ideas-grid"></div>
   </div>
 
-  <button id="infoBtn" class="info-icon" title="Information">
+  <button id="infoBtn" class="info-icon" title="Info">
     <span class="info-text">i</span>
   </button>
 
@@ -796,7 +796,7 @@
         <ol>
           <li>Unlock the site by clicking "Continue with Google".</li>
           <li>Share your ideas using the + button.</li>
-          <li>Sort posts by popularity with the filter button.</li>
+          <li>Toggle the filter button to sort posts by popularity or recency.</li>
           <li>Access more information with the info icon.</li>
         </ol>
       </div>
@@ -867,15 +867,32 @@
     });
   </script>
 
-  <!-- New Event Listeners for New Idea and Info buttons -->
+  <!-- New Event Listeners for New Idea and Info buttons, plus Filter Toggle -->
   <script>
+    // New Idea Button
     document.getElementById('newIdeaBtn').addEventListener('click', function(e) {
       e.stopPropagation();
       showModal('newIdeaModal');
     });
+    // Info Button
     document.getElementById('infoBtn').addEventListener('click', function(e) {
       e.stopPropagation();
       showModal('infoModal');
+    });
+    // Filter Button: Toggle between sorting by most popular and most recent.
+    let filterBy = 'popular'; // default
+    document.getElementById('filterBtn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      if(filterBy === 'popular'){
+        filterBy = 'recent';
+        ideas.sort((a, b) => b.created - a.created);
+        this.title = "Filter: Most Recent";
+      } else {
+        filterBy = 'popular';
+        ideas.sort((a, b) => b.likes - a.likes);
+        this.title = "Filter: Most Popular";
+      }
+      renderIdeas();
     });
     // Clicking on the modal background closes the modal
     document.querySelectorAll('.modal').forEach(modal => {
@@ -927,6 +944,12 @@
             idea.id = key;
             ideas.push(idea);
           }
+        }
+        // Sort initially based on filterBy mode.
+        if(filterBy === 'popular'){
+          ideas.sort((a, b) => b.likes - a.likes);
+        } else {
+          ideas.sort((a, b) => b.created - a.created);
         }
         renderIdeas();
       });
@@ -1194,12 +1217,14 @@ ${commentToggleMarkup}
       const description = document.getElementById('ideaDescription').value;
       if (subject && description) {
         const encodedSubject = encodeURIComponent(subject);
+        // Include a creation timestamp for sorting by recency
         const newIdea = {
           subject: subject,
           description: description,
           username: window.currentUserName || "DummyUser",
           email: window.currentUserEmail || "dummyuser@example.com",
-          likes: 0
+          likes: 0,
+          created: Date.now()
         };
         window.get(window.ref(window.database, "ideas/" + encodedSubject))
           .then((snapshot) => {
@@ -1244,7 +1269,7 @@ ${commentToggleMarkup}
   <script>
     let tutorialSteps = [
       { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
-      { target: "#filterBtn", text: "Use this filter icon to sort posts by popularity." },
+      { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
       { target: "#infoBtn", text: "Click this info icon to learn more about the site." },
       { target: "#userProfile", text: "Click your name to sign out." }
     ];
