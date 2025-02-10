@@ -1,1 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyImagination Admin Panel</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      background: #8a2be2;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      margin-top: 20px;
+    }
+    .section {
+      margin-bottom: 40px;
+      background: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #eee;
+    }
+    button {
+      padding: 6px 12px;
+      background: #8a2be2;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-right: 4px;
+      font-size: 13px;
+    }
+    button:hover {
+      background: #7424c1;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MyImagination Admin Panel</h1>
+    <p>This page is for database interactions only.</p>
+  </header>
+  <div class="container">
+    <div class="section" id="posts-section">
+      <h2>Manage Posts</h2>
+      <table id="posts-table">
+        <thead>
+          <tr>
+            <th>Post ID</th>
+            <th>Subject</th>
+            <th>User</th>
+            <th>Likes</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Post rows will be dynamically inserted here -->
+        </tbody>
+      </table>
+    </div>
+    <div class="section" id="comments-section">
+      <h2>Manage Comments</h2>
+      <table id="comments-table">
+        <thead>
+          <tr>
+            <th>Comment ID</th>
+            <th>Post ID</th>
+            <th>User</th>
+            <th>Content</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Comment rows will be dynamically inserted here -->
+        </tbody>
+      </table>
+    </div>
+    <div class="section" id="users-section">
+      <h2>Manage Users</h2>
+      <table id="users-table">
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- User rows will be dynamically inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      onValue,
+      update,
+      remove
+    } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+    import {
+      getAuth,
+      signInWithPopup,
+      GoogleAuthProvider,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+    
+    // Firebase configuration using your credentials
+    const firebaseConfig = {
+      apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
+      authDomain: "myteacheropinion.firebaseapp.com",
+      databaseURL: "https://myteacheropinion-default-rtdb.firebaseio.com",
+      projectId: "myteacheropinion",
+      storageBucket: "myteacheropinion.firebasestorage.app",
+      messagingSenderId: "945674655787",
+      appId: "1:945674655787:web:a59ef04ec9e843769bf26e"
+    };
+    
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    
+    // Client-side email check for admin privileges.
+    function isAdmin(user) {
+      const adminEmails = ["gmolter@ftstudent.org"];
+      return adminEmails.includes(user.email);
+    }
+    
+    // Check authentication state and restrict access if the user is not an admin.
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (isAdmin(user)) {
+          loadPosts();
+          loadComments();
+          loadUsers();
+        } else {
+          alert("You do not have admin privileges.");
+          signOut(auth).then(() => {
+            window.location.href = "/";
+          });
+        }
+      } else {
+        // Prompt the user to sign in.
+        signInWithPopup(auth, provider)
+          .catch((error) => {
+            console.error("Sign in error:", error);
+          });
+      }
+    });
+    
+    // --- Manage Posts ---
+    function loadPosts() {
+      const postsRef = ref(database, "ideas");
+      onValue(postsRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        const tbody = document.getElementById("posts-table").querySelector("tbody");
+        tbody.innerHTML = "";
+        for (const postId in data) {
+          const post = data[postId];
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${postId}</td>
+            <td>${post.subject}</td>
+            <td>${post.username}</td>
+            <td>${post.likes || 0}</td>
+            <td>
+              <button onclick="editPost('${postId}')">Edit</button>
+              <button onclick="deletePost('${postId}')">Delete</button>
+              <button onclick="resetLikes('${postId}')">Reset Likes</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+    }
+    
+    window.editPost = function(postId) {
+      const newSubject = prompt("Enter new subject for post " + postId);
+      if (newSubject) {
+        update(ref(database, "ideas/" + postId), { subject: newSubject })
+          .then(() => alert("Post updated successfully!"))
+          .catch((error) => console.error("Error updating post:", error));
+      }
+    };
+    
+    window.deletePost = function(postId) {
+      if (confirm("Are you sure you want to delete post " + postId + "?")) {
+        remove(ref(database, "ideas/" + postId))
+          .then(() => alert("Post deleted successfully!"))
+          .catch((error) => console.error("Error deleting post:", error));
+      }
+    };
+    
+    window.resetLikes = function(postId) {
+      update(ref(database, "ideas/" + postId), { likes: 0 })
+        .then(() => alert("Likes reset successfully!"))
+        .catch((error) => console.error("Error resetting likes:", error));
+    };
+    
+    // --- Manage Comments ---
+    function loadComments() {
+      const commentsRef = ref(database, "comments");
+      onValue(commentsRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        const tbody = document.getElementById("comments-table").querySelector("tbody");
+        tbody.innerHTML = "";
+        for (const postId in data) {
+          const postComments = data[postId];
+          for (const commentId in postComments) {
+            if (commentId === "_next") continue;
+            const comment = postComments[commentId];
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${commentId}</td>
+              <td>${postId}</td>
+              <td>${comment.commenter || comment.replier || "Unknown"}</td>
+              <td>${comment.content}</td>
+              <td>
+                <button onclick="editComment('${postId}', '${commentId}')">Edit</button>
+                <button onclick="deleteComment('${postId}', '${commentId}')">Delete</button>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          }
+        }
+      });
+    }
+    
+    window.editComment = function(postId, commentId) {
+      const newContent = prompt("Enter new content for comment " + commentId);
+      if (newContent) {
+        update(ref(database, "comments/" + postId + "/" + commentId), { content: newContent })
+          .then(() => alert("Comment updated successfully!"))
+          .catch((error) => console.error("Error updating comment:", error));
+      }
+    };
+    
+    window.deleteComment = function(postId, commentId) {
+      if (confirm("Delete comment " + commentId + " from post " + postId + "?")) {
+        remove(ref(database, "comments/" + postId + "/" + commentId))
+          .then(() => alert("Comment deleted successfully!"))
+          .catch((error) => console.error("Error deleting comment:", error));
+      }
+    };
+    
+    // --- Manage Users ---
+    function loadUsers() {
+      const usersRef = ref(database, "users");
+      onValue(usersRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        const tbody = document.getElementById("users-table").querySelector("tbody");
+        tbody.innerHTML = "";
+        for (const userId in data) {
+          const user = data[userId];
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${userId}</td>
+            <td>${user.email}</td>
+            <td>${user.username}</td>
+            <td>
+              <button onclick="deleteUser('${userId}')">Delete User</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+    }
+    
+    window.deleteUser = function(userId) {
+      if (confirm("Delete user " + userId + "? This action cannot be undone.")) {
+        remove(ref(database, "users/" + userId))
+          .then(() => alert("User deleted successfully!"))
+          .catch((error) => console.error("Error deleting user:", error));
+      }
+    };
+  </script>
+</body>
+</html>
