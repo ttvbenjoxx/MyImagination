@@ -44,7 +44,7 @@
     }
 
     header {
-      background-color: rgba(255,255,255,0.1);
+      background-color: rgba(255, 255, 255, 0.1);
       padding: 20px;
       display: flex;
       justify-content: space-between;
@@ -148,15 +148,16 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* Ideas Grid */
+    /* Ideas Grid – 6 columns per row */
     .ideas-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 250px));
-      gap: 8px;
-      margin-top: 20px;
+      grid-template-columns: repeat(6, 180px);
+      gap: 12px;
+      justify-content: center;
+      margin: 0 auto;
     }
 
-    /* Idea Cards */
+    /* Fixed-size Idea Cards */
     .idea-card {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
@@ -164,26 +165,38 @@
       margin: 0;
       box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: var(--transition);
-      word-wrap: break-word;
-      overflow-wrap: break-word;
+      overflow: hidden;
       position: relative;
       cursor: pointer;
+      height: 220px;
+      display: flex;
+      flex-direction: column;
     }
     .idea-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
     .idea-subject {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       margin-bottom: 4px;
       color: #1a1a1a;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* Scrollable description container */
+    .idea-description-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      margin-bottom: 4px;
     }
     .idea-description {
       color: #4a4a4a;
-      margin-bottom: 4px;
       line-height: 1.4;
-      white-space: pre-wrap;
+      white-space: normal;
+      word-break: break-word;
     }
     .more-button {
       background: var(--primary-color);
@@ -264,7 +277,6 @@
       width: 90%;
       max-width: 600px;
       max-height: 90vh;
-      overflow-y: auto;
       overflow-x: hidden;
       position: relative;
       transform: translateY(20px);
@@ -274,6 +286,12 @@
     .modal.show .modal-content {
       transform: translateY(0);
       opacity: 1;
+    }
+    /* Expanded modal body: vertical scroll if needed */
+    .modal-body {
+      overflow-y: auto;
+      white-space: normal;
+      word-break: break-word;
     }
     .modal-header {
       display: flex;
@@ -390,6 +408,8 @@
       margin-bottom: 8px;
       resize: vertical;
       min-height: 60px;
+      white-space: normal;
+      word-break: break-word;
     }
     .comment-input:focus {
       outline: none;
@@ -686,15 +706,12 @@
       </button>
     </div>
   </header>
-
   <div class="container">
     <div id="ideasGrid" class="ideas-grid"></div>
   </div>
-
   <button id="infoBtn" class="info-icon" title="Info">
     <span class="info-text">i</span>
   </button>
-
   <!-- Intro Modal (Welcome + Unlock) -->
   <div id="introModal" class="modal">
     <div class="modal-content">
@@ -718,7 +735,6 @@
       </button>
     </div>
   </div>
-
   <!-- Signed Out Modal -->
   <div id="signedOutModal" class="modal">
     <div class="modal-content">
@@ -742,7 +758,6 @@
       </button>
     </div>
   </div>
-
   <!-- New Idea Modal -->
   <div id="newIdeaModal" class="modal">
     <div class="modal-content">
@@ -763,10 +778,8 @@
       </form>
     </div>
   </div>
-
   <!-- Full Idea Modal (Expanded Post) -->
   <div id="fullIdeaModal" class="modal"></div>
-
   <!-- Info Modal -->
   <div id="infoModal" class="modal">
     <div class="modal-content">
@@ -774,17 +787,17 @@
         <h2 class="modal-title">Information</h2>
         <button class="close-modal" onclick="hideModal('infoModal')">&times;</button>
       </div>
-      <!-- Two tabs: Instructions and About the Developer -->
+      <!-- Two merged tabs: Instructions and About the Developer -->
       <div class="tabs">
         <button class="tab active" data-tab="instructions">Instructions</button>
         <button class="tab" data-tab="about">About the Developer</button>
       </div>
-      <!-- Merged Instructions Tab: FAQs, How to Use, and Purpose -->
+      <!-- Merged Instructions Tab -->
       <div class="tab-content active" id="instructions">
         <h3>Instructions</h3>
         <p><strong>How to Share an Idea:</strong> Click the + button in the top right (after unlocking) to create a new post.</p>
         <p><strong>How to Use:</strong> Unlock the site by clicking "Continue with Google", then share your ideas using the + button. Use the filter button to toggle sorting between most popular and most recent.</p>
-        <p><strong>Our Purpose:</strong> We aim to create a collaborative space where students can share creative website ideas, get feedback from peers, find inspiration for projects, and learn about web development trends.</p>
+        <p><strong>My Mission:</strong> I aim to create a collaborative space where students can share creative website ideas, get feedback from peers, find inspiration for projects, and learn about web development trends.</p>
       </div>
       <!-- About the Developer Tab -->
       <div class="tab-content" id="about">
@@ -796,7 +809,6 @@
       </div>
     </div>
   </div>
-
   <!-- Tutorial Overlay & Spotlight Tutorial -->
   <div id="tutorialOverlay">
     <div id="tutorialTooltip">
@@ -804,7 +816,6 @@
       <button id="tutorialNextBtn" class="submit-button">Next</button>
     </div>
   </div>
-
   <!-- Global Script: Modal functions and globals -->
   <script>
     function showModal(modalId) {
@@ -831,7 +842,6 @@
     window.unlockSite = unlockSite;
     window.siteLocked = true;
   </script>
-
   <!-- Script for userProfile dropdown (Sign Out) -->
   <script>
     document.getElementById('userProfile').addEventListener('click', function(e) {
@@ -846,7 +856,6 @@
       logout();
     });
   </script>
-
   <!-- New Event Listeners for New Idea, Info, and Filter Toggle -->
   <script>
     // New Idea Button
@@ -882,7 +891,6 @@
       });
     });
   </script>
-
   <!-- Tab Switching for Info Modal -->
   <script>
     document.querySelectorAll('.tab').forEach(tab => {
@@ -894,7 +902,6 @@
       });
     });
   </script>
-
   <!-- Main Script: Idea rendering and comment functionality -->
   <script>
     let ideas = [];
@@ -954,9 +961,11 @@
         return `
 <div class="idea-card" onclick="showFullIdea('${idea.id}')">
   <div class="idea-subject">${idea.subject}</div>
-  <div class="idea-description">
-    ${idea.description.length > 200 ? idea.description.slice(0,200) + "..." : idea.description}
-    ${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>` : ""}
+  <div class="idea-description-container">
+    <div class="idea-description">
+      ${idea.description.length > 200 ? idea.description.slice(0,200) + "..." : idea.description}
+      ${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>` : ""}
+    </div>
   </div>
   <div class="idea-meta">
     <span>${idea.username}</span>
@@ -1209,7 +1218,6 @@ ${commentToggleMarkup}
       const description = document.getElementById('ideaDescription').value;
       if (subject && description) {
         const encodedSubject = encodeURIComponent(subject);
-        // Include a creation timestamp for sorting by recency
         const newIdea = {
           subject: subject,
           description: description,
@@ -1248,7 +1256,6 @@ ${commentToggleMarkup}
       }
     }
   </script>
-
   <!-- Tutorial Overlay & Spotlight Tutorial -->
   <div id="tutorialOverlay">
     <div id="tutorialTooltip">
@@ -1256,7 +1263,6 @@ ${commentToggleMarkup}
       <button id="tutorialNextBtn" class="submit-button">Next</button>
     </div>
   </div>
-
   <!-- Tutorial Script -->
   <script>
     let tutorialSteps = [
@@ -1339,7 +1345,6 @@ ${commentToggleMarkup}
     });
     document.getElementById('tutorialNextBtn').addEventListener('click', nextTutorialStep);
   </script>
-
   <!-- Firebase Integration -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
