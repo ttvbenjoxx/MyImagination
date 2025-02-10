@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyImagination - Creative Website Ideas Forum</title>
+  <title>MyImagination Forum</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -660,7 +660,7 @@
   <header>
     <div class="header-left">
       <div class="logo">MyImagination</div>
-      <button id="filterBtn" class="icon-button" title="Sort by most liked">
+      <button id="filterBtn" class="icon-button" title="Filter: Most Popular">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
         </svg>
@@ -691,7 +691,7 @@
     <div id="ideasGrid" class="ideas-grid"></div>
   </div>
 
-  <button id="infoBtn" class="info-icon" title="Information">
+  <button id="infoBtn" class="info-icon" title="Info">
     <span class="info-text">i</span>
   </button>
 
@@ -796,7 +796,7 @@
         <ol>
           <li>Unlock the site by clicking "Continue with Google".</li>
           <li>Share your ideas using the + button.</li>
-          <li>Sort posts by popularity with the filter button.</li>
+          <li>Click the filter button to toggle sorting between most popular and most recent.</li>
           <li>Access more information with the info icon.</li>
         </ol>
       </div>
@@ -867,8 +867,46 @@
     });
   </script>
 
+  <!-- New Event Listeners for New Idea, Info, and Filter Toggle -->
+  <script>
+    // New Idea Button
+    document.getElementById('newIdeaBtn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      showModal('newIdeaModal');
+    });
+    // Info Button
+    document.getElementById('infoBtn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      showModal('infoModal');
+    });
+    // Global filter mode variable – default is "recent"
+    let filterBy = "recent";
+    // Filter Button: Toggle between sorting by most popular (likes) and most recent (creation timestamp)
+    document.getElementById('filterBtn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      // Toggle the filter mode
+      if(filterBy === "recent"){
+        filterBy = "popular";
+        this.title = "Filter: Most Popular";
+      } else {
+        filterBy = "recent";
+        this.title = "Filter: Most Recent";
+      }
+      renderIdeas();
+    });
+    // Clicking on the modal background closes the modal
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          hideModal(modal.id);
+        }
+      });
+    });
+  </script>
+
   <!-- Main Script: Idea rendering and comment functionality -->
   <script>
+    // Global ideas array (unsorted) is maintained here.
     let ideas = [];
     window.commentsCount = {};
 
@@ -912,9 +950,16 @@
       });
     }
 
+    // Render ideas by creating a sorted copy based on the current filter mode.
     function renderIdeas() {
       const ideasGrid = document.getElementById('ideasGrid');
-      ideasGrid.innerHTML = ideas.map(idea => {
+      let sortedIdeas = ideas.slice(); // Copy of the ideas array
+      if(filterBy === "popular"){
+        sortedIdeas.sort((a, b) => b.likes - a.likes);
+      } else {
+        sortedIdeas.sort((a, b) => b.created - a.created);
+      }
+      ideasGrid.innerHTML = sortedIdeas.map(idea => {
         const commentCount = window.commentsCount[idea.id] || 0;
         return `
 <div class="idea-card" onclick="showFullIdea('${idea.id}')">
@@ -1174,14 +1219,15 @@ ${commentToggleMarkup}
       const description = document.getElementById('ideaDescription').value;
       if (subject && description) {
         const encodedSubject = encodeURIComponent(subject);
+        // Include a creation timestamp for sorting by recency
         const newIdea = {
           subject: subject,
           description: description,
           username: window.currentUserName || "DummyUser",
           email: window.currentUserEmail || "dummyuser@example.com",
-          likes: 0
+          likes: 0,
+          created: Date.now()
         };
-        // If an idea with this key exists, append a unique suffix
         window.get(window.ref(window.database, "ideas/" + encodedSubject))
           .then((snapshot) => {
             let key = encodedSubject;
@@ -1225,7 +1271,7 @@ ${commentToggleMarkup}
   <script>
     let tutorialSteps = [
       { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
-      { target: "#filterBtn", text: "Use this filter icon to sort posts by popularity." },
+      { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
       { target: "#infoBtn", text: "Click this info icon to learn more about the site." },
       { target: "#userProfile", text: "Click your name to sign out." }
     ];
@@ -1345,7 +1391,6 @@ ${commentToggleMarkup}
         fetchIdeas();
         listenForCommentsCount();
       } else {
-        // If the user hasn't "visited" before, show the intro modal.
         if (!localStorage.getItem('visited')) {
           window.showModal('introModal');
         } else {
@@ -1373,12 +1418,8 @@ ${commentToggleMarkup}
 
     window.logout = function() {
       signOut(auth)
-        .then(() => {
-          location.reload();
-        })
-        .catch((error) => {
-          console.error("Firebase logout error:", error);
-        });
+        .then(() => { location.reload(); })
+        .catch((error) => { console.error("Firebase logout error:", error); });
     };
   </script>
 </body>
