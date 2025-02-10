@@ -867,6 +867,26 @@
     });
   </script>
 
+  <!-- New Event Listeners for New Idea and Info buttons -->
+  <script>
+    document.getElementById('newIdeaBtn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      showModal('newIdeaModal');
+    });
+    document.getElementById('infoBtn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      showModal('infoModal');
+    });
+    // Clicking on the modal background closes the modal
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          hideModal(modal.id);
+        }
+      });
+    });
+  </script>
+
   <!-- Main Script: Idea rendering and comment functionality -->
   <script>
     let ideas = [];
@@ -1181,7 +1201,6 @@ ${commentToggleMarkup}
           email: window.currentUserEmail || "dummyuser@example.com",
           likes: 0
         };
-        // If an idea with this key exists, append a unique suffix
         window.get(window.ref(window.database, "ideas/" + encodedSubject))
           .then((snapshot) => {
             let key = encodedSubject;
@@ -1345,7 +1364,6 @@ ${commentToggleMarkup}
         fetchIdeas();
         listenForCommentsCount();
       } else {
-        // If the user hasn't "visited" before, show the intro modal.
         if (!localStorage.getItem('visited')) {
           window.showModal('introModal');
         } else {
@@ -1373,12 +1391,8 @@ ${commentToggleMarkup}
 
     window.logout = function() {
       signOut(auth)
-        .then(() => {
-          location.reload();
-        })
-        .catch((error) => {
-          console.error("Firebase logout error:", error);
-        });
+        .then(() => { location.reload(); })
+        .catch((error) => { console.error("Firebase logout error:", error); });
     };
   </script>
 </body>
