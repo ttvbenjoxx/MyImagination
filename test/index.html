@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyImagination Forum Test</title>
+  <title>MyImaginationForum TEST</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -148,7 +148,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* Ideas Grid – exactly 4 cards per row and centered */
+    /* Ideas Grid – exactly 4 cards per row, centered */
     .ideas-grid {
       display: grid;
       grid-template-columns: repeat(4, 250px);
@@ -157,7 +157,7 @@
       margin: 0 auto;
     }
 
-    /* Idea Cards: fixed height and flex layout */
+    /* Idea Card – revert to old default (auto height) and ensure text wrapping */
     .idea-card {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
@@ -165,10 +165,10 @@
       margin: 0;
       box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: var(--transition);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      position: relative;
       cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      height: 300px;
     }
     .idea-card:hover {
       transform: translateY(-2px);
@@ -180,16 +180,11 @@
       margin-bottom: 4px;
       color: #1a1a1a;
     }
-    /* Description container fills available space and scrolls vertically */
-    .idea-description-container {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
     .idea-description {
       color: #4a4a4a;
       line-height: 1.4;
       white-space: normal;
+      word-break: break-word;
     }
     .more-button {
       background: var(--primary-color);
@@ -270,7 +265,6 @@
       width: 90%;
       max-width: 600px;
       max-height: 90vh;
-      overflow-y: auto;
       overflow-x: hidden;
       position: relative;
       transform: translateY(20px);
@@ -280,6 +274,12 @@
     .modal.show .modal-content {
       transform: translateY(0);
       opacity: 1;
+    }
+    /* Ensure expanded post text wraps and scrolls vertically if needed */
+    .modal-body {
+      overflow-y: auto;
+      white-space: normal;
+      word-break: break-word;
     }
     .modal-header {
       display: flex;
@@ -396,6 +396,8 @@
       margin-bottom: 8px;
       resize: vertical;
       min-height: 60px;
+      white-space: normal;
+      word-break: break-word;
     }
     .comment-input:focus {
       outline: none;
@@ -960,11 +962,9 @@
         return `
 <div class="idea-card" onclick="showFullIdea('${idea.id}')">
   <div class="idea-subject">${idea.subject}</div>
-  <div class="idea-description-container">
-    <div class="idea-description">
-      ${idea.description.length > 200 ? idea.description.slice(0,200) + "..." : idea.description}
-      ${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>` : ""}
-    </div>
+  <div class="idea-description">
+    ${idea.description.length > 200 ? idea.description.slice(0,200) + "..." : idea.description}
+    ${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>` : ""}
   </div>
   <div class="idea-meta">
     <span>${idea.username}</span>
