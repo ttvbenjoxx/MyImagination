@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyImaginationForum TEST</title>
+  <title>MyImagination Forum TEST</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -157,7 +157,7 @@
       margin: 0 auto;
     }
 
-    /* Idea Card – revert to old default (auto height) and ensure text wrapping */
+    /* Fixed-size Idea Cards */
     .idea-card {
       background-color: var(--card-background);
       border-radius: var(--border-radius);
@@ -166,9 +166,12 @@
       box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: var(--transition);
       word-wrap: break-word;
-      overflow-wrap: break-word;
+      overflow: hidden;
       position: relative;
       cursor: pointer;
+      height: 300px;  /* Fixed height */
+      display: flex;
+      flex-direction: column;
     }
     .idea-card:hover {
       transform: translateY(-2px);
@@ -179,6 +182,12 @@
       font-weight: 600;
       margin-bottom: 4px;
       color: #1a1a1a;
+    }
+    /* Container for the description that scrolls vertically if needed */
+    .idea-description-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
     .idea-description {
       color: #4a4a4a;
