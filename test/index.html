@@ -796,7 +796,7 @@
         <ol>
           <li>Unlock the site by clicking "Continue with Google".</li>
           <li>Share your ideas using the + button.</li>
-          <li>Toggle the filter button to sort posts by popularity or recency.</li>
+          <li>Toggle the filter button to sort posts by most popular or most recent.</li>
           <li>Access more information with the info icon.</li>
         </ol>
       </div>
@@ -867,7 +867,7 @@
     });
   </script>
 
-  <!-- New Event Listeners for New Idea and Info buttons, plus Filter Toggle -->
+  <!-- New Event Listeners for New Idea, Info, and Filter Toggle -->
   <script>
     // New Idea Button
     document.getElementById('newIdeaBtn').addEventListener('click', function(e) {
@@ -879,18 +879,19 @@
       e.stopPropagation();
       showModal('infoModal');
     });
-    // Filter Button: Toggle between sorting by most popular and most recent.
-    let filterBy = 'popular'; // default
+    // Filter Button: Toggle between sorting by most popular (likes) and most recent (creation timestamp)
+    // Default is most recent.
+    let filterBy = "recent";
     document.getElementById('filterBtn').addEventListener('click', function(e) {
       e.stopPropagation();
-      if(filterBy === 'popular'){
-        filterBy = 'recent';
-        ideas.sort((a, b) => b.created - a.created);
-        this.title = "Filter: Most Recent";
-      } else {
-        filterBy = 'popular';
+      if(filterBy === "recent"){
+        filterBy = "popular";
         ideas.sort((a, b) => b.likes - a.likes);
         this.title = "Filter: Most Popular";
+      } else {
+        filterBy = "recent";
+        ideas.sort((a, b) => b.created - a.created);
+        this.title = "Filter: Most Recent";
       }
       renderIdeas();
     });
@@ -945,8 +946,8 @@
             ideas.push(idea);
           }
         }
-        // Sort initially based on filterBy mode.
-        if(filterBy === 'popular'){
+        // Sort initially based on the current filter mode.
+        if(filterBy === "popular"){
           ideas.sort((a, b) => b.likes - a.likes);
         } else {
           ideas.sort((a, b) => b.created - a.created);
