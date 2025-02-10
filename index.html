@@ -774,45 +774,25 @@
         <h2 class="modal-title">Information</h2>
         <button class="close-modal" onclick="hideModal('infoModal')">&times;</button>
       </div>
+      <!-- Two tabs: Instructions and About the Developer -->
       <div class="tabs">
-        <button class="tab active" data-tab="faq">FAQs</button>
-        <button class="tab" data-tab="howTo">How to Use</button>
-        <button class="tab" data-tab="about">About</button>
-        <button class="tab" data-tab="purpose">Purpose</button>
+        <button class="tab active" data-tab="instructions">Instructions</button>
+        <button class="tab" data-tab="about">About the Developer</button>
       </div>
-      <div class="tab-content active" id="faq">
-        <h3>Frequently Asked Questions</h3>
-        <div class="faq-item">
-          <h4>How do I share an idea?</h4>
-          <p>Click the + button in the top right after unlocking to create a new post.</p>
-        </div>
-        <div class="faq-item">
-          <h4>Can I edit my ideas?</h4>
-          <p>Currently, editing is not available in this proof of concept.</p>
-        </div>
+      <!-- Merged Instructions Tab: FAQs, How to Use, and Purpose -->
+      <div class="tab-content active" id="instructions">
+        <h3>Instructions</h3>
+        <p><strong>How to Share an Idea:</strong> Click the + button in the top right (after unlocking) to create a new post.</p>
+        <p><strong>How to Use:</strong> Unlock the site by clicking "Continue with Google", then share your ideas using the + button. Use the filter button to toggle sorting between most popular and most recent.</p>
+        <p><strong>Our Purpose:</strong> We aim to create a collaborative space where students can share creative website ideas, get feedback from peers, find inspiration for projects, and learn about web development trends.</p>
       </div>
-      <div class="tab-content" id="howTo">
-        <h3>How to Use MyImagination</h3>
-        <ol>
-          <li>Unlock the site by clicking "Continue with Google".</li>
-          <li>Share your ideas using the + button.</li>
-          <li>Click the filter button to toggle sorting between most popular and most recent.</li>
-          <li>Access more information with the info icon.</li>
-        </ol>
-      </div>
+      <!-- About the Developer Tab -->
       <div class="tab-content" id="about">
-        <h3>About MyImagination</h3>
-        <p>MyImagination is a platform created by FCHS students to share and discuss creative website ideas. Our goal is to foster innovation and collaboration among aspiring web developers and designers.</p>
-      </div>
-      <div class="tab-content" id="purpose">
-        <h3>Our Purpose</h3>
-        <p>We aim to create a collaborative space where students can:</p>
-        <ul>
-          <li>Share creative website ideas</li>
-          <li>Get feedback from peers</li>
-          <li>Find inspiration for projects</li>
-          <li>Learn about web development trends</li>
-        </ul>
+        <h3>About the Developer</h3>
+        <p>
+          Hi, I'm Gavin Molter! I am currently a junior in the student IT Cyberflash program. I love making websites, but I have such a small imagination. This is where I could use your help! I want to create a wide variety of websites that both students and teachers can use. Any ideas you have are greatly appreciated.
+          If you have any questions, please email me at <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a> and I will try to respond as soon as possible!
+        </p>
       </div>
     </div>
   </div>
@@ -879,12 +859,11 @@
       e.stopPropagation();
       showModal('infoModal');
     });
-    // Global filter mode variable – default is "recent"
+    // Filter Button: Toggle between sorting by most popular and most recent
+    // Default mode is "recent"
     let filterBy = "recent";
-    // Filter Button: Toggle between sorting by most popular (likes) and most recent (creation timestamp)
     document.getElementById('filterBtn').addEventListener('click', function(e) {
       e.stopPropagation();
-      // Toggle the filter mode
       if(filterBy === "recent"){
         filterBy = "popular";
         this.title = "Filter: Most Popular";
@@ -894,7 +873,7 @@
       }
       renderIdeas();
     });
-    // Clicking on the modal background closes the modal
+    // Close modal when clicking the modal background
     document.querySelectorAll('.modal').forEach(modal => {
       modal.addEventListener('click', function(e) {
         if (e.target === modal) {
@@ -904,9 +883,20 @@
     });
   </script>
 
+  <!-- Tab Switching for Info Modal -->
+  <script>
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById(this.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+
   <!-- Main Script: Idea rendering and comment functionality -->
   <script>
-    // Global ideas array (unsorted) is maintained here.
     let ideas = [];
     window.commentsCount = {};
 
@@ -950,10 +940,10 @@
       });
     }
 
-    // Render ideas by creating a sorted copy based on the current filter mode.
+    // Render ideas sorted based on current filter mode.
     function renderIdeas() {
       const ideasGrid = document.getElementById('ideasGrid');
-      let sortedIdeas = ideas.slice(); // Copy of the ideas array
+      let sortedIdeas = ideas.slice();
       if(filterBy === "popular"){
         sortedIdeas.sort((a, b) => b.likes - a.likes);
       } else {
