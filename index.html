@@ -148,7 +148,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* Ideas Grid: fixed card size */
+    /* Ideas Grid */
     .ideas-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 250px));
@@ -427,7 +427,7 @@
       background: rgba(138,43,226,0.1);
     }
 
-    /* New: Make author info smaller and add extra spacing */
+    /* New: Author details smaller with extra spacing */
     .author-details {
       font-size: 0.8rem;
       margin-bottom: 12px;
@@ -765,7 +765,6 @@
   </div>
 
   <!-- Full Idea Modal (Expanded Post) -->
-  <!-- The container is empty; it will be populated dynamically -->
   <div id="fullIdeaModal" class="modal"></div>
 
   <!-- Info Modal -->
@@ -818,7 +817,7 @@
     </div>
   </div>
 
-  <!-- Tutorial Overlay & Tooltip -->
+  <!-- Tutorial Overlay & Spotlight Tutorial -->
   <div id="tutorialOverlay">
     <div id="tutorialTooltip">
       <p id="tutorialText"></p>
@@ -855,16 +854,13 @@
 
   <!-- Script for userProfile dropdown (Sign Out) -->
   <script>
-    // Toggle logout dropdown when clicking on userProfile
     document.getElementById('userProfile').addEventListener('click', function(e) {
       document.getElementById('logoutDropdown').classList.toggle("show");
       e.stopPropagation();
     });
-    // Hide logout dropdown when clicking elsewhere
     document.addEventListener('click', function() {
       document.getElementById('logoutDropdown').classList.remove("show");
     });
-    // Sign Out when the button is clicked
     document.getElementById('confirmLogout').addEventListener('click', function(e) {
       e.stopPropagation();
       logout();
@@ -876,7 +872,6 @@
     let ideas = [];
     window.commentsCount = {};
 
-    // Recursively count comments and nested replies.
     function countComments(obj) {
       let count = 0;
       for (const key in obj) {
@@ -889,7 +884,6 @@
       return count;
     }
 
-    // Listen for changes on /comments to update global comment count.
     function listenForCommentsCount() {
       const commentsRoot = window.ref(window.database, "comments");
       window.onValue(commentsRoot, (snapshot) => {
@@ -982,7 +976,6 @@
       }
     }
 
-    // Recursive renderComments: parentPath tracks Firebase location.
     function renderComments(comments, parentPath) {
       parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
       return comments.map(comment => {
@@ -1027,7 +1020,6 @@
       }
     }
 
-    // Transaction for unique comment keys.
     function addCommentModal(postId) {
       const container = document.getElementById('modalCommentForm_' + postId);
       const textarea = container.querySelector('.comment-input');
@@ -1054,7 +1046,6 @@
       });
     }
 
-    // Transaction for unique reply keys.
     function addReply(parentPath, commentId) {
       const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
       const replyInput = document.querySelector("#" + replyFormId + " .comment-input");
@@ -1128,7 +1119,6 @@
 ${commentToggleMarkup}
 <div id="commentsSection" class="comments-section"></div>
       `;
-      // Populate the fullIdeaModal container with one close button.
       document.getElementById('fullIdeaModal').innerHTML = `
 <div class="modal-content">
   <div class="modal-header">
@@ -1154,7 +1144,6 @@ ${commentToggleMarkup}
         const data = snapshot.val();
         let commentsHtml = "";
         if (data) {
-          // Exclude the special "_next" property.
           const commentsObj = {};
           for (const key in data) {
             if (key !== "_next") {
@@ -1192,7 +1181,15 @@ ${commentToggleMarkup}
           email: window.currentUserEmail || "dummyuser@example.com",
           likes: 0
         };
-        window.set(window.ref(window.database, "ideas/" + encodedSubject), newIdea)
+        // If an idea with this key exists, append a unique suffix
+        window.get(window.ref(window.database, "ideas/" + encodedSubject))
+          .then((snapshot) => {
+            let key = encodedSubject;
+            if (snapshot.exists()) {
+              key = encodedSubject + "_" + Date.now();
+            }
+            return window.set(window.ref(window.database, "ideas/" + key), newIdea);
+          })
           .then(() => {
             hideModal('newIdeaModal');
             document.getElementById('newIdeaForm').reset();
@@ -1214,8 +1211,18 @@ ${commentToggleMarkup}
         }
       }
     }
-    
-    // Tutorial functions (unchanged)
+  </script>
+
+  <!-- Tutorial Overlay & Spotlight Tutorial -->
+  <div id="tutorialOverlay">
+    <div id="tutorialTooltip">
+      <p id="tutorialText"></p>
+      <button id="tutorialNextBtn" class="submit-button">Next</button>
+    </div>
+  </div>
+
+  <!-- Tutorial Script -->
+  <script>
     let tutorialSteps = [
       { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
       { target: "#filterBtn", text: "Use this filter icon to sort posts by popularity." },
@@ -1295,31 +1302,9 @@ ${commentToggleMarkup}
       }
     });
     document.getElementById('tutorialNextBtn').addEventListener('click', nextTutorialStep);
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
-      });
-    });
-    document.getElementById('filterBtn').addEventListener('click', () => {
-      ideas.sort((a, b) => b.likes - a.likes);
-      renderIdeas();
-    });
-    document.getElementById('infoBtn').addEventListener('click', () => showModal('infoModal'));
-    document.getElementById('newIdeaBtn').addEventListener('click', () => showModal('newIdeaModal'));
-    document.querySelectorAll('.modal').forEach(modal => {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          hideModal(modal.id);
-        }
-      });
-    });
-    window.siteLocked = true;
   </script>
 
-  <!-- Firebase Integration Module -->
+  <!-- Firebase Integration -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
@@ -1340,7 +1325,6 @@ ${commentToggleMarkup}
     const provider = new GoogleAuthProvider();
     const database = getDatabase(app);
 
-    // Expose Firebase functions to global scope.
     window.database = database;
     window.ref = ref;
     window.onValue = onValue;
@@ -1361,9 +1345,10 @@ ${commentToggleMarkup}
         fetchIdeas();
         listenForCommentsCount();
       } else {
-        if (window.innerWidth < 768) {
-          window.showModal('signedOutModal');
-        } else if (localStorage.getItem('visited')) {
+        // If the user hasn't "visited" before, show the intro modal.
+        if (!localStorage.getItem('visited')) {
+          window.showModal('introModal');
+        } else {
           window.showModal('signedOutModal');
         }
       }
