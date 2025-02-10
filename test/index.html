@@ -148,12 +148,13 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* Ideas Grid – increased gap from 8px to 12px */
+    /* Ideas Grid: exactly 4 cards per row, centered */
     .ideas-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 250px));
+      grid-template-columns: repeat(4, 250px);
       gap: 12px;
-      margin-top: 20px;
+      justify-content: center;
+      margin: 0 auto;
     }
 
     /* Idea Cards */
@@ -890,7 +891,6 @@
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         this.classList.add('active');
-        // Use the data-tab attribute to select the correct content.
         document.getElementById(this.dataset.tab).classList.add('active');
       });
     });
