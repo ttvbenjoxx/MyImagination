@@ -216,7 +216,7 @@
   <div id="profile-modal" class="modal" style="display: none;">
     <div class="modal-content">
       <h2>User Profile</h2>
-      <p>Profile placeholder</p>
+      <p id="profile-content">Profile placeholder</p>
       <button onclick="closeProfileModal()">Close</button>
     </div>
   </div>
@@ -412,34 +412,38 @@
       closeConfirmModal();
     });
     
-    // Profile Modal functions
+    // Profile Modal functions – attach to window for inline usage
     function openProfileModal(username) {
       const modal = document.getElementById("profile-modal");
-      modal.querySelector("p").textContent = "Profile placeholder for " + username;
+      document.getElementById("profile-content").textContent = "Profile placeholder for " + username;
       modal.style.display = "flex";
     }
-    
     function closeProfileModal() {
       document.getElementById("profile-modal").style.display = "none";
     }
+    window.openProfileModal = openProfileModal;
+    window.closeProfileModal = closeProfileModal;
     
-    // Replies Modal functions
+    // Replies Modal functions – attach to window
     function openRepliesModal(postId, commentId) {
       const modal = document.getElementById("replies-modal");
       document.getElementById("replies-content").innerHTML = `<p>Placeholder for replies of comment ${commentId} from post ${postId}.</p>`;
       modal.style.display = "flex";
     }
-    
     function closeRepliesModal() {
       document.getElementById("replies-modal").style.display = "none";
     }
+    window.openRepliesModal = openRepliesModal;
+    window.closeRepliesModal = closeRepliesModal;
     
-    // View Comments: scroll to and highlight comments for a specific post
+    // View Comments: scroll to and highlight comments for a specific post – attach to window
     function viewComments(postId) {
       const commentsTable = document.getElementById("comments-table");
       const commentRows = commentsTable.querySelectorAll(`tr[data-post-id="${postId}"]`);
       if (commentRows.length > 0) {
+        // Scroll to the first comment row
         commentRows[0].scrollIntoView({ behavior: "smooth", block: "center" });
+        // Highlight all comment rows for that post
         commentRows.forEach(row => {
           row.classList.add("highlight");
           setTimeout(() => {
@@ -452,6 +456,7 @@
         showSnackbar("No comments for this post.");
       }
     }
+    window.viewComments = viewComments;
     
     // --- Manage Posts ---
     function loadPosts() {
@@ -472,7 +477,7 @@
             <td>${post.likes || 0}</td>
             <td><a href="javascript:void(0)" onclick="viewComments('${postId}')">${count}</a></td>
             <td>
-              <button onclick="editPost('${postId}', \`${post.subject}\`, \`${post.content || ""}\`)">Edit</button>
+              <button onclick='editPost("${postId}", ${JSON.stringify(post.subject)}, ${JSON.stringify(post.content || "")})'>Edit</button>
               <button onclick="deletePost('${postId}')">Delete</button>
               <button onclick="resetLikes('${postId}')">Reset Likes</button>
             </td>
@@ -482,6 +487,7 @@
       });
     }
     
+    // Attach editPost to window and use safe JSON-stringified values
     window.editPost = function(postId, currentSubject, currentContent) {
       openEditModal('post', postId, currentSubject, currentContent);
     };
