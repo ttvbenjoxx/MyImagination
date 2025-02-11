@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyImagination Admin Panel</title>
+  <title>Admin TEST</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
   <style>
     :root {
@@ -88,8 +88,8 @@
     button:hover {
       background: #7424c1;
     }
-    /* Modal for access notifications */
-    #access-modal {
+    /* Modal styles (used for access, edit, and confirmation modals) */
+    .modal {
       position: fixed;
       top: 0;
       left: 0;
@@ -101,7 +101,7 @@
       align-items: center;
       z-index: 2000;
     }
-    #access-modal .modal-content {
+    .modal .modal-content {
       background: var(--card-background);
       padding: 20px;
       border-radius: var(--border-radius);
@@ -110,14 +110,36 @@
       width: 90%;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-    #access-modal h2 {
+    .modal h2 {
       margin-bottom: 15px;
     }
-    #access-modal p {
+    .modal p {
       margin-bottom: 20px;
     }
-    #access-modal button {
+    .modal button {
       margin-top: 10px;
+    }
+    /* Snackbar styles */
+    #snackbar {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 4px;
+      padding: 16px;
+      position: fixed;
+      z-index: 3000;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      font-size: 17px;
+      transition: opacity 0.5s ease;
+      opacity: 0;
+    }
+    #snackbar.show {
+      visibility: visible;
+      opacity: 1;
     }
   </style>
 </head>
@@ -130,13 +152,40 @@
   </header>
   
   <!-- Access Modal -->
-  <div id="access-modal" style="display: none;">
+  <div id="access-modal" class="modal" style="display: none;">
     <div class="modal-content">
       <h2 id="access-title">Access Denied</h2>
       <p id="access-message"></p>
       <button id="login-button" style="display: none;">Login with Google</button>
     </div>
   </div>
+  
+  <!-- Edit Modal -->
+  <div id="edit-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h2 id="edit-modal-title"></h2>
+      <input type="text" id="edit-modal-input" style="width:100%; padding:8px; margin-bottom:10px;" />
+      <div style="text-align: right;">
+        <button id="edit-modal-cancel">Cancel</button>
+        <button id="edit-modal-save">Save</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Confirm Modal -->
+  <div id="confirm-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h2 id="confirm-modal-title">Confirm Action</h2>
+      <p id="confirm-modal-message"></p>
+      <div style="text-align: right;">
+        <button id="confirm-modal-cancel">Cancel</button>
+        <button id="confirm-modal-confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Snackbar Notification -->
+  <div id="snackbar"></div>
   
   <div class="container" id="admin-content">
     <!-- Manage Posts Section -->
@@ -175,24 +224,6 @@
         </tbody>
       </table>
     </div>
-    <!-- Manage Users Section -->
-    <div class="section" id="users-section">
-      <h2>Manage Users</h2>
-      <p>Below is every user that has ever registered on this app:</p>
-      <table id="users-table">
-        <thead>
-          <tr>
-            <th>User ID</th>
-            <th>Email</th>
-            <th>Username</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- User rows will be dynamically inserted here -->
-        </tbody>
-      </table>
-    </div>
   </div>
   
   <script type="module">
@@ -208,7 +239,6 @@
       getAuth,
       signInWithPopup,
       GoogleAuthProvider,
-      signOut,
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
     
@@ -235,7 +265,7 @@
       return adminEmails.includes(user.email);
     }
     
-    // Show access modal with a title, message, and (optionally) a login button.
+    // Access Modal functions
     function showAccessModal(title, message, showLoginButton = false) {
       const modal = document.getElementById("access-modal");
       document.getElementById("access-title").textContent = title;
@@ -245,10 +275,79 @@
       modal.style.display = "flex";
     }
     
-    // Hide access modal.
     function hideAccessModal() {
       document.getElementById("access-modal").style.display = "none";
     }
+    
+    // Snackbar notification
+    function showSnackbar(message) {
+      const snackbar = document.getElementById("snackbar");
+      snackbar.textContent = message;
+      snackbar.className = "show";
+      setTimeout(() => {
+        snackbar.className = snackbar.className.replace("show", "");
+      }, 3000);
+    }
+    
+    // Global variable to store current edit context
+    let currentEdit = { type: null, id: null, parentId: null };
+    
+    // Open Edit Modal for posts/comments
+    function openEditModal(type, id, currentValue, parentId = null) {
+      currentEdit = { type, id, parentId };
+      const modal = document.getElementById("edit-modal");
+      const titleEl = document.getElementById("edit-modal-title");
+      titleEl.textContent = type === 'post' ? "Edit Post" : "Edit Comment";
+      document.getElementById("edit-modal-input").value = currentValue;
+      modal.style.display = "flex";
+    }
+    
+    function closeEditModal() {
+      document.getElementById("edit-modal").style.display = "none";
+      currentEdit = { type: null, id: null, parentId: null };
+    }
+    
+    document.getElementById("edit-modal-cancel").addEventListener("click", closeEditModal);
+    document.getElementById("edit-modal-save").addEventListener("click", () => {
+      const newValue = document.getElementById("edit-modal-input").value;
+      if (currentEdit.type === 'post') {
+        update(ref(database, "ideas/" + currentEdit.id), { subject: newValue })
+          .then(() => {
+            closeEditModal();
+            showSnackbar("Post updated successfully!");
+          })
+          .catch((error) => console.error("Error updating post:", error));
+      } else if (currentEdit.type === 'comment') {
+        update(ref(database, "comments/" + currentEdit.parentId + "/" + currentEdit.id), { content: newValue })
+          .then(() => {
+            closeEditModal();
+            showSnackbar("Comment updated successfully!");
+          })
+          .catch((error) => console.error("Error updating comment:", error));
+      }
+    });
+    
+    // Confirmation Modal functions
+    let currentConfirmCallback = null;
+    
+    function openConfirmModal(message, confirmCallback) {
+      currentConfirmCallback = confirmCallback;
+      document.getElementById("confirm-modal-message").textContent = message;
+      document.getElementById("confirm-modal").style.display = "flex";
+    }
+    
+    function closeConfirmModal() {
+      document.getElementById("confirm-modal").style.display = "none";
+      currentConfirmCallback = null;
+    }
+    
+    document.getElementById("confirm-modal-cancel").addEventListener("click", closeConfirmModal);
+    document.getElementById("confirm-modal-confirm").addEventListener("click", () => {
+      if (typeof currentConfirmCallback === "function") {
+        currentConfirmCallback();
+      }
+      closeConfirmModal();
+    });
     
     // Monitor authentication state.
     onAuthStateChanged(auth, (user) => {
@@ -258,7 +357,7 @@
           document.getElementById("admin-content").style.display = "block";
           loadPosts();
           loadComments();
-          loadUsers();
+          // Removed loadUsers() since Manage Users section is removed.
         } else {
           showAccessModal("Access Denied", "You do not have admin privileges to view this panel.");
           document.getElementById("admin-content").style.display = "none";
@@ -296,7 +395,7 @@
             <td>${post.username}</td>
             <td>${post.likes || 0}</td>
             <td>
-              <button onclick="editPost('${postId}')">Edit</button>
+              <button onclick="editPost('${postId}', \`${post.subject}\`)">Edit</button>
               <button onclick="deletePost('${postId}')">Delete</button>
               <button onclick="resetLikes('${postId}')">Reset Likes</button>
             </td>
@@ -306,26 +405,22 @@
       });
     }
     
-    window.editPost = function(postId) {
-      const newSubject = prompt("Enter new subject for post " + postId);
-      if (newSubject) {
-        update(ref(database, "ideas/" + postId), { subject: newSubject })
-          .then(() => alert("Post updated successfully!"))
-          .catch((error) => console.error("Error updating post:", error));
-      }
+    // Open the edit modal with the current post subject.
+    window.editPost = function(postId, currentSubject) {
+      openEditModal('post', postId, currentSubject);
     };
     
     window.deletePost = function(postId) {
-      if (confirm("Are you sure you want to delete post " + postId + "?")) {
+      openConfirmModal("Are you sure you want to delete post " + postId + "?", () => {
         remove(ref(database, "ideas/" + postId))
-          .then(() => alert("Post deleted successfully!"))
+          .then(() => showSnackbar("Post deleted successfully!"))
           .catch((error) => console.error("Error deleting post:", error));
-      }
+      });
     };
     
     window.resetLikes = function(postId) {
       update(ref(database, "ideas/" + postId), { likes: 0 })
-        .then(() => alert("Likes reset successfully!"))
+        .then(() => showSnackbar("Likes reset successfully!"))
         .catch((error) => console.error("Error resetting likes:", error));
     };
     
@@ -348,7 +443,7 @@
               <td>${comment.commenter || comment.replier || "Unknown"}</td>
               <td>${comment.content}</td>
               <td>
-                <button onclick="editComment('${postId}', '${commentId}')">Edit</button>
+                <button onclick="editComment('${postId}', '${commentId}', \`${comment.content}\`)">Edit</button>
                 <button onclick="deleteComment('${postId}', '${commentId}')">Delete</button>
               </td>
             `;
@@ -358,52 +453,17 @@
       });
     }
     
-    window.editComment = function(postId, commentId) {
-      const newContent = prompt("Enter new content for comment " + commentId);
-      if (newContent) {
-        update(ref(database, "comments/" + postId + "/" + commentId), { content: newContent })
-          .then(() => alert("Comment updated successfully!"))
-          .catch((error) => console.error("Error updating comment:", error));
-      }
+    // Open the edit modal with the current comment content.
+    window.editComment = function(postId, commentId, currentContent) {
+      openEditModal('comment', commentId, currentContent, postId);
     };
     
     window.deleteComment = function(postId, commentId) {
-      if (confirm("Delete comment " + commentId + " from post " + postId + "?")) {
+      openConfirmModal("Delete comment " + commentId + " from post " + postId + "?", () => {
         remove(ref(database, "comments/" + postId + "/" + commentId))
-          .then(() => alert("Comment deleted successfully!"))
+          .then(() => showSnackbar("Comment deleted successfully!"))
           .catch((error) => console.error("Error deleting comment:", error));
-      }
-    };
-    
-    // --- Manage Users ---
-    function loadUsers() {
-      const usersRef = ref(database, "users");
-      onValue(usersRef, (snapshot) => {
-        const data = snapshot.val() || {};
-        const tbody = document.getElementById("users-table").querySelector("tbody");
-        tbody.innerHTML = "";
-        for (const userId in data) {
-          const user = data[userId];
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${userId}</td>
-            <td>${user.email}</td>
-            <td>${user.username}</td>
-            <td>
-              <button onclick="deleteUser('${userId}')">Delete User</button>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        }
       });
-    }
-    
-    window.deleteUser = function(userId) {
-      if (confirm("Delete user " + userId + "? This action cannot be undone.")) {
-        remove(ref(database, "users/" + userId))
-          .then(() => alert("User deleted successfully!"))
-          .catch((error) => console.error("Error deleting user:", error));
-      }
     };
   </script>
 </body>
