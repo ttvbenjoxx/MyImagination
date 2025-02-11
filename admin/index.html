@@ -1,1 +1,410 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyImagination Admin Panel</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+  <style>
+    :root {
+      --primary-color: #8a2be2;
+      --secondary-color: #4169e1;
+      --text-color: #333;
+      --background-color: #f4f4f4;
+      --card-background: #ffffff;
+      --modal-background: rgba(0, 0, 0, 0.7);
+      --border-radius: 12px;
+      --transition: all 0.3s ease;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      line-height: 1.6;
+      color: var(--text-color);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      min-height: 100vh;
+    }
+    header {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      display: none; /* Hidden until admin access is confirmed */
+    }
+    .section {
+      margin: 20px 0;
+      background: var(--card-background);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #f0f0f0;
+    }
+    button {
+      padding: 6px 12px;
+      background: var(--primary-color);
+      border: none;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-right: 5px;
+    }
+    button:hover {
+      background: #7424c1;
+    }
+    /* Modal for access notifications */
+    #access-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--modal-background);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    #access-modal .modal-content {
+      background: var(--card-background);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    #access-modal h2 {
+      margin-bottom: 15px;
+    }
+    #access-modal p {
+      margin-bottom: 20px;
+    }
+    #access-modal button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">MyImagination Admin Panel</div>
+    <div>
+      <small>This page is for database interactions only.</small>
+    </div>
+  </header>
+  
+  <!-- Access Modal -->
+  <div id="access-modal" style="display: none;">
+    <div class="modal-content">
+      <h2 id="access-title">Access Denied</h2>
+      <p id="access-message"></p>
+      <button id="login-button" style="display: none;">Login with Google</button>
+    </div>
+  </div>
+  
+  <div class="container" id="admin-content">
+    <!-- Manage Posts Section -->
+    <div class="section" id="posts-section">
+      <h2>Manage Posts</h2>
+      <table id="posts-table">
+        <thead>
+          <tr>
+            <th>Post ID</th>
+            <th>Subject</th>
+            <th>User</th>
+            <th>Likes</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Post rows will be dynamically inserted here -->
+        </tbody>
+      </table>
+    </div>
+    <!-- Manage Comments Section -->
+    <div class="section" id="comments-section">
+      <h2>Manage Comments</h2>
+      <table id="comments-table">
+        <thead>
+          <tr>
+            <th>Comment ID</th>
+            <th>Post ID</th>
+            <th>User</th>
+            <th>Content</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Comment rows will be dynamically inserted here -->
+        </tbody>
+      </table>
+    </div>
+    <!-- Manage Users Section -->
+    <div class="section" id="users-section">
+      <h2>Manage Users</h2>
+      <p>Below is every user that has ever registered on this app:</p>
+      <table id="users-table">
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- User rows will be dynamically inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      onValue,
+      update,
+      remove
+    } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+    import {
+      getAuth,
+      signInWithPopup,
+      GoogleAuthProvider,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+    
+    // Firebase configuration using your credentials
+    const firebaseConfig = {
+      apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
+      authDomain: "myteacheropinion.firebaseapp.com",
+      databaseURL: "https://myteacheropinion-default-rtdb.firebaseio.com",
+      projectId: "myteacheropinion",
+      storageBucket: "myteacheropinion.firebasestorage.app",
+      messagingSenderId: "945674655787",
+      appId: "1:945674655787:web:a59ef04ec9e843769bf26e"
+    };
+    
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    
+    // Client-side email check for admin privileges.
+    function isAdmin(user) {
+      const adminEmails = ["admin@example.com", "gmolter@ftstudent.org"];
+      return adminEmails.includes(user.email);
+    }
+    
+    // Show access modal with a title, message, and (optionally) a login button.
+    function showAccessModal(title, message, showLoginButton = false) {
+      const modal = document.getElementById("access-modal");
+      document.getElementById("access-title").textContent = title;
+      document.getElementById("access-message").textContent = message;
+      const loginButton = document.getElementById("login-button");
+      loginButton.style.display = showLoginButton ? "inline-block" : "none";
+      modal.style.display = "flex";
+    }
+    
+    // Hide access modal.
+    function hideAccessModal() {
+      document.getElementById("access-modal").style.display = "none";
+    }
+    
+    // Monitor authentication state.
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (isAdmin(user)) {
+          hideAccessModal();
+          document.getElementById("admin-content").style.display = "block";
+          loadPosts();
+          loadComments();
+          loadUsers();
+        } else {
+          showAccessModal("Access Denied", "You do not have admin privileges to view this panel.");
+          document.getElementById("admin-content").style.display = "none";
+        }
+      } else {
+        showAccessModal("Not Logged In", "This is an admin panel. Please log in with an admin account.", true);
+        document.getElementById("admin-content").style.display = "none";
+      }
+    });
+    
+    // Login button click event.
+    document.getElementById("login-button").addEventListener("click", () => {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          // onAuthStateChanged will update the UI.
+        })
+        .catch((error) => {
+          console.error("Sign in error:", error);
+        });
+    });
+    
+    // --- Manage Posts ---
+    function loadPosts() {
+      const postsRef = ref(database, "ideas");
+      onValue(postsRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        const tbody = document.getElementById("posts-table").querySelector("tbody");
+        tbody.innerHTML = "";
+        for (const postId in data) {
+          const post = data[postId];
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${postId}</td>
+            <td>${post.subject}</td>
+            <td>${post.username}</td>
+            <td>${post.likes || 0}</td>
+            <td>
+              <button onclick="editPost('${postId}')">Edit</button>
+              <button onclick="deletePost('${postId}')">Delete</button>
+              <button onclick="resetLikes('${postId}')">Reset Likes</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+    }
+    
+    window.editPost = function(postId) {
+      const newSubject = prompt("Enter new subject for post " + postId);
+      if (newSubject) {
+        update(ref(database, "ideas/" + postId), { subject: newSubject })
+          .then(() => alert("Post updated successfully!"))
+          .catch((error) => console.error("Error updating post:", error));
+      }
+    };
+    
+    window.deletePost = function(postId) {
+      if (confirm("Are you sure you want to delete post " + postId + "?")) {
+        remove(ref(database, "ideas/" + postId))
+          .then(() => alert("Post deleted successfully!"))
+          .catch((error) => console.error("Error deleting post:", error));
+      }
+    };
+    
+    window.resetLikes = function(postId) {
+      update(ref(database, "ideas/" + postId), { likes: 0 })
+        .then(() => alert("Likes reset successfully!"))
+        .catch((error) => console.error("Error resetting likes:", error));
+    };
+    
+    // --- Manage Comments ---
+    function loadComments() {
+      const commentsRef = ref(database, "comments");
+      onValue(commentsRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        const tbody = document.getElementById("comments-table").querySelector("tbody");
+        tbody.innerHTML = "";
+        for (const postId in data) {
+          const postComments = data[postId];
+          for (const commentId in postComments) {
+            if (commentId === "_next") continue;
+            const comment = postComments[commentId];
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${commentId}</td>
+              <td>${postId}</td>
+              <td>${comment.commenter || comment.replier || "Unknown"}</td>
+              <td>${comment.content}</td>
+              <td>
+                <button onclick="editComment('${postId}', '${commentId}')">Edit</button>
+                <button onclick="deleteComment('${postId}', '${commentId}')">Delete</button>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          }
+        }
+      });
+    }
+    
+    window.editComment = function(postId, commentId) {
+      const newContent = prompt("Enter new content for comment " + commentId);
+      if (newContent) {
+        update(ref(database, "comments/" + postId + "/" + commentId), { content: newContent })
+          .then(() => alert("Comment updated successfully!"))
+          .catch((error) => console.error("Error updating comment:", error));
+      }
+    };
+    
+    window.deleteComment = function(postId, commentId) {
+      if (confirm("Delete comment " + commentId + " from post " + postId + "?")) {
+        remove(ref(database, "comments/" + postId + "/" + commentId))
+          .then(() => alert("Comment deleted successfully!"))
+          .catch((error) => console.error("Error deleting comment:", error));
+      }
+    };
+    
+    // --- Manage Users ---
+    function loadUsers() {
+      const usersRef = ref(database, "users");
+      onValue(usersRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        const tbody = document.getElementById("users-table").querySelector("tbody");
+        tbody.innerHTML = "";
+        for (const userId in data) {
+          const user = data[userId];
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${userId}</td>
+            <td>${user.email}</td>
+            <td>${user.username}</td>
+            <td>
+              <button onclick="deleteUser('${userId}')">Delete User</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+    }
+    
+    window.deleteUser = function(userId) {
+      if (confirm("Delete user " + userId + "? This action cannot be undone.")) {
+        remove(ref(database, "users/" + userId))
+          .then(() => alert("User deleted successfully!"))
+          .catch((error) => console.error("Error deleting user:", error));
+      }
+    };
+  </script>
+</body>
+</html>
