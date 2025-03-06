@@ -35,6 +35,7 @@
       color: var(--text-color);
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       min-height: 100vh;
+      padding-bottom: 50px; /* Make room for the disclaimer banner */
     }
 
     .container {
@@ -674,6 +675,24 @@
       color: #666;
       margin-bottom: 12px;
     }
+    
+    /* Disclaimer Banner at the bottom */
+    .disclaimer-banner {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #fffae6;
+      color: #333;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+      z-index: 200;
+    }
+    .disclaimer-banner a {
+      color: var(--primary-color);
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -797,14 +816,14 @@
         <h3>Instructions</h3>
         <p><strong>How to Share an Idea:</strong> Click the + button in the top right (after unlocking) to create a new post.</p>
         <p><strong>How to Use:</strong> Unlock the site by clicking "Continue with Google", then share your ideas using the + button. Use the filter button to toggle sorting between most popular and most recent.</p>
-        <p><strong>My Mission:</strong> I aim to create a collaborative space where students can share creative website ideas, get feedback from peers, find inspiration for projects, and learn about web development trends.</p>
+        <p><strong>The purpose of this Site:</strong> This site is meant for Teachers to share their ideas for websites. If there is a website you would use as a teacher or just for fun, please post it. All ideas matter!</p>
       </div>
       <!-- About the Developer Tab -->
       <div class="tab-content" id="about">
         <h3>About the Developer</h3>
         <p>
           Hi, I'm Gavin Molter! I am currently a junior in the student IT Cyberflash program. I love making websites, but I have such a small imagination. This is where I could use your help! I want to create a wide variety of websites that both students and teachers can use. Any ideas you have are greatly appreciated.
-          If you have any questions, please email me at <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a> and I will try to respond as soon as possible!
+          If you have any questions, please email me at <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a> and I will try to respond as soon as possible! If there is an issue with the site, please fill out the simple issue report form <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.
         </p>
       </div>
     </div>
@@ -1038,14 +1057,13 @@
             <span class="comment-date">${comment.timestamp}</span>
           </div>
           <div class="comment-content">${comment.content}</div>
-          ${!window.siteLocked ? 
-            `<button class="reply-button" onclick="showReplyForm('${parentPath}', '${comment.id}'); event.stopPropagation();">Reply</button>
-             <div class="reply-form" id="reply-form-${parentPath.replace(/[\/:]/g, "_")}_${comment.id}" style="display: none; margin-top: 10px;">
-               <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
-               <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-                 <button class="post-comment-button modal-post-comment-button" onclick="addReply('${parentPath}', '${comment.id}'); event.stopPropagation();">Post</button>
-               </div>
-             </div>` : ""}
+          <button class="reply-button" onclick="showReplyForm('${parentPath}', '${comment.id}'); event.stopPropagation();">Reply</button>
+          <div class="reply-form" id="reply-form-${parentPath.replace(/[\/:]/g, "_")}_${comment.id}" style="display: none; margin-top: 10px;">
+            <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
+            <div class="comment-actions" style="margin-top: 6px; text-align: right;">
+              <button class="post-comment-button modal-post-comment-button" onclick="addReply('${parentPath}', '${comment.id}'); event.stopPropagation();">Post</button>
+            </div>
+          </div>
           ${repliesHtml}
         </div>`;
       }).join('');
@@ -1408,5 +1426,12 @@ ${commentToggleMarkup}
         .catch((error) => { console.error("Firebase logout error:", error); });
     };
   </script>
+  <!-- Disclaimer Banner -->
+  <div class="disclaimer-banner">
+    <p>
+      This site is experimental and under development – issues may occur.
+      Please submit any issues <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.
+    </p>
+  </div>
 </body>
 </html>
