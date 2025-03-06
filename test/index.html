@@ -461,12 +461,11 @@
       align-items: center;
     }
 
-    /* Info Icon */
+    /* Info Icon – updated to move it higher above the banner */
     .info-icon {
       position: fixed;
-      bottom: 20px;
+      bottom: 80px; /* Increased from 20px to move it above the banner */
       left: 20px;
-      z-index: 100;
       background: white;
       border-radius: 50%;
       width: 48px;
@@ -476,6 +475,7 @@
       justify-content: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: var(--transition);
+      z-index: 300; /* Ensures it appears above the disclaimer banner */
     }
     .info-icon:hover {
       transform: translateY(-2px);
