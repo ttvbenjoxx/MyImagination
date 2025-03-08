@@ -1228,12 +1228,12 @@ ${commentToggleMarkup}
       });
     }
 
+    // Updated addNewIdea function using push()
     function addNewIdea(event) {
       event.preventDefault();
       const subject = document.getElementById('ideaSubject').value;
       const description = document.getElementById('ideaDescription').value;
       if (subject && description) {
-        const encodedSubject = encodeURIComponent(subject);
         const newIdea = {
           subject: subject,
           description: description,
@@ -1242,14 +1242,8 @@ ${commentToggleMarkup}
           likes: 0,
           created: Date.now()
         };
-        window.get(window.ref(window.database, "ideas/" + encodedSubject))
-          .then((snapshot) => {
-            let key = encodedSubject;
-            if (snapshot.exists()) {
-              key = encodedSubject + "_" + Date.now();
-            }
-            return window.set(window.ref(window.database, "ideas/" + key), newIdea);
-          })
+        const ideasRef = window.ref(window.database, "ideas");
+        window.push(ideasRef, newIdea)
           .then(() => {
             hideModal('newIdeaModal');
             document.getElementById('newIdeaForm').reset();
