@@ -475,7 +475,7 @@
       justify-content: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: var(--transition);
-      z-index: 300; /* Ensures it appears above the disclaimer banner */
+      z-index: 300;
     }
     .info-icon:hover {
       transform: translateY(-2px);
@@ -1006,25 +1006,32 @@
       }).join('');
     }
 
-    window.userLikes = new Set();
-
+    // Updated toggleLike function using user-specific data
     function toggleLike(ideaId) {
       if (window.siteLocked) {
         alert('Please unlock the site to like ideas.');
         return;
       }
+      const uid = window.currentUserId;
+      if (!uid) return;
+  
       const idea = ideas.find(i => i.id === ideaId);
       if (idea) {
         if (window.userLikes.has(ideaId)) {
+          // User already liked it: unlike
           window.userLikes.delete(ideaId);
-          idea.likes--;
+          idea.likes = Math.max(idea.likes - 1, 0);
+          window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes });
+          window.set(window.ref(window.database, "userLikes/" + uid + "/" + ideaId), null);
         } else {
+          // User is liking it
           window.userLikes.add(ideaId);
           idea.likes++;
+          window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes });
+          window.set(window.ref(window.database, "userLikes/" + uid + "/" + ideaId), true);
         }
         renderIdeas();
-        window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes })
-          .catch((error) => { console.error("Error updating likes in Firebase:", error); });
+        // Update full idea modal if open.
         if (document.getElementById('fullIdeaModal').classList.contains('show') &&
             window.currentExpandedIdeaId === ideaId) {
           showFullIdea(ideaId);
@@ -1354,20 +1361,20 @@ ${commentToggleMarkup}
     });
     document.getElementById('tutorialNextBtn').addEventListener('click', nextTutorialStep);
   </script>
-  <!-- Firebase Integration -->
+  <!-- Firebase Integration with updated credentials -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, push, update, set, get, runTransaction } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    import { getDatabase, ref, onValue, push, update, set, get, runTransaction } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
-      authDomain: "myteacheropinion.firebaseapp.com",
-      databaseURL: "https://myteacheropinion-default-rtdb.firebaseio.com",
-      projectId: "myteacheropinion",
-      storageBucket: "myteacheropinion.firebasestorage.app",
-      messagingSenderId: "945674655787",
-      appId: "1:945674655787:web:a59ef04ec9e843769bf26e"
+      apiKey: "AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4",
+      authDomain: "myimaginationbackup.firebaseapp.com",
+      projectId: "myimaginationbackup",
+      storageBucket: "myimaginationbackup.firebasestorage.app",
+      messagingSenderId: "780723525935",
+      appId: "1:780723525935:web:151a6d230b3705852a29da",
+      databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com/"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -1391,6 +1398,15 @@ ${commentToggleMarkup}
         document.getElementById('userProfile').style.display = 'flex';
         window.currentUserEmail = user.email;
         window.currentUserName = user.displayName;
+        window.currentUserId = user.uid;
+
+        const userLikesRef = ref(database, "userLikes/" + user.uid);
+        onValue(userLikesRef, (snapshot) => {
+          const likesData = snapshot.val() || {};
+          window.userLikes = new Set(Object.keys(likesData));
+          renderIdeas();
+        });
+
         window.unlockSite();
         fetchIdeas();
         listenForCommentsCount();
@@ -1411,6 +1427,15 @@ ${commentToggleMarkup}
           document.getElementById('userProfile').style.display = 'flex';
           window.currentUserEmail = result.user.email;
           window.currentUserName = result.user.displayName;
+          window.currentUserId = result.user.uid;
+          
+          const userLikesRef = ref(database, "userLikes/" + result.user.uid);
+          onValue(userLikesRef, (snapshot) => {
+            const likesData = snapshot.val() || {};
+            window.userLikes = new Set(Object.keys(likesData));
+            renderIdeas();
+          });
+
           window.unlockSite();
           fetchIdeas();
           listenForCommentsCount();
