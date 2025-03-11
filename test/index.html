@@ -16,6 +16,12 @@
       --border-radius: 12px;
       --transition: all 0.3s ease;
     }
+    /* Ensure interactive elements have visible focus */
+    button:focus,
+    input:focus,
+    textarea:focus {
+      outline: 2px solid var(--primary-color);
+    }
     body.modal-open { overflow: hidden; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
     body { line-height: 1.6; color: var(--text-color); background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); min-height: 100vh; padding-bottom: 50px; }
@@ -24,82 +30,177 @@
     .header-left { display: flex; align-items: center; gap: 16px; }
     .logo { font-size: 24px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .header-buttons { display: flex; gap: 16px; align-items: center; }
-    .user-profile { display: none; align-items: center; gap: 8px; color: white; cursor: pointer; padding: 8px 16px; border-radius: var(--border-radius); background: rgba(255,255,255,0.1); transition: var(--transition); position: relative; }
+    .user-profile {
+      display: none; align-items: center; gap: 8px; color: white;
+      cursor: pointer; padding: 8px 16px; border-radius: var(--border-radius);
+      background: rgba(255,255,255,0.1); transition: var(--transition);
+      position: relative;
+    }
     .user-profile:hover { background: rgba(255,255,255,0.2); }
     .logout-dropdown {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background: #fff;
-      padding: 10px;
-      border-radius: var(--border-radius);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      width: max-content;
-      z-index: 110;
-      opacity: 0;
-      transform: scaleY(0);
-      transform-origin: top;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      margin-top: 8px;
+      position: absolute; top: 100%; right: 0; background: #fff; padding: 10px;
+      border-radius: var(--border-radius); box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: max-content; z-index: 110; opacity: 0; transform: scaleY(0);
+      transform-origin: top; transition: transform 0.3s ease, opacity 0.3s ease; margin-top: 8px;
     }
     .logout-dropdown.show { opacity: 1; transform: scaleY(1); }
     .logout-dropdown p { margin-bottom: 10px; font-size: 14px; color: #333; }
-    .logout-button { background-color: #e74c3c; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; transition: var(--transition); }
+    .logout-button {
+      background-color: #e74c3c; color: #fff; border: none; padding: 8px 16px;
+      border-radius: 4px; cursor: pointer; transition: var(--transition);
+    }
     .logout-button:hover { background-color: #c0392b; }
-    .icon-button { width: 40px; height: 40px; border: none; border-radius: 50%; background: rgba(255,255,255,0.9); color: var(--primary-color); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
-    .icon-button:hover { transform: translateY(-2px); background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .ideas-grid { display: grid; grid-template-columns: repeat(6, 180px); gap: 12px; justify-content: center; margin: 0 auto; }
-    .idea-card { background-color: var(--card-background); border-radius: var(--border-radius); padding: 8px; margin: 0; box-shadow: 0 3px 5px rgba(0,0,0,0.1); transition: var(--transition); overflow: hidden; position: relative; cursor: pointer; height: 220px; display: flex; flex-direction: column; }
+    .icon-button {
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: rgba(255,255,255,0.9); color: var(--primary-color);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .icon-button:hover {
+      transform: translateY(-2px); background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .ideas-grid {
+      display: grid; grid-template-columns: repeat(6, 180px);
+      gap: 12px; justify-content: center; margin: 0 auto;
+    }
+    .idea-card {
+      background-color: var(--card-background); border-radius: var(--border-radius);
+      padding: 8px; margin: 0; box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+      transition: var(--transition); overflow: hidden; position: relative;
+      cursor: pointer; height: 220px; display: flex; flex-direction: column;
+    }
     .idea-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-    .idea-subject { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .idea-description-container { flex: 1; overflow-y: auto; overflow-x: hidden; margin-bottom: 4px; }
-    .idea-description { color: #4a4a4a; line-height: 1.4; white-space: normal; word-break: break-word; }
-    .more-button { background: var(--primary-color); color: #fff; border: none; border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer; transition: var(--transition); float: right; margin-top: 4px; }
+    .idea-subject {
+      font-size: 14px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .idea-description-container {
+      flex: 1; overflow-y: auto; overflow-x: hidden; margin-bottom: 4px;
+    }
+    .idea-description {
+      color: #4a4a4a; line-height: 1.4; white-space: normal;
+      word-break: break-word;
+    }
+    .more-button {
+      background: var(--primary-color); color: #fff; border: none;
+      border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer;
+      transition: var(--transition); float: right; margin-top: 4px;
+    }
     .more-button:hover { background: #7424c1; }
-    .idea-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #666; }
+    .idea-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: #666;
+    }
     .idea-actions { display: flex; gap: 12px; }
-    .action-button { display: flex; align-items: center; gap: 4px; background: none; border: none; color: #666; cursor: pointer; transition: var(--transition); padding: 2px; }
+    .action-button {
+      display: flex; align-items: center; gap: 4px;
+      background: none; border: none; color: #666; cursor: pointer;
+      transition: var(--transition); padding: 2px;
+    }
     .action-button:hover { color: var(--primary-color); }
     .action-button.static { cursor: default; }
-    .action-button.liked svg { fill: #ff4b4b; stroke: #ff4b4b; animation: heartPop 0.3s ease; }
-    @keyframes heartPop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-background); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+    .action-button.liked svg {
+      fill: #ff4b4b; stroke: #ff4b4b; animation: heartPop 0.3s ease;
+    }
+    @keyframes heartPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: var(--modal-background); z-index: 1000;
+      align-items: center; justify-content: center; backdrop-filter: blur(8px);
+    }
     .modal.show { display: flex; animation: modalFadeIn 0.3s ease; }
-    .modal-content { background-color: var(--card-background); border-radius: var(--border-radius); padding: 24px; width: 90%; max-width: 600px; max-height: 90vh; overflow-x: hidden; position: relative; transform: translateY(20px); opacity: 0; transition: var(--transition); }
-    .modal.show .modal-content { transform: translateY(0); opacity: 1; }
-    .modal-body { overflow-y: auto; white-space: normal; word-break: break-word; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .modal-title { font-size: 20px; font-weight: 600; color: #1a1a1a; }
-    .close-modal { background: none; border: none; font-size: 24px; cursor: pointer; color: #666; transition: var(--transition); }
+    .modal-content {
+      background-color: var(--card-background); border-radius: var(--border-radius);
+      padding: 24px; width: 90%; max-width: 600px; max-height: 90vh;
+      overflow-x: hidden; position: relative; transform: translateY(20px);
+      opacity: 0; transition: var(--transition);
+    }
+    .modal.show .modal-content {
+      transform: translateY(0); opacity: 1;
+    }
+    .modal-body {
+      overflow-y: auto; white-space: normal; word-break: break-word;
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
+    }
+    .modal-title {
+      font-size: 20px; font-weight: 600; color: #1a1a1a;
+    }
+    .close-modal {
+      background: none; border: none; font-size: 24px;
+      cursor: pointer; color: #666; transition: var(--transition);
+    }
     .close-modal:hover { color: #1a1a1a; }
     .form-group { margin-bottom: 12px; }
     .form-label { display: block; margin-bottom: 6px; font-weight: 500; color: #1a1a1a; }
-    .form-input { width: 100%; padding: 10px 14px; border: 2px solid #e1e1e1; border-radius: 8px; font-size: 14px; transition: var(--transition); }
-    .form-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(138,43,226,0.1); }
+    .form-input {
+      width: 100%; padding: 10px 14px; border: 2px solid #e1e1e1;
+      border-radius: 8px; font-size: 14px; transition: var(--transition);
+    }
+    .form-input:focus {
+      outline: none; border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(138,43,226,0.1);
+    }
     textarea.form-input { min-height: 100px; resize: vertical; }
-    .submit-button { background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: var(--transition); width: 100%; }
+    .submit-button {
+      background: var(--primary-color); color: white; border: none;
+      padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: var(--transition); width: 100%;
+    }
     .submit-button:hover { background: #7424c1; transform: translateY(-2px); }
-    .post-comment-button { background: var(--primary-color); color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer; transition: var(--transition); }
+    .post-comment-button {
+      background: var(--primary-color); color: #fff; border: none;
+      border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer;
+      transition: var(--transition);
+    }
     .post-comment-button:hover { background: #7424c1; }
     .modal-post-comment-button { padding: 8px 12px; font-size: 14px; }
-    .comments-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid #e1e1e1; }
+    .comments-section {
+      margin-top: 12px; padding-top: 12px; border-top: 1px solid #e1e1e1;
+    }
     .comment { padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
     .comment-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
     .comment-author { font-weight: 500; color: #1a1a1a; }
     .comment-date { font-size: 12px; color: #666; }
     .comment-form { margin-top: 12px; margin-bottom: 12px; }
-    .comment-input { width: 100%; padding: 10px; border: 1px solid #e1e1e1; border-radius: 8px; margin-bottom: 8px; resize: vertical; min-height: 60px; white-space: normal; word-break: break-word; }
-    .comment-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(138,43,226,0.1); }
+    .comment-input {
+      width: 100%; padding: 10px; border: 1px solid #e1e1e1;
+      border-radius: 8px; margin-bottom: 8px; resize: vertical;
+      min-height: 60px; white-space: normal; word-break: break-word;
+    }
+    .comment-input:focus {
+      outline: none; border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(138,43,226,0.1);
+    }
     .comment-actions { display: flex; justify-content: flex-end; gap: 8px; }
     .reply-form { margin-left: 40px; margin-top: 8px; display: none; }
     .reply-form.show { display: block; }
     .comment-replies { margin-left: 40px; margin-top: 8px; }
-    .reply-button { background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 4px; transition: var(--transition); }
+    .reply-button {
+      background: none; border: none; color: var(--primary-color);
+      cursor: pointer; font-size: 12px; padding: 4px 8px;
+      border-radius: 4px; transition: var(--transition);
+    }
     .reply-button:hover { background: rgba(138,43,226,0.1); }
     .author-details { font-size: 0.8rem; margin-bottom: 12px; }
     .header-right-content { display: flex; gap: 10px; align-items: center; }
-    .info-icon { position: fixed; bottom: 80px; left: 20px; background: white; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: var(--transition); z-index: 300; }
-    .info-icon:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+    .info-icon {
+      position: fixed; bottom: 80px; left: 20px; background: white;
+      border-radius: 50%; width: 48px; height: 48px; display: flex;
+      align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: var(--transition); z-index: 300;
+    }
+    .info-icon:hover {
+      transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
     .info-icon .info-text { font-size: 24px; font-weight: bold; color: var(--primary-color); line-height: 1; }
     .tabs { display: flex; gap: 2px; background: #f5f5f5; padding: 4px; border-radius: 8px; margin-bottom: 16px; }
     .tab { flex: 1; padding: 12px; border: none; background: none; cursor: pointer; border-radius: 6px; transition: var(--transition); }
@@ -128,6 +229,7 @@
       z-index: 2000;
     }
     @keyframes l3 { to { transform: rotate(1turn); } }
+    /* Tutorial overlay */
     #tutorialOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: none; }
     #tutorialTooltip { position: absolute; background: white; padding: 16px; border-radius: var(--border-radius); max-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: var(--transition); }
     .highlighted { position: relative; z-index: 3100; box-shadow: 0 0 0 4px var(--primary-color); border-radius: var(--border-radius); }
@@ -151,7 +253,8 @@
   </style>
 </head>
 <body>
-  <div id="loader" class="loader"></div>
+  <!-- Loader -->
+  <div id="loader" class="loader" role="status" aria-live="polite" aria-label="Loading"></div>
   <header>
     <div class="header-left">
       <div class="logo">MyImagination</div>
@@ -181,60 +284,33 @@
       </button>
     </div>
   </header>
-  <div class="container">
+  <div class="container" role="main">
     <div id="ideasGrid" class="ideas-grid"></div>
   </div>
   <button id="infoBtn" class="info-icon" title="Info">
     <span class="info-text">i</span>
   </button>
-  <div id="introModal" class="modal">
+  <!-- Intro Modal -->
+  <div id="introModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="introModalTitle">
     <div class="modal-content">
-      <h2 class="modal-title">Welcome to MyImagination!</h2>
+      <h2 class="modal-title" id="introModalTitle">Welcome to MyImagination!</h2>
       <p>This site was built by a student at FCHS to gather and share creative website ideas. Please continue with Google to unlock full access to the site.</p>
-      <button class="gsi-material-button" onclick="firebaseLogin()">
-        <div class="gsi-material-button-state"></div>
-        <div class="gsi-material-button-content-wrapper">
-          <div class="gsi-material-button-icon">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style="display: block;">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-              <path fill="none" d="M0 0h48v48H0z"></path>
-            </svg>
-          </div>
-          <span class="gsi-material-button-contents">Continue with Google</span>
-          <span style="display: none;">Continue with Google</span>
-        </div>
-      </button>
+      <button class="gsi-material-button" onclick="firebaseLogin()">Continue with Google</button>
     </div>
   </div>
-  <div id="signedOutModal" class="modal">
+  <!-- Signed Out Modal -->
+  <div id="signedOutModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="signedOutModalTitle">
     <div class="modal-content">
-      <h2 class="modal-title">Whoops!</h2>
+      <h2 class="modal-title" id="signedOutModalTitle">Whoops!</h2>
       <p>Looks like you've been signed out. Let's get you back on track.</p>
-      <button class="gsi-material-button" onclick="firebaseLogin()">
-        <div class="gsi-material-button-state"></div>
-        <div class="gsi-material-button-content-wrapper">
-          <div class="gsi-material-button-icon">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style="display: block;">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-              <path fill="none" d="M0 0h48v48H0z"></path>
-            </svg>
-          </div>
-          <span class="gsi-material-button-contents">Continue with Google</span>
-          <span style="display: none;">Continue with Google</span>
-        </div>
-      </button>
+      <button class="gsi-material-button" onclick="firebaseLogin()">Continue with Google</button>
     </div>
   </div>
-  <div id="newIdeaModal" class="modal">
+  <!-- New Idea Modal -->
+  <div id="newIdeaModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="newIdeaModalTitle">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">Share Your Idea</h2>
+        <h2 class="modal-title" id="newIdeaModalTitle">Share Your Idea</h2>
         <button class="close-modal" onclick="hideModal('newIdeaModal')">&times;</button>
       </div>
       <form id="newIdeaForm" onsubmit="return addNewIdea(event)">
@@ -250,11 +326,13 @@
       </form>
     </div>
   </div>
-  <div id="fullIdeaModal" class="modal"></div>
-  <div id="infoModal" class="modal">
+  <!-- Full Idea Modal -->
+  <div id="fullIdeaModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="fullIdeaModalTitle"></div>
+  <!-- Info Modal -->
+  <div id="infoModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">Information</h2>
+        <h2 class="modal-title" id="infoModalTitle">Information</h2>
         <button class="close-modal" onclick="hideModal('infoModal')">&times;</button>
       </div>
       <div class="tabs">
@@ -273,6 +351,7 @@
       </div>
     </div>
   </div>
+  <!-- Tutorial Overlay -->
   <div id="tutorialOverlay">
     <div id="tutorialTooltip">
       <p id="tutorialText"></p>
@@ -286,19 +365,19 @@
     window.showModal=showModal; window.hideModal=hideModal; window.unlockSite=unlockSite; window.siteLocked=true;
   </script>
   <script>
-    document.getElementById('userProfile').addEventListener('click',function(e){document.getElementById('logoutDropdown').classList.toggle("show");e.stopPropagation();});
-    document.addEventListener('click',function(){document.getElementById('logoutDropdown').classList.remove("show");});
-    document.getElementById('confirmLogout').addEventListener('click',function(e){e.stopPropagation();logout();});
+    document.getElementById('userProfile').addEventListener('click', function(e){document.getElementById('logoutDropdown').classList.toggle("show"); e.stopPropagation();});
+    document.addEventListener('click', function(){document.getElementById('logoutDropdown').classList.remove("show");});
+    document.getElementById('confirmLogout').addEventListener('click', function(e){ e.stopPropagation(); logout(); });
   </script>
   <script>
-    document.getElementById('newIdeaBtn').addEventListener('click',function(e){e.stopPropagation();showModal('newIdeaModal');});
-    document.getElementById('infoBtn').addEventListener('click',function(e){e.stopPropagation();showModal('infoModal');});
+    document.getElementById('newIdeaBtn').addEventListener('click', function(e){ e.stopPropagation(); showModal('newIdeaModal'); });
+    document.getElementById('infoBtn').addEventListener('click', function(e){ e.stopPropagation(); showModal('infoModal'); });
     let filterBy="recent";
-    document.getElementById('filterBtn').addEventListener('click',function(e){e.stopPropagation();if(filterBy==="recent"){filterBy="popular";this.title="Filter: Most Popular";}else{filterBy="recent";this.title="Filter: Most Recent";}renderIdeas();});
-    document.querySelectorAll('.modal').forEach(modal=>{modal.addEventListener('click',function(e){if(e.target===modal){hideModal(modal.id);}});});
+    document.getElementById('filterBtn').addEventListener('click', function(e){ e.stopPropagation(); if(filterBy==="recent"){ filterBy="popular"; this.title="Filter: Most Popular"; } else { filterBy="recent"; this.title="Filter: Most Recent"; } renderIdeas(); });
+    document.querySelectorAll('.modal').forEach(modal=>{ modal.addEventListener('click', function(e){ if(e.target===modal){ hideModal(modal.id); } }); });
   </script>
   <script>
-    document.querySelectorAll('.tab').forEach(tab=>{tab.addEventListener('click',function(){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));this.classList.add('active');document.getElementById(this.dataset.tab).classList.add('active');});});
+    document.querySelectorAll('.tab').forEach(tab=>{ tab.addEventListener('click', function(){ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); this.classList.add('active'); document.getElementById(this.dataset.tab).classList.add('active'); }); });
   </script>
   <script>
     let ideas=[]; window.commentsCount={};
@@ -334,18 +413,44 @@
           </div>
         </div>`;
     }).join(''); }
-    function toggleLike(ideaId, key){ if(window.siteLocked){ alert('Please unlock the site to like ideas.'); return; } const uid=window.currentUserId; if(!uid)return; const idea=ideas.find(i=>i.id===ideaId); if(idea){ if(window.userLikes.has(key)){ window.userLikes.delete(key); idea.likes=Math.max(idea.likes-1,0); window.update(window.ref(window.database,"ideas/"+ideaId),{likes:idea.likes}); window.set(window.ref(window.database,"userManagement/"+sanitizeEmail(window.currentUserEmail)+"/Likes/"+key),null); } else { window.userLikes.add(key); idea.likes++; window.update(window.ref(window.database,"ideas/"+ideaId),{likes:idea.likes}); window.set(window.ref(window.database,"userManagement/"+sanitizeEmail(window.currentUserEmail)+"/Likes/"+key),true); } renderIdeas(); if(document.getElementById('fullIdeaModal').classList.contains('show') && window.currentExpandedIdeaId===ideaId){ showFullIdea(ideaId); const heartIcon=document.querySelector('#fullIdeaModal .action-button.liked svg'); if(heartIcon){ heartIcon.style.animation='none'; setTimeout(()=>{ heartIcon.style.animation='heartPop 0.3s ease'; },10); } } } }
+    function toggleLike(ideaId, key){ 
+      if(window.siteLocked){ alert('Please unlock the site to like ideas.'); return; } 
+      const uid=window.currentUserId; 
+      if(!uid)return; 
+      const idea=ideas.find(i=>i.id===ideaId); 
+      if(idea){
+        if(window.userLikes.has(key)){
+          window.userLikes.delete(key);
+          idea.likes=Math.max(idea.likes-1,0);
+          window.update(window.ref(window.database,"ideas/"+ideaId),{likes:idea.likes});
+          window.set(window.ref(window.database,"userManagement/"+sanitizeEmail(window.currentUserEmail)+"/Likes/"+key),null);
+        } else {
+          window.userLikes.add(key);
+          idea.likes++;
+          window.update(window.ref(window.database,"ideas/"+ideaId),{likes:idea.likes});
+          window.set(window.ref(window.database,"userManagement/"+sanitizeEmail(window.currentUserEmail)+"/Likes/"+key),true);
+        }
+        renderIdeas();
+        if(document.getElementById('fullIdeaModal').classList.contains('show') && window.currentExpandedIdeaId===ideaId){
+          showFullIdea(ideaId);
+          const heartIcon=document.querySelector('#fullIdeaModal .action-button.liked svg');
+          if(heartIcon){ heartIcon.style.animation='none'; setTimeout(()=>{ heartIcon.style.animation='heartPop 0.3s ease'; },10); }
+        }
+      }
+    }
     function sanitizeEmail(email){ return email.replace(/[.#$/\[\]]/g,"_"); }
     function sanitizeText(text){ return text.replace(/[.#$/\[\]\s]/g,"_"); }
-    function renderComments(comments, parentPath){ parentPath = parentPath || ("comments/"+window.currentExpandedIdeaId); return comments.map(comment=>{
-      const replyFormId="reply-form-"+parentPath.replace(/[\/:]/g,"_")+"_"+comment.id;
-      let repliesHtml="";
-      if(comment.replies){
-        const repliesArray=Object.entries(comment.replies).map(([k,v])=>({id:k,...v}));
-        repliesArray.sort((a,b)=>{ const numA=parseInt(a.id.split("_")[1]||"0"); const numB=parseInt(b.id.split("_")[1]||"0"); return numA-numB; });
-        repliesHtml=`<div class="comment-replies">${renderComments(repliesArray, parentPath+"/"+comment.id+"/replies")}</div>`;
-      }
-      return `<div class="comment">
+    function renderComments(comments, parentPath){
+      parentPath = parentPath || ("comments/"+window.currentExpandedIdeaId);
+      return comments.map(comment=>{
+        const replyFormId="reply-form-"+parentPath.replace(/[\/:]/g,"_")+"_"+comment.id;
+        let repliesHtml="";
+        if(comment.replies){
+          const repliesArray=Object.entries(comment.replies).map(([k,v])=>({id:k,...v}));
+          repliesArray.sort((a,b)=>{ const numA=parseInt(a.id.split("_")[1]||"0"); const numB=parseInt(b.id.split("_")[1]||"0"); return numA-numB; });
+          repliesHtml=`<div class="comment-replies">${renderComments(repliesArray, parentPath+"/"+comment.id+"/replies")}</div>`;
+        }
+        return `<div class="comment">
           <div class="comment-header">
             <span class="comment-author">${comment.commenter||comment.replier||"Unknown"}</span>
             <span class="comment-date">${comment.timestamp}</span>
@@ -360,12 +465,47 @@
           </div>
           ${repliesHtml}
         </div>`;
-    }).join(''); }
-    function showReplyForm(parentPath, commentId){ const replyFormId="reply-form-"+parentPath.replace(/[\/:]/g,"_")+"_"+commentId; const form=document.getElementById(replyFormId); if(form){ form.style.display=(form.style.display==="none"||form.style.display==="")?"block":"none"; } }
-    function addCommentModal(postId){ const container=document.getElementById('modalCommentForm_'+postId); const textarea=container.querySelector('.comment-input'); const content=textarea.value.trim(); if(!content)return; const nextRef=window.ref(window.database,"comments/"+postId+"/_next"); window.runTransaction(nextRef,(current)=>{ return (current===null?0:current)+1; }).then((result)=>{ const commentNumber=result.snapshot.val(); const newCommentId="Comment_"+commentNumber; const commentData={ commenter: window.currentUserName||"DummyUser", timestamp: new Date().toLocaleString(), content: content, replies: {} }; return window.set(window.ref(window.database,"comments/"+postId+"/"+newCommentId), commentData); }).then(()=>{ textarea.value=""; container.style.display="none"; }).catch((error)=>{ console.error("Error posting comment:",error); }); }
-    function addReply(parentPath, commentId){ const replyFormId="reply-form-"+parentPath.replace(/[\/:]/g,"_")+"_"+commentId; const replyInput=document.querySelector("#"+replyFormId+" .comment-input"); const content=replyInput.value.trim(); if(!content)return; const nextRef=window.ref(window.database, parentPath+"/"+commentId+"/_next"); window.runTransaction(nextRef,(current)=>{ return (current===null?0:current)+1; }).then((result)=>{ const replyNumber=result.snapshot.val(); const newReplyId="Reply_"+replyNumber; const replyData={ replier: window.currentUserName||"DummyUser", timestamp: new Date().toLocaleString(), content: content }; return window.set(window.ref(window.database, parentPath+"/"+commentId+"/replies/"+newReplyId), replyData); }).then(()=>{ replyInput.value=""; }).catch((error)=>{ console.error("Error posting reply:",error); }); }
-    function showFullIdea(ideaId){ const idea=ideas.find(i=>i.id===ideaId); if(!idea)return; window.currentExpandedIdeaId=ideaId; const modalHeaderHTML=`<div class="header-left-content">
-  <h2 class="modal-title" id="fullIdeaTitle">${idea.subject}</h2>
+      }).join('');
+    }
+    function showReplyForm(parentPath, commentId){
+      const replyFormId="reply-form-"+parentPath.replace(/[\/:]/g,"_")+"_"+commentId;
+      const form=document.getElementById(replyFormId);
+      if(form){ form.style.display=(form.style.display==="none"||form.style.display==="")?"block":"none"; }
+    }
+    function addCommentModal(postId){
+      const container=document.getElementById('modalCommentForm_'+postId);
+      const textarea=container.querySelector('.comment-input');
+      const content=textarea.value.trim();
+      if(!content)return;
+      const nextRef=window.ref(window.database,"comments/"+postId+"/_next");
+      window.runTransaction(nextRef,(current)=>{ return (current===null?0:current)+1; }).then((result)=>{
+        const commentNumber=result.snapshot.val();
+        const newCommentId="Comment_"+commentNumber;
+        const commentData={ commenter: window.currentUserName||"DummyUser", timestamp: new Date().toLocaleString(), content: content, replies: {} };
+        return window.set(window.ref(window.database,"comments/"+postId+"/"+newCommentId), commentData);
+      }).then(()=>{
+        textarea.value=""; container.style.display="none";
+      }).catch((error)=>{ console.error("Error posting comment:",error); });
+    }
+    function addReply(parentPath, commentId){
+      const replyFormId="reply-form-"+parentPath.replace(/[\/:]/g,"_")+"_"+commentId;
+      const replyInput=document.querySelector("#"+replyFormId+" .comment-input");
+      const content=replyInput.value.trim();
+      if(!content)return;
+      const nextRef=window.ref(window.database, parentPath+"/"+commentId+"/_next");
+      window.runTransaction(nextRef,(current)=>{ return (current===null?0:current)+1; }).then((result)=>{
+        const replyNumber=result.snapshot.val();
+        const newReplyId="Reply_"+replyNumber;
+        const replyData={ replier: window.currentUserName||"DummyUser", timestamp: new Date().toLocaleString(), content: content };
+        return window.set(window.ref(window.database, parentPath+"/"+commentId+"/replies/"+newReplyId), replyData);
+      }).then(()=>{ replyInput.value=""; }).catch((error)=>{ console.error("Error posting reply:", error); });
+    }
+    function showFullIdea(ideaId){
+      const idea=ideas.find(i=>i.id===ideaId);
+      if(!idea)return;
+      window.currentExpandedIdeaId=ideaId;
+      const modalHeaderHTML=`<div class="header-left-content">
+  <h2 class="modal-title" id="fullIdeaModalTitle">${idea.subject}</h2>
   <div class="author-details">
     <span class="author-name">${idea.username}</span>
     &nbsp;|&nbsp;
@@ -420,10 +560,7 @@ ${commentToggleMarkup}
     let loaderHidden = false;
     function hideLoader() {
       const loader = document.getElementById('loader');
-      if(loader && !loaderHidden) {
-        loader.style.display = 'none';
-        loaderHidden = true;
-      }
+      if(loader && !loaderHidden) { loader.style.display = 'none'; loaderHidden = true; }
     }
   </script>
   <div id="tutorialOverlay">
@@ -477,7 +614,15 @@ ${commentToggleMarkup}
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
     import { getDatabase, ref, onValue, push, update, set, get, runTransaction } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
-    const firebaseConfig = { apiKey:"AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4", authDomain:"myimaginationbackup.firebaseapp.com", projectId:"myimaginationbackup", storageBucket:"myimaginationbackup.firebasestorage.app", messagingSenderId:"780723525935", appId:"1:780723525935:web:151a6d230b3705852a29da", databaseURL:"https://myimaginationbackup-default-rtdb.firebaseio.com/" };
+    const firebaseConfig = { 
+      apiKey:"AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4", 
+      authDomain:"myimaginationbackup.firebaseapp.com", 
+      projectId:"myimaginationbackup", 
+      storageBucket:"myimaginationbackup.firebasestorage.app", 
+      messagingSenderId:"780723525935", 
+      appId:"1:780723525935:web:151a6d230b3705852a29da", 
+      databaseURL:"https://myimaginationbackup-default-rtdb.firebaseio.com/" 
+    };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
@@ -532,18 +677,14 @@ ${commentToggleMarkup}
         .then(() => { location.reload(); })
         .catch((error) => { console.error("Firebase logout error:", error); });
     };
-    function sanitizeEmail(email){ return email.replace(/[.#$/\[\]]/g, "_"); }
-    function sanitizeText(text){ return text.replace(/[.#$/\[\]\s]/g, "_"); }
+    function sanitizeEmail(email){ return email.replace(/[.#$/\[\]]/g,"_"); }
+    function sanitizeText(text){ return text.replace(/[.#$/\[\]\s]/g,"_"); }
   </script>
   <div class="disclaimer-banner">
     <p>This site is experimental and under development – issues may occur. Please submit any issues <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.</p>
   </div>
   <script>
-    window.addEventListener('load', () => {
-      // In case the window load event fires after Firebase data loads,
-      // hide the loader if not already hidden.
-      hideLoader();
-    });
+    window.addEventListener('load', () => { hideLoader(); });
   </script>
 </body>
 </html>
