@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MyImagination Forum</title>
 
-  <!-- 1) Load Firebase "compat" scripts so "firebase" is globally available -->
+  <!-- 1) Load Firebase "compat" scripts globally -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-  <!-- 2) Link to your external CSS -->
+  <!-- 2) Our external CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -38,6 +38,7 @@
           <button id="confirmLogout" class="logout-button">Sign Out</button>
         </div>
       </div>
+      <!-- By default, let's hide the New Idea button until user logs in (optional) -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -55,7 +56,7 @@
     <span class="info-text">i</span>
   </button>
 
-  <!-- Intro Modal -->
+  <!-- Intro Modal (Welcome) -->
   <div id="introModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="introModalTitle">
     <div class="modal-content">
       <h2 class="modal-title" id="introModalTitle">Welcome to MyImagination!</h2>
@@ -64,6 +65,7 @@
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
           <div class="gsi-material-button-icon">
+            <!-- Google Icon -->
             <svg viewBox="0 0 48 48">
               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
               <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -78,7 +80,7 @@
     </div>
   </div>
 
-  <!-- Signed Out Modal -->
+  <!-- Signed Out Modal (Whoops) -->
   <div id="signedOutModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="signedOutModalTitle">
     <div class="modal-content">
       <h2 class="modal-title" id="signedOutModalTitle">Whoops!</h2>
@@ -87,6 +89,7 @@
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
           <div class="gsi-material-button-icon">
+            <!-- Google Icon -->
             <svg viewBox="0 0 48 48">
               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
               <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -159,10 +162,11 @@
     </div>
   </div>
 
-  <!-- We'll load firebase.js and main.js after the body content -->
+  <!-- 3) Our JS files -->
   <script src="firebase.js"></script>
   <script src="main.js"></script>
 
+  <!-- Disclaimer Banner -->
   <div class="disclaimer-banner">
     <p>This site is experimental and under development – issues may occur. Please submit any issues <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.</p>
   </div>
