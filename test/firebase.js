@@ -1,11 +1,8 @@
 // firebase.js
-// Put your Firebase config, signIn/out logic, and onAuthStateChanged here.
+// Using "compat" libraries for a global firebase object:
 
-// Import from CDN (if you prefer ES modules, you'd do that differently)
-// This file is included via <script src="firebase.js"></script> in index.html
-
-// Initialize Firebase
-const firebaseConfig = {
+// 1) Your Firebase config:
+var firebaseConfig = {
   apiKey: "AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4",
   authDomain: "myimaginationbackup.firebaseapp.com",
   projectId: "myimaginationbackup",
@@ -15,25 +12,46 @@ const firebaseConfig = {
   databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com/"
 };
 
-// Using the 11.4.0 scripts in index.html
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.getAuth(app);
-const provider = new firebase.GoogleAuthProvider();
-const database = firebase.getDatabase(app);
+// 2) Initialize the global 'firebase' object
+firebase.initializeApp(firebaseConfig);
 
-// Expose references on window so main.js can use them
+var auth = firebase.auth();
+var provider = new firebase.auth.GoogleAuthProvider();
+var database = firebase.database();
+
+// Expose these so main.js can use them
+window.auth = auth;
+window.provider = provider;
 window.database = database;
-window.ref = firebase.ref;
-window.onValue = firebase.onValue;
-window.push = firebase.push;
-window.update = firebase.update;
-window.set = firebase.set;
-window.get = firebase.get;
-window.runTransaction = firebase.runTransaction;
 
-// Keep references to signIn/out globally
+// Provide wrappers for .ref, .onValue, etc.
+// So you can call window.ref(database, "ideas"), window.onValue(ref, callback) in main.js
+window.ref = function(db, path) {
+  return db.ref(path);
+};
+window.onValue = function(ref, callback) {
+  // "value" event
+  return ref.on('value', (snapshot) => callback(snapshot));
+};
+window.push = function(ref, data) {
+  return ref.push(data);
+};
+window.update = function(ref, data) {
+  return ref.update(data);
+};
+window.set = function(ref, data) {
+  return ref.set(data);
+};
+window.get = function(ref) {
+  return ref.once('value');
+};
+window.runTransaction = function(ref, transactionUpdate) {
+  return ref.transaction(transactionUpdate);
+};
+
+// Provide the signIn/out logic
 window.firebaseLogin = function() {
-  firebase.signInWithPopup(auth, provider)
+  auth.signInWithPopup(provider)
     .then((result) => {
       window.hideModal('signedOutModal');
       document.getElementById('username').textContent = result.user.displayName;
@@ -41,18 +59,20 @@ window.firebaseLogin = function() {
       window.currentUserEmail = result.user.email;
       window.currentUserName = result.user.displayName;
       window.currentUserId = result.user.uid;
-      const userKey = window.sanitizeEmail(result.user.email);
-      const userLikesRef = window.ref(database, "userManagement/" + userKey + "/Likes");
-      window.onValue(userLikesRef, (snapshot) => {
-        const likesData = snapshot.val() || {};
-        window.userLikes = new Set(Object.keys(likesData));
-        window.renderIdeas(); // Re-render to reflect liked states
-      });
-      window.unlockSite();    // Unlock UI
-      window.fetchIdeas();    // Fetch ideas from DB
-      window.listenForCommentsCount(); // Start comment listener
 
-      // If user is brand new, show tutorial
+      var userKey = window.sanitizeEmail(result.user.email);
+      var userLikesRef = window.ref(database, "userManagement/" + userKey + "/Likes");
+      window.onValue(userLikesRef, (snapshot) => {
+        var likesData = snapshot.val() || {};
+        window.userLikes = new Set(Object.keys(likesData));
+        window.renderIdeas();
+      });
+
+      window.unlockSite();
+      window.fetchIdeas();
+      window.listenForCommentsCount();
+
+      // If user is new, show tutorial
       if (result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
         window.startTutorial();
       }
@@ -63,7 +83,7 @@ window.firebaseLogin = function() {
 };
 
 window.logout = function() {
-  firebase.signOut(auth)
+  auth.signOut()
     .then(() => {
       location.reload();
     })
@@ -72,28 +92,31 @@ window.logout = function() {
     });
 };
 
-// Track user state
-firebase.onAuthStateChanged(auth, (user) => {
+// Track user state changes:
+auth.onAuthStateChanged(function(user) {
   if (user) {
-    // Already handled signIn logic above, but in case of page refresh:
+    // If user is signed in
     window.hideModal('signedOutModal');
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
+
     window.currentUserEmail = user.email;
     window.currentUserName = user.displayName;
     window.currentUserId = user.uid;
-    const userKey = window.sanitizeEmail(user.email);
-    const userLikesRef = window.ref(database, "userManagement/" + userKey + "/Likes");
+
+    var userKey = window.sanitizeEmail(user.email);
+    var userLikesRef = window.ref(database, "userManagement/" + userKey + "/Likes");
     window.onValue(userLikesRef, (snapshot) => {
-      const likesData = snapshot.val() || {};
+      var likesData = snapshot.val() || {};
       window.userLikes = new Set(Object.keys(likesData));
       window.renderIdeas();
     });
+
     window.unlockSite();
     window.fetchIdeas();
     window.listenForCommentsCount();
   } else {
-    // Show intro or signedOut modal
+    // Signed out
     if (!localStorage.getItem('visited')) {
       window.showModal('introModal');
     } else {
