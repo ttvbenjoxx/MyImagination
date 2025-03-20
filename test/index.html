@@ -4,7 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MyImagination Forum</title>
-  <!-- Link to your external CSS -->
+
+  <!-- 1) Load Firebase "compat" scripts so "firebase" is globally available -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <!-- 2) Link to your external CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -32,7 +38,6 @@
           <button id="confirmLogout" class="logout-button">Sign Out</button>
         </div>
       </div>
-      <!-- Show new idea button once user is signed in -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -59,7 +64,6 @@
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
           <div class="gsi-material-button-icon">
-            <!-- Google Icon -->
             <svg viewBox="0 0 48 48">
               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
               <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -83,7 +87,6 @@
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
           <div class="gsi-material-button-icon">
-            <!-- Google Icon -->
             <svg viewBox="0 0 48 48">
               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
               <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -142,11 +145,7 @@
       <div class="tab-content" id="about">
         <h3>About the Developer</h3>
         <p>
-          Hi, I'm Gavin Molter! I am currently a junior in the student IT Cyberflash program. I love making websites, but I have such a small imagination. This is where I could use your help! I want to create a wide variety of websites that both students and teachers can use. Any ideas you have are greatly appreciated.
-          If you have any questions, please email me at
-          <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a>
-          and I will try to respond as soon as possible! If there is an issue with the site, please fill out the simple issue report form
-          <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.
+          Hi, I'm Gavin Molter! ...
         </p>
       </div>
     </div>
@@ -160,11 +159,10 @@
     </div>
   </div>
 
-  <!-- Scripts: load firebase.js first, then main.js -->
+  <!-- We'll load firebase.js and main.js after the body content -->
   <script src="firebase.js"></script>
   <script src="main.js"></script>
 
-  <!-- Disclaimer Banner -->
   <div class="disclaimer-banner">
     <p>This site is experimental and under development – issues may occur. Please submit any issues <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.</p>
   </div>
