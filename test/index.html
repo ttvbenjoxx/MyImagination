@@ -554,6 +554,7 @@
         margin: 20px;
       }
     }
+    /* Google Sign-In Button (restored SVG icon) */
     .gsi-material-button {
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -640,10 +641,8 @@
       opacity: 12%;
     }
     .gsi-material-button:not(:disabled):hover {
-      -webkit-box-shadow: 0 1px 2px 0 rgba(60,64,67,.30),
-                          0 1px 3px 1px rgba(60,64,67,.15);
-      box-shadow: 0 1px 2px 0 rgba(60,64,67,.30),
-                  0 1px 3px 1px rgba(60,64,67,.15);
+      -webkit-box-shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
     }
     .gsi-material-button:not(:disabled):hover .gsi-material-button-state {
       background-color: #303030;
@@ -710,7 +709,8 @@
           <button id="confirmLogout" class="logout-button">Sign Out</button>
         </div>
       </div>
-      <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
+      <!-- New Idea button now is not hidden by inline style -->
+      <button id="newIdeaBtn" class="icon-button" title="New Idea">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -729,7 +729,21 @@
     <div class="modal-content">
       <h2 class="modal-title" id="introModalTitle">Welcome to MyImagination!</h2>
       <p>This site was built by a student at FCHS to gather and share creative website ideas. Please continue with Google to unlock full access to the site.</p>
-      <button class="gsi-material-button" onclick="firebaseLogin()">Continue with Google</button>
+      <button class="gsi-material-button" onclick="firebaseLogin()">
+        <div class="gsi-material-button-state"></div>
+        <div class="gsi-material-button-content-wrapper">
+          <div class="gsi-material-button-icon">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+              <path fill="none" d="M0 0h48v48H0z"></path>
+            </svg>
+          </div>
+          <span class="gsi-material-button-contents">Continue with Google</span>
+        </div>
+      </button>
     </div>
   </div>
   <!-- Signed Out Modal -->
@@ -737,7 +751,21 @@
     <div class="modal-content">
       <h2 class="modal-title" id="signedOutModalTitle">Whoops!</h2>
       <p>Looks like you've been signed out. Let's get you back on track.</p>
-      <button class="gsi-material-button" onclick="firebaseLogin()">Continue with Google</button>
+      <button class="gsi-material-button" onclick="firebaseLogin()">
+        <div class="gsi-material-button-state"></div>
+        <div class="gsi-material-button-content-wrapper">
+          <div class="gsi-material-button-icon">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+              <path fill="none" d="M0 0h48v48H0z"></path>
+            </svg>
+          </div>
+          <span class="gsi-material-button-contents">Continue with Google</span>
+        </div>
+      </button>
     </div>
   </div>
   <!-- New Idea Modal -->
@@ -835,19 +863,56 @@
     }
   </script>
   <script>
-    document.getElementById('userProfile').addEventListener('click', function(e){ document.getElementById('logoutDropdown').classList.toggle("show"); e.stopPropagation(); });
-    document.addEventListener('click', function(){ document.getElementById('logoutDropdown').classList.remove("show"); });
-    document.getElementById('confirmLogout').addEventListener('click', function(e){ e.stopPropagation(); logout(); });
+    document.getElementById('userProfile').addEventListener('click', function(e){ 
+      document.getElementById('logoutDropdown').classList.toggle("show"); 
+      e.stopPropagation(); 
+    });
+    document.addEventListener('click', function(){ 
+      document.getElementById('logoutDropdown').classList.remove("show"); 
+    });
+    document.getElementById('confirmLogout').addEventListener('click', function(e){ 
+      e.stopPropagation(); 
+      logout(); 
+    });
   </script>
   <script>
-    document.getElementById('newIdeaBtn').addEventListener('click', function(e){ e.stopPropagation(); showModal('newIdeaModal'); });
-    document.getElementById('infoBtn').addEventListener('click', function(e){ e.stopPropagation(); showModal('infoModal'); });
+    document.getElementById('newIdeaBtn').addEventListener('click', function(e){ 
+      e.stopPropagation(); 
+      showModal('newIdeaModal'); 
+    });
+    document.getElementById('infoBtn').addEventListener('click', function(e){ 
+      e.stopPropagation(); 
+      showModal('infoModal'); 
+    });
     let filterBy = "recent";
-    document.getElementById('filterBtn').addEventListener('click', function(e){ e.stopPropagation(); if(filterBy === "recent"){ filterBy = "popular"; this.title = "Filter: Most Popular"; } else { filterBy = "recent"; this.title = "Filter: Most Recent"; } renderIdeas(); });
-    document.querySelectorAll('.modal').forEach(modal => { modal.addEventListener('click', function(e){ if(e.target === modal){ hideModal(modal.id); } }); });
+    document.getElementById('filterBtn').addEventListener('click', function(e){ 
+      e.stopPropagation(); 
+      if(filterBy === "recent"){
+        filterBy = "popular"; 
+        this.title = "Filter: Most Popular"; 
+      } else { 
+        filterBy = "recent"; 
+        this.title = "Filter: Most Recent"; 
+      } 
+      renderIdeas(); 
+    });
+    document.querySelectorAll('.modal').forEach(modal => { 
+      modal.addEventListener('click', function(e){ 
+        if(e.target === modal){ 
+          hideModal(modal.id); 
+        } 
+      }); 
+    });
   </script>
   <script>
-    document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', function(){ document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); this.classList.add('active'); document.getElementById(this.dataset.tab).classList.add('active'); }); });
+    document.querySelectorAll('.tab').forEach(tab => { 
+      tab.addEventListener('click', function(){ 
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); 
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); 
+        this.classList.add('active'); 
+        document.getElementById(this.dataset.tab).classList.add('active'); 
+      }); 
+    });
   </script>
   <script>
     let ideas = []; 
@@ -1338,6 +1403,10 @@ ${commentToggleMarkup}
           window.unlockSite();
           fetchIdeas();
           listenForCommentsCount();
+          // If the user is new, force showing the tutorial
+          if (result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
+            startTutorial();
+          }
         })
         .catch((error) => {
           console.error("Firebase login error:", error);
@@ -1348,8 +1417,20 @@ ${commentToggleMarkup}
         .then(() => { location.reload(); })
         .catch((error) => { console.error("Firebase logout error:", error); });
     };
-    function sanitizeEmail(email) { return email.replace(/[.#$/\[\]]/g, "_"); }
-    function sanitizeText(text) { return text.replace(/[.#$/\[\]\s]/g, "_"); }
+    function sanitizeEmail(email) {
+      return email.replace(/[.#$/\[\]]/g, "_");
+    }
+    function sanitizeText(text) {
+      return text.replace(/[.#$/\[\]\s]/g, "_");
+    }
+    // Simple unlockSite: show new post button and filter button
+    function unlockSite() {
+      window.siteLocked = false;
+      document.getElementById('ideasGrid').classList.remove('locked');
+      document.getElementById('filterBtn').style.display = 'flex';
+      document.getElementById('newIdeaBtn').style.display = 'block';
+      hideModal('introModal');
+    }
   </script>
   <div class="disclaimer-banner">
     <p>This site is experimental and under development – issues may occur. Please submit any issues <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.</p>
