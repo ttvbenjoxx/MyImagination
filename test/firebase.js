@@ -1,5 +1,5 @@
 // firebase.js
-// Using "compat" libraries for a global firebase object:
+// Using "compat" libraries for a global firebase object
 
 // 1) Your Firebase config:
 var firebaseConfig = {
@@ -25,12 +25,10 @@ window.provider = provider;
 window.database = database;
 
 // Provide wrappers for .ref, .onValue, etc.
-// So you can call window.ref(database, "ideas"), window.onValue(ref, callback) in main.js
 window.ref = function(db, path) {
   return db.ref(path);
 };
 window.onValue = function(ref, callback) {
-  // "value" event
   return ref.on('value', (snapshot) => callback(snapshot));
 };
 window.push = function(ref, data) {
@@ -53,6 +51,9 @@ window.runTransaction = function(ref, transactionUpdate) {
 window.firebaseLogin = function() {
   auth.signInWithPopup(provider)
     .then((result) => {
+      // Mark visited so we show "Whoops" next time they sign out
+      localStorage.setItem('visited', 'true');
+
       window.hideModal('signedOutModal');
       document.getElementById('username').textContent = result.user.displayName;
       document.getElementById('userProfile').style.display = 'flex';
@@ -116,10 +117,12 @@ auth.onAuthStateChanged(function(user) {
     window.fetchIdeas();
     window.listenForCommentsCount();
   } else {
-    // Signed out
+    // If user is signed out
+    // If they've never visited before, show the Intro (Welcome) modal
     if (!localStorage.getItem('visited')) {
       window.showModal('introModal');
     } else {
+      // They have visited before, so show "Whoops" modal
       window.showModal('signedOutModal');
     }
   }
