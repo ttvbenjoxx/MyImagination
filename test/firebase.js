@@ -118,11 +118,11 @@ auth.onAuthStateChanged(function(user) {
     window.listenForCommentsCount();
   } else {
     // If user is signed out
-    // If they've never visited before, show the Intro (Welcome) modal
+    // If they've never visited, show Intro (Welcome) modal
     if (!localStorage.getItem('visited')) {
       window.showModal('introModal');
     } else {
-      // They have visited before, so show "Whoops" modal
+      // Already visited, show "Whoops!"
       window.showModal('signedOutModal');
     }
   }
