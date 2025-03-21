@@ -5,18 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MyImagination Forum</title>
 
-  <!-- Load Firebase compat -->
+  <!-- 1) Load Firebase "compat" scripts so "firebase" is globally available -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-  <!-- Load Intro.js for tutorial styling -->
+  <!-- 2) Load Intro.js for the tutorial -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@5.1.0/minified/introjs.min.css" />
 
-  <!-- Your external CSS -->
+  <!-- 3) Link to your external CSS (with Intro.js overrides) -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Loader removed if you had one before, or keep if you prefer. -->
+  <!-- HEADER -->
   <header>
     <div class="header-left">
       <div class="logo">MyImagination</div>
@@ -38,7 +40,7 @@
           <button id="confirmLogout" class="logout-button">Sign Out</button>
         </div>
       </div>
-      <button id="newIdeaBtn" class="icon-button" title="New Idea">
+      <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -55,39 +57,63 @@
     <span class="info-text">i</span>
   </button>
 
-  <!-- Intro Modal -->
-  <div id="introModal" class="modal" role="dialog" aria-modal="true">
+  <!-- Intro Modal (Welcome) -->
+  <div id="introModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="introModalTitle">
     <div class="modal-content">
-      <h2 class="modal-title">Welcome to MyImagination!</h2>
+      <h2 class="modal-title" id="introModalTitle">Welcome to MyImagination!</h2>
       <p>This site was built by a student at FCHS to gather and share creative website ideas. Please continue with Google to unlock full access to the site.</p>
-      <button class="gsi-material-button" onclick="firebaseLogin()">Continue with Google</button>
+      <button class="gsi-material-button" onclick="firebaseLogin()">
+        <div class="gsi-material-button-state"></div>
+        <div class="gsi-material-button-content-wrapper">
+          <div class="gsi-material-button-icon">
+            <!-- Google icon (unchanged) -->
+            <svg viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 ..."/>
+              <!-- etc. -->
+            </svg>
+          </div>
+          <span class="gsi-material-button-contents">Continue with Google</span>
+        </div>
+      </button>
     </div>
   </div>
 
   <!-- Signed Out Modal -->
-  <div id="signedOutModal" class="modal" role="dialog" aria-modal="true">
+  <div id="signedOutModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="signedOutModalTitle">
     <div class="modal-content">
-      <h2 class="modal-title">Whoops!</h2>
+      <h2 class="modal-title" id="signedOutModalTitle">Whoops!</h2>
       <p>Looks like you've been signed out. Let's get you back on track.</p>
-      <button class="gsi-material-button" onclick="firebaseLogin()">Continue with Google</button>
+      <button class="gsi-material-button" onclick="firebaseLogin()">
+        <div class="gsi-material-button-state"></div>
+        <div class="gsi-material-button-content-wrapper">
+          <div class="gsi-material-button-icon">
+            <!-- Google icon -->
+            <svg viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5 ..."/>
+              <!-- etc. -->
+            </svg>
+          </div>
+          <span class="gsi-material-button-contents">Continue with Google</span>
+        </div>
+      </button>
     </div>
   </div>
 
   <!-- New Idea Modal -->
-  <div id="newIdeaModal" class="modal" role="dialog" aria-modal="true">
+  <div id="newIdeaModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="newIdeaModalTitle">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">Share Your Idea</h2>
+        <h2 class="modal-title" id="newIdeaModalTitle">Share Your Idea</h2>
         <button class="close-modal" onclick="hideModal('newIdeaModal')">&times;</button>
       </div>
       <form id="newIdeaForm">
         <div class="form-group">
           <label class="form-label" for="ideaSubject">Subject</label>
-          <input type="text" id="ideaSubject" class="form-input" required />
+          <input type="text" id="ideaSubject" class="form-input" placeholder="Give your idea a catchy title" required />
         </div>
         <div class="form-group">
           <label class="form-label" for="ideaDescription">Description</label>
-          <textarea id="ideaDescription" class="form-input" required></textarea>
+          <textarea id="ideaDescription" class="form-input" placeholder="Describe your idea in detail..." required></textarea>
         </div>
         <button type="submit" class="submit-button">Post Idea</button>
       </form>
@@ -95,14 +121,14 @@
   </div>
 
   <!-- Full Idea Modal -->
-  <div id="fullIdeaModal" class="modal" role="dialog" aria-modal="true"></div>
+  <div id="fullIdeaModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="fullIdeaModalTitle"></div>
 
   <!-- Info Modal -->
-  <div id="infoModal" class="modal" role="dialog" aria-modal="true">
+  <div id="infoModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">Information</h2>
-        <!-- ID for the close button, so we can reference it in the tutorial step -->
+        <h2 class="modal-title" id="infoModalTitle">Information</h2>
+        <!-- close button with an ID for the extra tutorial step -->
         <button id="closeInfoModalBtn" class="close-modal" onclick="hideModal('infoModal')">&times;</button>
       </div>
       <div class="tabs">
@@ -113,21 +139,21 @@
         <h3>Instructions</h3>
         <p><strong>How to Share an Idea:</strong> Click the + button in the top right (after unlocking) to create a new post.</p>
         <p><strong>How to Use:</strong> Unlock the site by clicking "Continue with Google", then share your ideas using the + button. Use the filter button to toggle sorting between most popular and most recent.</p>
-        <p><strong>The purpose of this Site:</strong> This site is meant for Teachers to share their ideas for websites.</p>
+        <p><strong>The purpose of this Site:</strong> This site is meant for Teachers to share their ideas for websites. If there is a website you would use as a teacher or just for fun, please post it. All ideas matter!</p>
 
-        <!-- Start tutorial from Info Modal (extra first step) -->
+        <!-- Start tutorial from Info Modal (extra step to close the modal) -->
         <button class="submit-button" onclick="startTutorialFromInfoModal()">Start Tutorial</button>
       </div>
       <div class="tab-content" id="about">
         <h3>About the Developer</h3>
         <p>
-          Hi, I'm Gavin Molter! ...
+          Hi, I'm Gavin Molter! I am currently a junior ... 
         </p>
       </div>
     </div>
   </div>
 
-  <!-- Intro.js + Scripts -->
+  <!-- Intro.js (CDN) + Our scripts -->
   <script src="https://cdn.jsdelivr.net/npm/intro.js@5.1.0/minified/intro.min.js"></script>
   <script src="firebase.js"></script>
   <script src="main.js"></script>
