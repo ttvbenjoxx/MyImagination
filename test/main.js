@@ -1,6 +1,9 @@
 // main.js
 // All UI logic: modals, tutorial, idea rendering, toggling likes, etc.
 
+////////////////////////////////////////////////////////////////////////
+// FOCUS TRAP FOR MODALS
+////////////////////////////////////////////////////////////////////////
 let lastFocusedElement;
 function trapFocus(modal) {
   const focusableElements = modal.querySelectorAll(
@@ -46,6 +49,9 @@ window.hideModal = function(id) {
   }
 };
 
+////////////////////////////////////////////////////////////////////////
+// UNLOCK SITE AFTER LOGIN
+////////////////////////////////////////////////////////////////////////
 window.unlockSite = function() {
   window.siteLocked = false;
   document.getElementById('ideasGrid').classList.remove('locked');
@@ -54,16 +60,9 @@ window.unlockSite = function() {
   window.hideModal('introModal');
 };
 
-let loaderHidden = false;
-window.hideLoader = function() {
-  const loader = document.getElementById('loader');
-  if(loader && !loaderHidden) {
-    loader.style.display = 'none';
-    loaderHidden = true;
-  }
-};
-
-// TUTORIAL
+////////////////////////////////////////////////////////////////////////
+// TUTORIAL STEPS
+////////////////////////////////////////////////////////////////////////
 let tutorialSteps = [
   { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
   { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
@@ -78,6 +77,7 @@ window.startTutorial = function() {
 };
 
 function showTutorialStep() {
+  // Clear old highlights
   document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
   if(currentTutorialStep >= tutorialSteps.length) {
     hideTutorial();
@@ -99,7 +99,7 @@ function showTutorialStep() {
   let topPosition = rect.bottom + 10 + window.scrollY;
   let leftPosition = rect.left + window.scrollX;
 
-  // If first step, offset a bit
+  // For the first step, offset left a bit
   if(currentTutorialStep === 0) {
     leftPosition = leftPosition - 150;
     if(leftPosition < window.scrollX + 40) {
@@ -155,7 +155,26 @@ document.getElementById('tutorialOverlay').addEventListener('click', function(e)
 });
 document.getElementById('tutorialNextBtn').addEventListener('click', window.nextTutorialStep);
 
-// UI EVENT HANDLERS
+////////////////////////////////////////////////////////////////////////
+// TAB SWITCHING FOR INFO MODAL
+////////////////////////////////////////////////////////////////////////
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    // Remove active from all tabs
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    // Add active to clicked tab
+    this.classList.add('active');
+    // Show corresponding content
+    const targetId = this.dataset.tab;
+    document.getElementById(targetId).classList.add('active');
+  });
+});
+
+////////////////////////////////////////////////////////////////////////
+// SIGN-OUT DROPDOWN
+////////////////////////////////////////////////////////////////////////
 document.getElementById('userProfile').addEventListener('click', function(e){
   document.getElementById('logoutDropdown').classList.toggle("show");
   e.stopPropagation();
@@ -168,6 +187,9 @@ document.getElementById('confirmLogout').addEventListener('click', function(e){
   window.logout();
 });
 
+////////////////////////////////////////////////////////////////////////
+// NEW IDEA & INFO BUTTONS
+////////////////////////////////////////////////////////////////////////
 document.getElementById('newIdeaBtn').addEventListener('click', function(e){
   e.stopPropagation();
   window.showModal('newIdeaModal');
@@ -177,7 +199,9 @@ document.getElementById('infoBtn').addEventListener('click', function(e){
   window.showModal('infoModal');
 });
 
-// Filter: recent or popular
+////////////////////////////////////////////////////////////////////////
+// FILTER: RECENT OR POPULAR
+////////////////////////////////////////////////////////////////////////
 let filterBy = "recent";
 document.getElementById('filterBtn').addEventListener('click', function(e){
   e.stopPropagation();
@@ -191,7 +215,9 @@ document.getElementById('filterBtn').addEventListener('click', function(e){
   renderIdeas();
 });
 
-// Hide modal when clicking the modal background
+////////////////////////////////////////////////////////////////////////
+// CLOSE MODALS WHEN CLICKING THE BACKDROP
+////////////////////////////////////////////////////////////////////////
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', function(e){
     if(e.target === modal){
@@ -200,10 +226,12 @@ document.querySelectorAll('.modal').forEach(modal => {
   });
 });
 
-// DATA / RENDERING
-window.siteLocked = true;
-window.userLikes = new Set();
-window.commentsCount = {};
+////////////////////////////////////////////////////////////////////////
+// DATA & RENDERING
+////////////////////////////////////////////////////////////////////////
+window.siteLocked = true;       // locked until sign in
+window.userLikes = new Set();   // track liked ideas
+window.commentsCount = {};      // track comment counts
 
 function countComments(obj) {
   let count = 0;
@@ -244,7 +272,6 @@ window.fetchIdeas = function() {
     }
     console.log("Fetched ideas from DB:", ideas); // debug
     renderIdeas();
-    hideLoader();
   });
 };
 
@@ -308,17 +335,16 @@ window.renderIdeas = function() {
   }).join('');
 };
 
-////////////////////////////////////////////////////////////////////////////////
-// Toggle Like for an idea
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// TOGGLE LIKE
+////////////////////////////////////////////////////////////////////////
 window.toggleLike = function(ideaId, key) {
-  if (window.siteLocked) {
+  if(window.siteLocked) {
     alert('Please unlock the site to like ideas.');
     return;
   }
   const uid = window.currentUserId;
   if(!uid) return;
-
   const idea = ideas.find(i => i.id === ideaId);
   if(idea) {
     if(window.userLikes.has(key)) {
@@ -348,9 +374,9 @@ window.toggleLike = function(ideaId, key) {
   }
 };
 
-////////////////////////////////////////////////////////////////////////////////
-// Sanitize Email/Text
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// SANITIZE UTILS
+////////////////////////////////////////////////////////////////////////
 window.sanitizeEmail = function(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
 };
@@ -358,9 +384,9 @@ window.sanitizeText = function(text) {
   return text.replace(/[.#$/\[\]\s]/g, "_");
 };
 
-////////////////////////////////////////////////////////////////////////////////
-// Show/hide reply form for comments
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// COMMENT/REPLY
+////////////////////////////////////////////////////////////////////////
 window.showReplyForm = function(parentPath, commentId) {
   const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
   const form = document.getElementById(replyFormId);
@@ -369,9 +395,6 @@ window.showReplyForm = function(parentPath, commentId) {
   }
 };
 
-////////////////////////////////////////////////////////////////////////////////
-// Add a new comment (top-level) in the Full Idea Modal
-////////////////////////////////////////////////////////////////////////////////
 window.addCommentModal = function(postId) {
   const container = document.getElementById('modalCommentForm_' + postId);
   const textarea = container.querySelector('.comment-input');
@@ -382,29 +405,26 @@ window.addCommentModal = function(postId) {
   window.runTransaction(nextRef, (current) => {
     return (current === null ? 0 : current) + 1;
   })
-    .then((result) => {
-      const commentNumber = result.snapshot.val();
-      const newCommentId = "Comment_" + commentNumber;
-      const commentData = {
-        commenter: window.currentUserName || "DummyUser",
-        timestamp: new Date().toLocaleString(),
-        content: content,
-        replies: {}
-      };
-      return window.set(window.ref(window.database, "comments/" + postId + "/" + newCommentId), commentData);
-    })
-    .then(() => {
-      textarea.value = "";
-      container.style.display = "none";
-    })
-    .catch((error) => {
-      console.error("Error posting comment:", error);
-    });
+  .then((result) => {
+    const commentNumber = result.snapshot.val();
+    const newCommentId = "Comment_" + commentNumber;
+    const commentData = {
+      commenter: window.currentUserName || "DummyUser",
+      timestamp: new Date().toLocaleString(),
+      content: content,
+      replies: {}
+    };
+    return window.set(window.ref(window.database, "comments/" + postId + "/" + newCommentId), commentData);
+  })
+  .then(() => {
+    textarea.value = "";
+    container.style.display = "none";
+  })
+  .catch((error) => {
+    console.error("Error posting comment:", error);
+  });
 };
 
-////////////////////////////////////////////////////////////////////////////////
-// Add a reply to a comment
-////////////////////////////////////////////////////////////////////////////////
 window.addReply = function(parentPath, commentId) {
   const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
   const replyInput = document.querySelector("#" + replyFormId + " .comment-input");
@@ -415,27 +435,27 @@ window.addReply = function(parentPath, commentId) {
   window.runTransaction(nextRef, (current) => {
     return (current === null ? 0 : current) + 1;
   })
-    .then((result) => {
-      const replyNumber = result.snapshot.val();
-      const newReplyId = "Reply_" + replyNumber;
-      const replyData = {
-        replier: window.currentUserName || "DummyUser",
-        timestamp: new Date().toLocaleString(),
-        content: content
-      };
-      return window.set(window.ref(window.database, parentPath + "/" + commentId + "/replies/" + newReplyId), replyData);
-    })
-    .then(() => {
-      replyInput.value = "";
-    })
-    .catch((error) => {
-      console.error("Error posting reply:", error);
-    });
+  .then((result) => {
+    const replyNumber = result.snapshot.val();
+    const newReplyId = "Reply_" + replyNumber;
+    const replyData = {
+      replier: window.currentUserName || "DummyUser",
+      timestamp: new Date().toLocaleString(),
+      content: content
+    };
+    return window.set(window.ref(window.database, parentPath + "/" + commentId + "/replies/" + newReplyId), replyData);
+  })
+  .then(() => {
+    replyInput.value = "";
+  })
+  .catch((error) => {
+    console.error("Error posting reply:", error);
+  });
 };
 
-////////////////////////////////////////////////////////////////////////////////
-// Show the full idea modal
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// SHOW FULL IDEA (COMMENTS)
+////////////////////////////////////////////////////////////////////////
 window.showFullIdea = function(ideaId) {
   const idea = ideas.find(i => i.id === ideaId);
   if(!idea) return;
@@ -456,7 +476,8 @@ window.showFullIdea = function(ideaId) {
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0
                L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78
-               l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06
+               l1.06 1.06L12 21.23
+               l7.78-7.78 1.06-1.06
                a5.5 5.5 0 0 0 0-7.78z"></path>
     </svg>
     ${idea.likes}
@@ -525,12 +546,14 @@ function fetchComments(postId) {
     console.log("Comments for post:", postId, data); // debug
     let commHtml = "";
     if(data) {
+      // Exclude the "_next" property
       const obj = {};
       for(const key in data) {
         if(key !== "_next") {
           obj[key] = data[key];
         }
       }
+      // Turn into array, sort by ID
       const commArray = Object.entries(obj).map(([k,v]) => ({ id: k, ...v }));
       commArray.sort((a, b) => {
         const numA = parseInt(a.id.split("_")[1] || "0");
@@ -549,7 +572,43 @@ function fetchComments(postId) {
   });
 }
 
-// New Idea form
+// The function that renders top-level comments + replies
+function renderComments(comments, parentPath) {
+  return comments.map(comment => {
+    const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
+    let repliesHtml = "";
+    if(comment.replies) {
+      const repliesArray = Object.entries(comment.replies).map(([k,v]) => ({ id: k, ...v }));
+      repliesArray.sort((a,b) => {
+        const numA = parseInt(a.id.split("_")[1] || "0");
+        const numB = parseInt(b.id.split("_")[1] || "0");
+        return numA - numB;
+      });
+      repliesHtml = `<div class="comment-replies">${renderComments(repliesArray, parentPath + "/" + comment.id + "/replies")}</div>`;
+    }
+    return `
+      <div class="comment">
+        <div class="comment-header">
+          <span class="comment-author">${comment.commenter || comment.replier || "Unknown"}</span>
+          <span class="comment-date">${comment.timestamp}</span>
+        </div>
+        <div class="comment-content">${comment.content}</div>
+        <button class="reply-button" onclick="showReplyForm('${parentPath}','${comment.id}'); event.stopPropagation();">Reply</button>
+        <div class="reply-form" id="${replyFormId}" style="display: none; margin-top: 10px;">
+          <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
+          <div class="comment-actions" style="margin-top: 6px; text-align: right;">
+            <button class="post-comment-button modal-post-comment-button" onclick="addReply('${parentPath}','${comment.id}'); event.stopPropagation();">Post</button>
+          </div>
+        </div>
+        ${repliesHtml}
+      </div>
+    `;
+  }).join('');
+}
+
+////////////////////////////////////////////////////////////////////////
+// NEW IDEA FORM
+////////////////////////////////////////////////////////////////////////
 const newIdeaForm = document.getElementById('newIdeaForm');
 newIdeaForm.addEventListener('submit', function(event) {
   event.preventDefault();
@@ -577,6 +636,9 @@ newIdeaForm.addEventListener('submit', function(event) {
     });
 });
 
+////////////////////////////////////////////////////////////////////////
+// SCROLL TO COMMENTS
+////////////////////////////////////////////////////////////////////////
 window.scrollToComments = function(e) {
   e.stopPropagation();
   const modalContent = document.querySelector('#fullIdeaModal .modal-content');
