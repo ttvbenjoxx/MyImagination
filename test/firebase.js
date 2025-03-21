@@ -31,20 +31,20 @@ window.ref = function(db, path) {
 window.onValue = function(ref, callback) {
   return ref.on('value', (snapshot) => callback(snapshot));
 };
-window.push = function(ref, data) {
-  return ref.push(data);
+window.push = function(refObj, data) {
+  return refObj.push(data);
 };
-window.update = function(ref, data) {
-  return ref.update(data);
+window.update = function(refObj, data) {
+  return refObj.update(data);
 };
-window.set = function(ref, data) {
-  return ref.set(data);
+window.set = function(refObj, data) {
+  return refObj.set(data);
 };
-window.get = function(ref) {
-  return ref.once('value');
+window.get = function(refObj) {
+  return refObj.once('value');
 };
-window.runTransaction = function(ref, transactionUpdate) {
-  return ref.transaction(transactionUpdate);
+window.runTransaction = function(refObj, transactionUpdate) {
+  return refObj.transaction(transactionUpdate);
 };
 
 // Provide the signIn/out logic
