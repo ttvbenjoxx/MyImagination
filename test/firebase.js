@@ -11,19 +11,18 @@ var firebaseConfig = {
   databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com/"
 };
 
-// 1) Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
 var auth = firebase.auth();
 var provider = new firebase.auth.GoogleAuthProvider();
 var database = firebase.database();
 
-// Expose references so main.js can use them
+// Expose these so main.js can use them
 window.auth = auth;
 window.provider = provider;
 window.database = database;
 
-// Provide wrappers for ref, onValue, etc.
+// Provide wrappers for .ref, .onValue, etc.
 window.ref = function(db, path) {
   return db.ref(path);
 };
@@ -46,35 +45,35 @@ window.runTransaction = function(refObj, transactionUpdate) {
   return refObj.transaction(transactionUpdate);
 };
 
-// Force the tutorial to appear after every successful login
+// Always run the tutorial after login
 window.firebaseLogin = function() {
   auth.signInWithPopup(provider)
     .then((result) => {
-      // If we had a "Whoops!" modal open, hide it
+      // If the "Whoops!" modal is open, hide it
       window.hideModal('signedOutModal');
 
-      // Show user info in UI
+      // Update UI with user info
       document.getElementById('username').textContent = result.user.displayName;
       document.getElementById('userProfile').style.display = 'flex';
       window.currentUserEmail = result.user.email;
       window.currentUserName = result.user.displayName;
       window.currentUserId = result.user.uid;
 
-      // Set up user likes
+      // Setup user likes
       var userKey = window.sanitizeEmail(result.user.email);
-      var userLikesRef = window.ref(database, "userManagement/" + userKey + "/Likes");
+      var userLikesRef = window.ref(window.database, "userManagement/" + userKey + "/Likes");
       window.onValue(userLikesRef, (snapshot) => {
         var likesData = snapshot.val() || {};
         window.userLikes = new Set(Object.keys(likesData));
         window.renderIdeas();
       });
 
-      // Unlock site features
+      // Unlock site, fetch data
       window.unlockSite();
       window.fetchIdeas();
       window.listenForCommentsCount();
 
-      // Always show the tutorial now that they're logged in
+      // Start tutorial right after login
       window.startTutorial();
     })
     .catch((error) => {
@@ -92,10 +91,10 @@ window.logout = function() {
     });
 };
 
-// Watch auth state changes
+// Auth state changes
 auth.onAuthStateChanged(function(user) {
   if (user) {
-    // Hide "Whoops!" if open
+    // Signed in
     window.hideModal('signedOutModal');
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
@@ -105,7 +104,7 @@ auth.onAuthStateChanged(function(user) {
     window.currentUserId = user.uid;
 
     var userKey = window.sanitizeEmail(user.email);
-    var userLikesRef = window.ref(database, "userManagement/" + userKey + "/Likes");
+    var userLikesRef = window.ref(window.database, "userManagement/" + userKey + "/Likes");
     window.onValue(userLikesRef, (snapshot) => {
       var likesData = snapshot.val() || {};
       window.userLikes = new Set(Object.keys(likesData));
@@ -116,12 +115,10 @@ auth.onAuthStateChanged(function(user) {
     window.fetchIdeas();
     window.listenForCommentsCount();
   } else {
-    // If user is signed out
-    // If they've never visited, show Intro (Welcome)
+    // Signed out
     if (!localStorage.getItem('visited')) {
       window.showModal('introModal');
     } else {
-      // Otherwise show "Whoops!"
       window.showModal('signedOutModal');
     }
   }
