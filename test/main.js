@@ -1,9 +1,7 @@
 // main.js
 // All UI logic: modals, tutorial, idea rendering, toggling likes, etc.
 
-////////////////////////////////////////////////////////////////////////
-// FOCUS TRAP FOR MODALS
-////////////////////////////////////////////////////////////////////////
+// FOCUS TRAP for modals (unchanged)
 let lastFocusedElement;
 function trapFocus(modal) {
   const focusableElements = modal.querySelectorAll(
@@ -49,9 +47,7 @@ window.hideModal = function(id) {
   }
 };
 
-////////////////////////////////////////////////////////////////////////
-// UNLOCK SITE AFTER LOGIN
-////////////////////////////////////////////////////////////////////////
+// Called once user is authorized
 window.unlockSite = function() {
   window.siteLocked = false;
   document.getElementById('ideasGrid').classList.remove('locked');
@@ -60,104 +56,37 @@ window.unlockSite = function() {
   window.hideModal('introModal');
 };
 
-////////////////////////////////////////////////////////////////////////
-// TUTORIAL STEPS
-////////////////////////////////////////////////////////////////////////
-let tutorialSteps = [
-  { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
-  { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
-  { target: "#infoBtn", text: "Click this info icon to learn more about the site." },
-  { target: "#userProfile", text: "Click your name to sign out." }
-];
-let currentTutorialStep = 0;
-
+// Instead of the old overlay code, we define startTutorial with Intro.js
 window.startTutorial = function() {
-  currentTutorialStep = 0;
-  showTutorialStep();
+  introJs().setOptions({
+    steps: [
+      {
+        element: document.querySelector('#newIdeaBtn'),
+        intro: "Click the '+' button to share your creative idea."
+      },
+      {
+        element: document.querySelector('#filterBtn'),
+        intro: "Click the filter button to toggle sorting between most popular and most recent."
+      },
+      {
+        element: document.querySelector('#infoBtn'),
+        intro: "Click this info icon to learn more about the site."
+      },
+      {
+        element: document.querySelector('#userProfile'),
+        intro: "Click your name to sign out."
+      }
+    ],
+    showProgress: true,
+    showBullets: false,
+    exitOnEsc: true,
+    exitOnOverlayClick: false,
+    overlayOpacity: 0.6,
+    scrollToElement: true
+  }).start();
 };
 
-function showTutorialStep() {
-  // Clear old highlights
-  document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
-  if(currentTutorialStep >= tutorialSteps.length) {
-    hideTutorial();
-    return;
-  }
-  let step = tutorialSteps[currentTutorialStep];
-  let targetEl = document.querySelector(step.target);
-  if(!targetEl) {
-    currentTutorialStep++;
-    showTutorialStep();
-    return;
-  }
-  targetEl.classList.add('highlighted');
-  let rect = targetEl.getBoundingClientRect();
-  let tooltip = document.getElementById('tutorialTooltip');
-  let tooltipText = document.getElementById('tutorialText');
-  tooltipText.textContent = step.text;
-
-  let topPosition = rect.bottom + 10 + window.scrollY;
-  let leftPosition = rect.left + window.scrollX;
-
-  // For the first step, offset left a bit
-  if(currentTutorialStep === 0) {
-    leftPosition = leftPosition - 150;
-    if(leftPosition < window.scrollX + 40) {
-      leftPosition = window.scrollX + 40;
-    }
-  }
-  tooltip.style.top = topPosition + "px";
-  tooltip.style.left = leftPosition + "px";
-  tooltip.style.visibility = "hidden";
-  tooltip.style.display = "block";
-  let tooltipHeight = tooltip.offsetHeight;
-  let tooltipWidth = tooltip.offsetWidth;
-  tooltip.style.visibility = "visible";
-
-  // If it goes below screen
-  if(topPosition + tooltipHeight > window.innerHeight + window.scrollY) {
-    topPosition = rect.top - tooltipHeight - 10 + window.scrollY;
-  }
-  // If it goes off right edge
-  if(leftPosition + tooltipWidth > window.innerWidth + window.scrollX) {
-    let altLeft = rect.left - tooltipWidth - 10 + window.scrollX;
-    if(altLeft > window.scrollX + 10) {
-      leftPosition = altLeft;
-    } else {
-      leftPosition = (window.innerWidth - tooltipWidth - 10) + window.scrollX;
-    }
-  }
-  if(leftPosition < window.scrollX + 10) {
-    leftPosition = window.scrollX + 10;
-  }
-  tooltip.style.top = topPosition + "px";
-  tooltip.style.left = leftPosition + "px";
-  showTutorialOverlay();
-}
-
-window.nextTutorialStep = function() {
-  currentTutorialStep++;
-  showTutorialStep();
-};
-
-function showTutorialOverlay() {
-  document.getElementById('tutorialOverlay').style.display = 'block';
-}
-function hideTutorial() {
-  document.getElementById('tutorialOverlay').style.display = 'none';
-  document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
-}
-
-document.getElementById('tutorialOverlay').addEventListener('click', function(e) {
-  if(e.target === this) {
-    hideTutorial();
-  }
-});
-document.getElementById('tutorialNextBtn').addEventListener('click', window.nextTutorialStep);
-
-////////////////////////////////////////////////////////////////////////
-// TAB SWITCHING FOR INFO MODAL
-////////////////////////////////////////////////////////////////////////
+// Tab switching for Info Modal
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', function() {
     // Remove active from all tabs
@@ -166,15 +95,13 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     // Add active to clicked tab
     this.classList.add('active');
-    // Show corresponding content
+    // Show the corresponding content
     const targetId = this.dataset.tab;
     document.getElementById(targetId).classList.add('active');
   });
 });
 
-////////////////////////////////////////////////////////////////////////
-// SIGN-OUT DROPDOWN
-////////////////////////////////////////////////////////////////////////
+// Sign-out dropdown
 document.getElementById('userProfile').addEventListener('click', function(e){
   document.getElementById('logoutDropdown').classList.toggle("show");
   e.stopPropagation();
@@ -187,9 +114,7 @@ document.getElementById('confirmLogout').addEventListener('click', function(e){
   window.logout();
 });
 
-////////////////////////////////////////////////////////////////////////
-// NEW IDEA & INFO BUTTONS
-////////////////////////////////////////////////////////////////////////
+// New Idea & Info modals
 document.getElementById('newIdeaBtn').addEventListener('click', function(e){
   e.stopPropagation();
   window.showModal('newIdeaModal');
@@ -199,9 +124,7 @@ document.getElementById('infoBtn').addEventListener('click', function(e){
   window.showModal('infoModal');
 });
 
-////////////////////////////////////////////////////////////////////////
-// FILTER: RECENT OR POPULAR
-////////////////////////////////////////////////////////////////////////
+// Filter: recent or popular
 let filterBy = "recent";
 document.getElementById('filterBtn').addEventListener('click', function(e){
   e.stopPropagation();
@@ -215,9 +138,7 @@ document.getElementById('filterBtn').addEventListener('click', function(e){
   renderIdeas();
 });
 
-////////////////////////////////////////////////////////////////////////
-// CLOSE MODALS WHEN CLICKING THE BACKDROP
-////////////////////////////////////////////////////////////////////////
+// Close modals when clicking the background
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', function(e){
     if(e.target === modal){
@@ -226,12 +147,10 @@ document.querySelectorAll('.modal').forEach(modal => {
   });
 });
 
-////////////////////////////////////////////////////////////////////////
-// DATA & RENDERING
-////////////////////////////////////////////////////////////////////////
-window.siteLocked = true;       // locked until sign in
-window.userLikes = new Set();   // track liked ideas
-window.commentsCount = {};      // track comment counts
+// Data / Rendering
+window.siteLocked = true;
+window.userLikes = new Set();
+window.commentsCount = {};
 
 function countComments(obj) {
   let count = 0;
@@ -335,9 +254,7 @@ window.renderIdeas = function() {
   }).join('');
 };
 
-////////////////////////////////////////////////////////////////////////
-// TOGGLE LIKE
-////////////////////////////////////////////////////////////////////////
+// Toggle like
 window.toggleLike = function(ideaId, key) {
   if(window.siteLocked) {
     alert('Please unlock the site to like ideas.');
@@ -348,13 +265,11 @@ window.toggleLike = function(ideaId, key) {
   const idea = ideas.find(i => i.id === ideaId);
   if(idea) {
     if(window.userLikes.has(key)) {
-      // Unlike
       window.userLikes.delete(key);
       idea.likes = Math.max(idea.likes - 1, 0);
       window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes });
       window.set(window.ref(window.database, "userManagement/" + window.sanitizeEmail(window.currentUserEmail) + "/Likes/" + key), null);
     } else {
-      // Like
       window.userLikes.add(key);
       idea.likes++;
       window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes });
@@ -374,9 +289,6 @@ window.toggleLike = function(ideaId, key) {
   }
 };
 
-////////////////////////////////////////////////////////////////////////
-// SANITIZE UTILS
-////////////////////////////////////////////////////////////////////////
 window.sanitizeEmail = function(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
 };
@@ -384,9 +296,7 @@ window.sanitizeText = function(text) {
   return text.replace(/[.#$/\[\]\s]/g, "_");
 };
 
-////////////////////////////////////////////////////////////////////////
-// COMMENT/REPLY
-////////////////////////////////////////////////////////////////////////
+// Comments / replies
 window.showReplyForm = function(parentPath, commentId) {
   const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
   const form = document.getElementById(replyFormId);
@@ -453,9 +363,7 @@ window.addReply = function(parentPath, commentId) {
   });
 };
 
-////////////////////////////////////////////////////////////////////////
-// SHOW FULL IDEA (COMMENTS)
-////////////////////////////////////////////////////////////////////////
+// Show full idea
 window.showFullIdea = function(ideaId) {
   const idea = ideas.find(i => i.id === ideaId);
   if(!idea) return;
@@ -546,14 +454,12 @@ function fetchComments(postId) {
     console.log("Comments for post:", postId, data); // debug
     let commHtml = "";
     if(data) {
-      // Exclude the "_next" property
       const obj = {};
       for(const key in data) {
         if(key !== "_next") {
           obj[key] = data[key];
         }
       }
-      // Turn into array, sort by ID
       const commArray = Object.entries(obj).map(([k,v]) => ({ id: k, ...v }));
       commArray.sort((a, b) => {
         const numA = parseInt(a.id.split("_")[1] || "0");
@@ -572,7 +478,7 @@ function fetchComments(postId) {
   });
 }
 
-// The function that renders top-level comments + replies
+// Render top-level comments & replies
 function renderComments(comments, parentPath) {
   return comments.map(comment => {
     const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
@@ -606,9 +512,7 @@ function renderComments(comments, parentPath) {
   }).join('');
 }
 
-////////////////////////////////////////////////////////////////////////
-// NEW IDEA FORM
-////////////////////////////////////////////////////////////////////////
+// New Idea form
 const newIdeaForm = document.getElementById('newIdeaForm');
 newIdeaForm.addEventListener('submit', function(event) {
   event.preventDefault();
@@ -636,9 +540,6 @@ newIdeaForm.addEventListener('submit', function(event) {
     });
 });
 
-////////////////////////////////////////////////////////////////////////
-// SCROLL TO COMMENTS
-////////////////////////////////////////////////////////////////////////
 window.scrollToComments = function(e) {
   e.stopPropagation();
   const modalContent = document.querySelector('#fullIdeaModal .modal-content');
