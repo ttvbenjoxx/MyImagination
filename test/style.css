@@ -11,7 +11,7 @@
   --transition: all 0.3s ease;
 }
 
-/* Outline for keyboard focus */
+/* Focus outline for interactive elements */
 button:focus,
 input:focus,
 textarea:focus {
@@ -90,7 +90,6 @@ header {
 .user-profile:hover {
   background: rgba(255,255,255,0.2);
 }
-
 .logout-dropdown {
   position: absolute;
   top: 100%;
@@ -174,7 +173,6 @@ header {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
-
 .idea-subject {
   font-size: 14px;
   font-weight: 600;
@@ -640,4 +638,33 @@ textarea.form-input {
 .disclaimer-banner a {
   color: var(--primary-color);
   text-decoration: underline;
+}
+
+/* Intro.js custom theme overrides */
+.introjs-tooltip, .introjs-fixedTooltip {
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+  border: 2px solid var(--secondary-color) !important;
+  border-radius: var(--border-radius) !important;
+}
+.introjs-arrow {
+  border-top-color: var(--primary-color) !important;
+}
+.introjs-button {
+  background: var(--secondary-color) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 6px 12px !important;
+}
+.introjs-tooltiptitle {
+  color: #fff !important;
+  font-weight: bold !important;
+}
+.introjs-helperNumberLayer {
+  background-color: #fff !important;
+  color: var(--primary-color) !important;
+}
+.introjs-bullets {
+  display: none !important;
 }
