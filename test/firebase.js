@@ -66,6 +66,7 @@ window.firebaseLogin = function() {
       window.fetchIdeas();
       window.listenForCommentsCount();
 
+      // If user is new, show tutorial (Intro.js approach now)
       if (result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
         window.startTutorial();
       }
