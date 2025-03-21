@@ -1,7 +1,7 @@
 // main.js
-// All UI logic: modals, tutorial, idea rendering, toggling likes, etc.
+// All UI logic: modals, Intro.js tutorial, idea rendering, toggling likes, etc.
 
-// FOCUS TRAP for modals (unchanged)
+// Focus trap for modals
 let lastFocusedElement;
 function trapFocus(modal) {
   const focusableElements = modal.querySelectorAll(
@@ -54,27 +54,28 @@ window.unlockSite = function() {
   document.getElementById('filterBtn').style.display = 'flex';
   document.getElementById('newIdeaBtn').style.display = 'block';
   window.hideModal('introModal');
+  localStorage.setItem('visited', 'true');
 };
 
-// Instead of the old overlay code, we define startTutorial with Intro.js
+// TUTORIAL: new post → sign out → filter → info
 window.startTutorial = function() {
   introJs().setOptions({
     steps: [
       {
-        element: document.querySelector('#newIdeaBtn'),
+        element: '#newIdeaBtn',
         intro: "Click the '+' button to share your creative idea."
       },
       {
-        element: document.querySelector('#filterBtn'),
+        element: '#userProfile',
+        intro: "Click your name to sign out."
+      },
+      {
+        element: '#filterBtn',
         intro: "Click the filter button to toggle sorting between most popular and most recent."
       },
       {
-        element: document.querySelector('#infoBtn'),
-        intro: "Click this info icon to learn more about the site."
-      },
-      {
-        element: document.querySelector('#userProfile'),
-        intro: "Click your name to sign out."
+        element: '#infoBtn',
+        intro: "Click the info icon for more details."
       }
     ],
     showProgress: true,
@@ -86,22 +87,41 @@ window.startTutorial = function() {
   }).start();
 };
 
-// Tab switching for Info Modal
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', function() {
-    // Remove active from all tabs
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    // Hide all tab contents
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    // Add active to clicked tab
-    this.classList.add('active');
-    // Show the corresponding content
-    const targetId = this.dataset.tab;
-    document.getElementById(targetId).classList.add('active');
-  });
-});
+// If user starts the tutorial from the Info modal, add an extra step to close that modal first
+window.startTutorialFromInfoModal = function() {
+  introJs().setOptions({
+    steps: [
+      {
+        element: '#closeInfoModalBtn',
+        intro: "First, click here to close the Info modal."
+      },
+      {
+        element: '#newIdeaBtn',
+        intro: "Click the '+' button to share your creative idea."
+      },
+      {
+        element: '#userProfile',
+        intro: "Click your name to sign out."
+      },
+      {
+        element: '#filterBtn',
+        intro: "Click the filter button to toggle sorting."
+      },
+      {
+        element: '#infoBtn',
+        intro: "Click the info icon for more details."
+      }
+    ],
+    showProgress: true,
+    showBullets: false,
+    exitOnEsc: true,
+    exitOnOverlayClick: false,
+    overlayOpacity: 0.6,
+    scrollToElement: true
+  }).start();
+};
 
-// Sign-out dropdown
+// Sign-out dropdown logic
 document.getElementById('userProfile').addEventListener('click', function(e){
   document.getElementById('logoutDropdown').classList.toggle("show");
   e.stopPropagation();
@@ -124,7 +144,7 @@ document.getElementById('infoBtn').addEventListener('click', function(e){
   window.showModal('infoModal');
 });
 
-// Filter: recent or popular
+// Filter logic
 let filterBy = "recent";
 document.getElementById('filterBtn').addEventListener('click', function(e){
   e.stopPropagation();
@@ -138,7 +158,7 @@ document.getElementById('filterBtn').addEventListener('click', function(e){
   renderIdeas();
 });
 
-// Close modals when clicking the background
+// Close modals when clicking background
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', function(e){
     if(e.target === modal){
@@ -152,6 +172,7 @@ window.siteLocked = true;
 window.userLikes = new Set();
 window.commentsCount = {};
 
+// Count comments recursively
 function countComments(obj) {
   let count = 0;
   for(const key in obj) {
@@ -163,7 +184,6 @@ function countComments(obj) {
   }
   return count;
 }
-
 window.listenForCommentsCount = function() {
   const commentsRoot = window.ref(window.database, "comments");
   window.onValue(commentsRoot, (snapshot) => {
@@ -184,12 +204,11 @@ window.fetchIdeas = function() {
     ideas = [];
     if(data) {
       for(const key in data) {
-        let idea = data[key];
+        const idea = data[key];
         idea.id = key;
         ideas.push(idea);
       }
     }
-    console.log("Fetched ideas from DB:", ideas); // debug
     renderIdeas();
   });
 };
@@ -211,20 +230,20 @@ window.renderIdeas = function() {
           <div class="idea-description">
             ${
               idea.description.length > 200
-              ? idea.description.slice(0,200) + "..."
-              : idea.description
+                ? idea.description.slice(0,200) + "..."
+                : idea.description
             }
             ${
               idea.description.length > 200
-              ? `<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>`
-              : ""
+                ? \`<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>\`
+                : ""
             }
           </div>
         </div>
         <div class="idea-meta">
           <span>${idea.username}</span>
           <div class="idea-actions">
-            <button class="action-button ${window.userLikes.has(idea.id) ? 'liked' : ''}"
+            <button class="action-button \${window.userLikes.has(idea.id) ? 'liked' : ''}"
               onclick="toggleLike('${idea.id}','${idea.id}'); event.stopPropagation();">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0
@@ -232,7 +251,7 @@ window.renderIdeas = function() {
                   l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06
                   a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
-              ${idea.likes}
+              \${idea.likes}
             </button>
             <span class="action-button static">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -245,7 +264,7 @@ window.renderIdeas = function() {
                   8.38 8.38 0 0 1 3.8-.9
                   h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
               </svg>
-              ${commCount}
+              \${commCount}
             </span>
           </div>
         </div>
@@ -254,7 +273,6 @@ window.renderIdeas = function() {
   }).join('');
 };
 
-// Toggle like
 window.toggleLike = function(ideaId, key) {
   if(window.siteLocked) {
     alert('Please unlock the site to like ideas.');
@@ -289,14 +307,40 @@ window.toggleLike = function(ideaId, key) {
   }
 };
 
-window.sanitizeEmail = function(email) {
-  return email.replace(/[.#$/\[\]]/g, "_");
-};
-window.sanitizeText = function(text) {
-  return text.replace(/[.#$/\[\]\s]/g, "_");
-};
+// Comments logic
+function renderComments(comments, parentPath) {
+  return comments.map(comment => {
+    const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
+    let repliesHtml = "";
+    if(comment.replies) {
+      const repliesArray = Object.entries(comment.replies).map(([k,v]) => ({ id: k, ...v }));
+      repliesArray.sort((a,b) => {
+        const numA = parseInt(a.id.split("_")[1] || "0");
+        const numB = parseInt(b.id.split("_")[1] || "0");
+        return numA - numB;
+      });
+      repliesHtml = `<div class="comment-replies">${renderComments(repliesArray, parentPath + "/" + comment.id + "/replies")}</div>`;
+    }
+    return `
+      <div class="comment">
+        <div class="comment-header">
+          <span class="comment-author">${comment.commenter || comment.replier || "Unknown"}</span>
+          <span class="comment-date">${comment.timestamp}</span>
+        </div>
+        <div class="comment-content">${comment.content}</div>
+        <button class="reply-button" onclick="showReplyForm('${parentPath}','${comment.id}'); event.stopPropagation();">Reply</button>
+        <div class="reply-form" id="${replyFormId}" style="display: none; margin-top: 10px;">
+          <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
+          <div class="comment-actions" style="margin-top: 6px; text-align: right;">
+            <button class="post-comment-button modal-post-comment-button" onclick="addReply('${parentPath}','${comment.id}'); event.stopPropagation();">Post</button>
+          </div>
+        </div>
+        ${repliesHtml}
+      </div>
+    `;
+  }).join('');
+}
 
-// Comments / replies
 window.showReplyForm = function(parentPath, commentId) {
   const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
   const form = document.getElementById(replyFormId);
@@ -310,12 +354,10 @@ window.addCommentModal = function(postId) {
   const textarea = container.querySelector('.comment-input');
   const content = textarea.value.trim();
   if(!content) return;
-
   const nextRef = window.ref(window.database, "comments/" + postId + "/_next");
   window.runTransaction(nextRef, (current) => {
     return (current === null ? 0 : current) + 1;
-  })
-  .then((result) => {
+  }).then((result) => {
     const commentNumber = result.snapshot.val();
     const newCommentId = "Comment_" + commentNumber;
     const commentData = {
@@ -325,12 +367,10 @@ window.addCommentModal = function(postId) {
       replies: {}
     };
     return window.set(window.ref(window.database, "comments/" + postId + "/" + newCommentId), commentData);
-  })
-  .then(() => {
+  }).then(() => {
     textarea.value = "";
     container.style.display = "none";
-  })
-  .catch((error) => {
+  }).catch((error) => {
     console.error("Error posting comment:", error);
   });
 };
@@ -340,12 +380,10 @@ window.addReply = function(parentPath, commentId) {
   const replyInput = document.querySelector("#" + replyFormId + " .comment-input");
   const content = replyInput.value.trim();
   if(!content) return;
-
   const nextRef = window.ref(window.database, parentPath + "/" + commentId + "/_next");
   window.runTransaction(nextRef, (current) => {
     return (current === null ? 0 : current) + 1;
-  })
-  .then((result) => {
+  }).then((result) => {
     const replyNumber = result.snapshot.val();
     const newReplyId = "Reply_" + replyNumber;
     const replyData = {
@@ -354,16 +392,13 @@ window.addReply = function(parentPath, commentId) {
       content: content
     };
     return window.set(window.ref(window.database, parentPath + "/" + commentId + "/replies/" + newReplyId), replyData);
-  })
-  .then(() => {
+  }).then(() => {
     replyInput.value = "";
-  })
-  .catch((error) => {
+  }).catch((error) => {
     console.error("Error posting reply:", error);
   });
 };
 
-// Show full idea
 window.showFullIdea = function(ideaId) {
   const idea = ideas.find(i => i.id === ideaId);
   if(!idea) return;
@@ -417,8 +452,7 @@ window.showFullIdea = function(ideaId) {
 <div id="modalCommentForm_${idea.id}" style="display: none; margin-top: 10px;">
   <textarea class="form-input comment-input" placeholder="Write a comment..."></textarea>
   <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-    <button class="post-comment-button modal-post-comment-button"
-      onclick="addCommentModal('${idea.id}'); event.stopPropagation();">Post</button>
+    <button class="post-comment-button modal-post-comment-button" onclick="addCommentModal('${idea.id}'); event.stopPropagation();">Post</button>
   </div>
 </div>`;
 
@@ -438,7 +472,7 @@ ${commentToggleMarkup}
   </div>
 </div>`.trim();
 
-  window.showModal('fullIdeaModal');
+  showModal('fullIdeaModal');
   fetchComments(idea.id);
 };
 
@@ -451,12 +485,12 @@ function fetchComments(postId) {
   const cRef = window.ref(window.database, "comments/" + postId);
   window.onValue(cRef, (snapshot) => {
     const data = snapshot.val();
-    console.log("Comments for post:", postId, data); // debug
     let commHtml = "";
-    if(data) {
+    if (data) {
+      // Exclude "_next"
       const obj = {};
-      for(const key in data) {
-        if(key !== "_next") {
+      for (const key in data) {
+        if (key !== "_next") {
           obj[key] = data[key];
         }
       }
@@ -472,45 +506,22 @@ function fetchComments(postId) {
       document.getElementById("fullIdeaCommentsCount").textContent = 0;
     }
     const section = document.getElementById('commentsSection');
-    if(section) {
+    if (section) {
       section.innerHTML = commHtml;
     }
   });
 }
 
-// Render top-level comments & replies
-function renderComments(comments, parentPath) {
-  return comments.map(comment => {
-    const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
-    let repliesHtml = "";
-    if(comment.replies) {
-      const repliesArray = Object.entries(comment.replies).map(([k,v]) => ({ id: k, ...v }));
-      repliesArray.sort((a,b) => {
-        const numA = parseInt(a.id.split("_")[1] || "0");
-        const numB = parseInt(b.id.split("_")[1] || "0");
-        return numA - numB;
-      });
-      repliesHtml = `<div class="comment-replies">${renderComments(repliesArray, parentPath + "/" + comment.id + "/replies")}</div>`;
+window.scrollToComments = function(e) {
+  e.stopPropagation();
+  const modalContent = document.querySelector('#fullIdeaModal .modal-content');
+  if (modalContent) {
+    const commSection = modalContent.querySelector('#commentsSection');
+    if (commSection) {
+      commSection.scrollIntoView({ behavior: 'smooth' });
     }
-    return `
-      <div class="comment">
-        <div class="comment-header">
-          <span class="comment-author">${comment.commenter || comment.replier || "Unknown"}</span>
-          <span class="comment-date">${comment.timestamp}</span>
-        </div>
-        <div class="comment-content">${comment.content}</div>
-        <button class="reply-button" onclick="showReplyForm('${parentPath}','${comment.id}'); event.stopPropagation();">Reply</button>
-        <div class="reply-form" id="${replyFormId}" style="display: none; margin-top: 10px;">
-          <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
-          <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-            <button class="post-comment-button modal-post-comment-button" onclick="addReply('${parentPath}','${comment.id}'); event.stopPropagation();">Post</button>
-          </div>
-        </div>
-        ${repliesHtml}
-      </div>
-    `;
-  }).join('');
-}
+  }
+};
 
 // New Idea form
 const newIdeaForm = document.getElementById('newIdeaForm');
@@ -539,14 +550,3 @@ newIdeaForm.addEventListener('submit', function(event) {
       console.error("Error posting idea:", error);
     });
 });
-
-window.scrollToComments = function(e) {
-  e.stopPropagation();
-  const modalContent = document.querySelector('#fullIdeaModal .modal-content');
-  if(modalContent) {
-    const commSection = modalContent.querySelector('#commentsSection');
-    if(commSection) {
-      commSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-};
