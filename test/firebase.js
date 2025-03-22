@@ -1,134 +1,113 @@
 // firebase.js
-// Using "compat" libraries for a global firebase object
+// Taken from the old working code snippet, ensuring forced sign-in logic.
 
-// 1) Your Firebase config
-var firebaseConfig = {
-  apiKey: "AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4",
-  authDomain: "myimaginationbackup.firebaseapp.com",
-  projectId: "myimaginationbackup",
-  storageBucket: "myimaginationbackup.firebasestorage.app",
-  messagingSenderId: "780723525935",
-  appId: "1:780723525935:web:151a6d230b3705852a29da",
-  databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com/"
+///////////////////////////////////////////////////////
+// 1) Setup: Use the old firebase config and imports //
+///////////////////////////////////////////////////////
+
+// If you are not using ES modules in your HTML, remove "type='module'" and these imports, 
+// then load the firebase compat scripts globally. For example:
+//
+// <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+//
+// Then you can do firebase.initializeApp(...) etc. 
+// But if you DO want to keep them as ES modules, keep the structure below:
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+import { getDatabase, ref, onValue, push, update, set, get, runTransaction } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+
+// The same config from your old code
+const firebaseConfig = {
+  apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
+  authDomain: "myteacheropinion.firebaseapp.com",
+  databaseURL: "https://myteacheropinion-default-rtdb.firebaseio.com",
+  projectId: "myteacheropinion",
+  storageBucket: "myteacheropinion.firebasestorage.app",
+  messagingSenderId: "945674655787",
+  appId: "1:945674655787:web:a59ef04ec9e843769bf26e"
 };
 
-// 2) Initialize the global 'firebase' object
-firebase.initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+const database = getDatabase(app);
 
-var auth = firebase.auth();
-var provider = new firebase.auth.GoogleAuthProvider();
-var database = firebase.database();
-
-// Expose these so main.js can use them
-window.auth = auth;
-window.provider = provider;
+// Expose them on window so main.js can see them
 window.database = database;
+window.ref = ref;
+window.onValue = onValue;
+window.push = push;
+window.update = update;
+window.set = set;
+window.get = get;
+window.runTransaction = runTransaction;
 
-// Provide wrappers for .ref, .onValue, etc.
-window.ref = function(db, path) {
-  return db.ref(path);
-};
-window.onValue = function(refObj, callback) {
-  return refObj.on('value', (snapshot) => callback(snapshot));
-};
-window.push = function(refObj, data) {
-  return refObj.push(data);
-};
-window.update = function(refObj, data) {
-  return refObj.update(data);
-};
-window.set = function(refObj, data) {
-  return refObj.set(data);
-};
-window.get = function(refObj) {
-  return refObj.once('value');
-};
-window.runTransaction = function(refObj, transactionUpdate) {
-  return refObj.transaction(transactionUpdate);
-};
+/////////////////////////////////////////
+// 2) The forced sign-in logic itself. //
+/////////////////////////////////////////
 
-// This function is called when user clicks "Continue with Google" 
-// or any sign-in button in your modals
+// Check user state whenever it changes
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in
+    // Hide the "Whoops!" modal
+    window.hideModal('signedOutModal');
+
+    // Update top-right user info
+    document.getElementById('username').textContent = user.displayName;
+    document.getElementById('userProfile').style.display = 'flex';
+
+    // Store user info so main.js can use it
+    window.currentUserEmail = user.email;
+    window.currentUserName = user.displayName;
+
+    // "Unlock" the site: show newIdeaBtn, fetch data, etc.
+    window.unlockSite();
+    fetchIdeas();
+    listenForCommentsCount();
+
+  } else {
+    // User is not signed in
+    // If they've never visited, show the Intro modal
+    if (!localStorage.getItem('visited')) {
+      window.showModal('introModal');
+    } else {
+      // Otherwise show "Whoops!" modal
+      window.showModal('signedOutModal');
+    }
+  }
+});
+
+// Called by your "Continue with Google" button
 window.firebaseLogin = function() {
-  auth.signInWithPopup(provider)
+  signInWithPopup(auth, provider)
     .then((result) => {
-      // If a sign-out modal is open, hide it
+      // Hide "Whoops!" if it was open
       window.hideModal('signedOutModal');
-      // Also hide the intro modal if it might be open
-      window.hideModal('introModal');
 
-      // Update UI with user info
+      // Show user info in UI
       document.getElementById('username').textContent = result.user.displayName;
       document.getElementById('userProfile').style.display = 'flex';
       window.currentUserEmail = result.user.email;
       window.currentUserName = result.user.displayName;
-      window.currentUserId = result.user.uid;
 
-      // Setup user likes
-      var userKey = window.sanitizeEmail(result.user.email);
-      var userLikesRef = window.ref(window.database, "userManagement/" + userKey + "/Likes");
-      window.onValue(userLikesRef, (snapshot) => {
-        var likesData = snapshot.val() || {};
-        window.userLikes = new Set(Object.keys(likesData));
-        window.renderIdeas();
-      });
-
-      // Unlock the site (remove "locked" UI) 
+      // Unlock site
       window.unlockSite();
-      // Fetch data & comments
-      window.fetchIdeas();
-      window.listenForCommentsCount();
-
-      // Optionally run the tutorial after login
-      window.startTutorial(); 
+      fetchIdeas();
+      listenForCommentsCount();
     })
     .catch((error) => {
       console.error("Firebase login error:", error);
     });
 };
 
-// This function is called when user confirms sign out
+// Called by your "Sign Out" button
 window.logout = function() {
-  auth.signOut()
-    .then(() => {
-      location.reload(); 
-    })
-    .catch((error) => {
-      console.error("Firebase logout error:", error);
-    });
+  signOut(auth)
+    .then(() => { location.reload(); })
+    .catch((error) => { console.error("Firebase logout error:", error); });
 };
-
-// This fires on page load + whenever auth state changes
-auth.onAuthStateChanged(function(user) {
-  if (user) {
-    // User is signed in
-    // Hide sign-in prompts if they're open
-    window.hideModal('introModal');
-    window.hideModal('signedOutModal');
-
-    // Update UI
-    document.getElementById('username').textContent = user.displayName;
-    document.getElementById('userProfile').style.display = 'flex';
-
-    window.currentUserEmail = user.email;
-    window.currentUserName = user.displayName;
-    window.currentUserId = user.uid;
-
-    var userKey = window.sanitizeEmail(user.email);
-    var userLikesRef = window.ref(window.database, "userManagement/" + userKey + "/Likes");
-    window.onValue(userLikesRef, (snapshot) => {
-      var likesData = snapshot.val() || {};
-      window.userLikes = new Set(Object.keys(likesData));
-      window.renderIdeas();
-    });
-
-    // Unlock the site, fetch data
-    window.unlockSite();
-    window.fetchIdeas();
-    window.listenForCommentsCount();
-  } else {
-    // User is not signed in, always show the same sign-in prompt
-    window.showModal('introModal');
-    // Or if you want the "Whoops!" text, do: window.showModal('signedOutModal');
-  }
-});
