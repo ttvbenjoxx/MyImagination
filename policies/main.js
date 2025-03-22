@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const termsPanel = document.getElementById("termsPanel");
   const cookieSection = document.getElementById("cookieSection");
 
-  // Hide Terms by default, show Privacy/Cookie
+  // Hide Terms by default, show Privacy & Cookie
   termsPanel.style.display = "none";
   privacyCookiePanel.style.display = "block";
 
@@ -41,38 +41,4 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
-
-  // OPTIONAL Scroll Spy:
-  // If you'd like the left tab to auto-change when you manually scroll
-  // the entire page to #cookieSection, you can use an IntersectionObserver
-  // with root: null (the entire viewport).
-  // For example (uncomment if desired):
-
-  /*
-  let observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-        // highlight "Cookie Policy" tab
-        tabs.forEach((t) => t.classList.remove("active"));
-        document
-          .querySelector('.tab[data-policy="cookieSection"]')
-          .classList.add("active");
-      } else {
-        // if we are not seeing cookieSection, highlight "Privacy Policy"
-        // but only if Terms is not visible
-        if (termsPanel.style.display === "none") {
-          tabs.forEach((t) => t.classList.remove("active"));
-          document
-            .querySelector('.tab[data-policy="privacyCookieTop"]')
-            .classList.add("active");
-        }
-      }
-    });
-  }, {
-    root: null, // entire page
-    threshold: 0.5,
-  });
-
-  observer.observe(cookieSection);
-  */
 });
