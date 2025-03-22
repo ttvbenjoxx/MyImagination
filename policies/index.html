@@ -10,27 +10,25 @@
   <body>
     <header>
       <div class="header-left">
-        <!-- MyImagination Logo -->
+        <!-- Logo -->
         <div class="logo">MyImagination</div>
-
-        <!-- Back to Dashboard button right next to logo -->
+        <!-- Back to Dashboard button right next to the logo -->
         <div class="back-button">
-          <!-- Uses a relative link back to your main page (../ means "up one folder") -->
+          <!-- Uses a relative link: "../" goes up one folder from /policies/ -->
           <a href="../">
             <span class="back-arrow">&larr;</span> Back to Dashboard
           </a>
         </div>
       </div>
-
       <div class="header-right">
         <h1>Policies</h1>
       </div>
     </header>
 
-    <!-- Main page layout: left side is a "navbar" for policies, right side is a white card -->
-    <div class="policies-page">
-      <!-- Left side: policy selector as a "navbar" -->
-      <div class="selector-container">
+    <!-- Main container: single white card with two columns (left = selector, right = content) -->
+    <div class="policies-container">
+      <!-- Left side: policy selector -->
+      <div class="nav-column">
         <nav class="policies-tabs">
           <button class="tab active" data-policy="privacy">Privacy Policy</button>
           <button class="tab" data-policy="cookie">Cookie Policy</button>
@@ -38,9 +36,9 @@
         </nav>
       </div>
 
-      <!-- Right side: white card with the active policy -->
-      <div class="policy-content-card">
-        <!-- Default visible panel: Privacy Policy -->
+      <!-- Right side: active policy content -->
+      <div class="content-column">
+        <!-- Default visible: Privacy Policy -->
         <div class="policy-panel" id="privacy">
           <h2>Privacy Policy</h2>
           <p>
