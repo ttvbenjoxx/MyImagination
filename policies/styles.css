@@ -1,25 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #8a2be2; /* Same gradient colors as your main page */
-  --secondary-color: #4169e1;
+  --primary-color: #8a2be2; /* same as main page */
+  --secondary-color: #4169e1; /* same as main page */
   --text-color: #333;
   --card-background: #ffffff;
   --border-radius: 12px;
   --transition: all 0.3s ease;
 }
 
-/* Overall body with the same gradient background as main site */
+/* Same gradient background as the main site */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: var(--text-color);
   min-height: 100vh;
-  padding-bottom: 50px; /* in case you have a footer or disclaimer */
+  padding-bottom: 50px; /* for any footer or disclaimer */
 }
 
-/* Header matches main site: translucent, sticky, blurred */
+/* Header styling from main page: translucent, sticky, blurred */
 header {
   background-color: rgba(255, 255, 255, 0.1);
   padding: 20px;
@@ -33,11 +33,11 @@ header {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Left side of header: MyImagination + back button side-by-side */
+/* Left side of header: MyImagination + back button side by side */
 .header-left {
   display: flex;
   align-items: center;
-  gap: 20px; /* space between logo and back button */
+  gap: 20px;
 }
 
 .header-left .logo {
@@ -69,32 +69,35 @@ header {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Make the arrow bigger and spaced */
 .back-arrow {
   font-size: 24px;
   margin-right: 8px;
 }
 
-/* Main layout container for the policy page */
-.policies-page {
+/* The main container: single white card with two columns */
+.policies-container {
   display: flex;
   max-width: 1200px;
-  margin: 40px auto; /* center the layout with top/bottom spacing */
-  padding: 0 20px;   /* optional horizontal padding so it doesn't touch the screen edges */
-  box-sizing: border-box;
-}
-
-/* Left side: the "navbar" for policy selection */
-.selector-container {
-  width: 250px;
-  background: #f5f5f5;
+  margin: 40px auto; /* centers the container, with spacing above/below */
+  background: var(--card-background);
   border-radius: var(--border-radius);
-  padding: 20px;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-  margin-right: 20px; /* separate it from the main card on the right */
-  box-sizing: border-box;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
 
-/* The policy tabs within the left navbar */
+/* Left column: nav for policy selection */
+.nav-column {
+  width: 300px;
+  background: #f5f5f5;
+  padding: 20px;
+  box-sizing: border-box;
+  /* If you want a vertical divider, uncomment:
+     border-right: 1px solid #ddd; 
+  */
+}
+
+/* The tabs inside the left column */
 .policies-tabs {
   display: flex;
   flex-direction: column;
@@ -127,18 +130,14 @@ header {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Right side: a white card containing the active policy content */
-.policy-content-card {
+/* Right column: policy content area */
+.content-column {
   flex: 1;
-  background: var(--card-background);
-  border-radius: var(--border-radius);
   padding: 30px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
 }
 
 .policy-panel {
-  display: block;
   margin-bottom: 20px;
 }
 
