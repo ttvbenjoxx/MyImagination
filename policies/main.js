@@ -4,13 +4,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   tabs.forEach((tab) => {
     tab.addEventListener("click", function () {
-      // Remove active class from all tabs
+      // Remove 'active' from all tabs
       tabs.forEach((t) => t.classList.remove("active"));
       // Hide all panels
       panels.forEach((panel) => (panel.style.display = "none"));
 
-      // Mark clicked tab as active and show its panel
+      // Mark clicked tab as active
       tab.classList.add("active");
+      // Show the corresponding panel
       const policyId = tab.getAttribute("data-policy");
       const panel = document.getElementById(policyId);
       if (panel) {
