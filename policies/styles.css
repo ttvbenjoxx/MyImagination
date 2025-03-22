@@ -9,7 +9,7 @@
   --transition: all 0.3s ease;
 }
 
-/* Overall page with gradient background */
+/* Gradient background, not sticky header */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
@@ -19,7 +19,6 @@ body {
   padding-bottom: 50px; /* if you have a footer or disclaimer */
 }
 
-/* Header is no longer sticky, just normal flow */
 header {
   background-color: rgba(255, 255, 255, 0.1);
   padding: 20px;
@@ -47,7 +46,6 @@ header {
   color: #fff;
 }
 
-/* Back to Dashboard button */
 .back-button a {
   color: #fff;
   text-decoration: none;
@@ -69,7 +67,7 @@ header {
   margin-right: 8px;
 }
 
-/* Page layout: left nav + right content. No internal scroll. */
+/* 2-column layout: left = small card, right = bigger card */
 .policies-page {
   display: flex;
   max-width: 1200px;
@@ -79,21 +77,18 @@ header {
   gap: 20px;
 }
 
-/* LEFT NAVBAR: fixed small height, white, rounded corners */
+/* LEFT NAVBAR: smaller height, white, rounded corners */
 .left-navbar {
   width: 250px;
-  height: 300px; /* consistent small length */
+  height: 180px; /* smaller than before */
   background: #fff;
   border-radius: var(--border-radius);
   box-shadow: 0 3px 5px rgba(0,0,0,0.1);
   padding: 20px;
   box-sizing: border-box;
-  /* If you have many tabs, you can enable scrolling:
-     overflow-y: auto;
-  */
 }
 
-/* Policy tabs inside the left navbar */
+/* Policy tabs inside left navbar */
 .policies-tabs {
   display: flex;
   flex-direction: column;
@@ -124,7 +119,7 @@ header {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* RIGHT COLUMN: grows with content, no internal scroll */
+/* RIGHT COLUMN: full white background, grows with content */
 .policy-content-column {
   flex: 1;
   background: var(--card-background);
@@ -134,7 +129,7 @@ header {
   box-sizing: border-box;
 }
 
-/* Panels: only one is visible at a time */
+/* Panels (only one is shown at a time) */
 .policy-panel {
   margin-bottom: 20px;
 }
