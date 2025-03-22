@@ -9,7 +9,6 @@
   --transition: all 0.3s ease;
 }
 
-/* Overall gradient background, normal header */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
@@ -67,7 +66,7 @@ header {
   margin-right: 8px;
 }
 
-/* Policies layout: left = small box, right = bigger white card */
+/* Main layout: left navbar + right content */
 .policies-page {
   display: flex;
   max-width: 1200px;
@@ -82,7 +81,7 @@ header {
   height: 300px;
   background: #fff;
   border-radius: var(--border-radius);
-  box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
   padding: 20px;
   box-sizing: border-box;
 }
@@ -154,6 +153,29 @@ header {
 
 /* Highlight effect for cross-referenced sections */
 .highlighted-section {
-  background-color: #ffe6ff; /* light pink highlight */
+  background-color: #ffe6ff;
   transition: background-color 1s ease;
+}
+
+/* --- MOBILE RESPONSIVE --- */
+@media (max-width: 768px) {
+  .policies-page {
+    flex-direction: column;
+    margin: 20px auto;
+  }
+
+  .left-navbar {
+    width: 100%;
+    height: auto; /* remove fixed height on mobile */
+    margin-bottom: 20px;
+  }
+
+  .policy-content-card {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .tab {
+    font-size: 14px; /* slightly smaller text on mobile */
+  }
 }
