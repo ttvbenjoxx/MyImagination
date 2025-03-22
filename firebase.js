@@ -1,5 +1,5 @@
 // firebase.js
-// Uses your MyImaginationBackup credentials + forced sign-in (localStorage visited) logic.
+// MyImaginationBackup credentials + forced sign-in with localStorage "visited"
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
@@ -11,18 +11,18 @@ const firebaseConfig = {
   authDomain: "myimaginationbackup.firebaseapp.com",
   databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com",
   projectId: "myimaginationbackup",
-  storageBucket: "myimaginationbackup.firebaseapp.com",
+  storageBucket: "myimaginationbackup.firebasestorage.app",
   messagingSenderId: "780723525935",
   appId: "1:780723525935:web:151a6d230b3705852a29da"
 };
 
-// 1) Initialize Firebase
+// 1) Initialize
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const database = getDatabase(app);
 
-// 2) Expose these references so your main.js can call them
+// 2) Expose references so main.js can call them
 window.database = database;
 window.ref = ref;
 window.onValue = onValue;
@@ -32,41 +32,42 @@ window.set = set;
 window.get = get;
 window.runTransaction = runTransaction;
 
-// 3) Watch auth state to enforce sign-in
+// 3) Force sign-in logic
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Hide "Whoops!" if open
+    // Hide "Whoops!"
     window.hideModal('signedOutModal');
 
-    // Show user info in top-right
+    // Update UI
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
 
     // Store user info globally
     window.currentUserEmail = user.email;
     window.currentUserName = user.displayName;
+    window.currentUserId = user.uid; // for reference if needed
 
-    // Unlock site, fetch data
+    // Unlock site, fetch data, etc.
     window.unlockSite();
     window.fetchIdeas();
     window.listenForCommentsCount();
   } else {
     // Not logged in
     if (!localStorage.getItem('visited')) {
-      // Show Intro (Welcome) if never visited
+      // Show Intro
       window.showModal('introModal');
     } else {
-      // Otherwise show "Whoops!"
+      // Show "Whoops!"
       window.showModal('signedOutModal');
     }
   }
 });
 
-// 4) Called when user clicks "Continue with Google"
+// 4) Called by "Continue with Google"
 window.firebaseLogin = function() {
   signInWithPopup(auth, provider)
     .then((result) => {
-      // Hide "Whoops!" if it was open
+      // Hide "Whoops!" if open
       window.hideModal('signedOutModal');
 
       // Show user info
@@ -75,8 +76,9 @@ window.firebaseLogin = function() {
 
       window.currentUserEmail = result.user.email;
       window.currentUserName = result.user.displayName;
+      window.currentUserId = result.user.uid;
 
-      // Unlock site, fetch data
+      // Unlock site
       window.unlockSite();
       window.fetchIdeas();
       window.listenForCommentsCount();
@@ -86,7 +88,7 @@ window.firebaseLogin = function() {
     });
 };
 
-// 5) Called when user confirms sign-out
+// 5) Sign-out
 window.logout = function() {
   signOut(auth)
     .then(() => {
