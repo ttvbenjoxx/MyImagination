@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #8a2be2;
+  --secondary-color: #4169e1;
+  --text-color: #333;
+  --background-color: #f4f4f4;
+  --card-background: #ffffff;
+  --border-radius: 12px;
+  --transition: all 0.3s ease;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: var(--text-color);
+}
+
+/* Header styling similar to the main page */
+header {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-left .logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.header-right h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.back-button {
+  padding: 10px 20px;
+}
+
+.back-button a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+/* Container for policies page */
+.policies-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 20px auto;
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Left sidebar tabs */
+.policies-tabs {
+  width: 200px;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+}
+
+.policies-tabs .tab {
+  padding: 15px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-color);
+  transition: var(--transition);
+}
+
+.policies-tabs .tab:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.policies-tabs .tab.active {
+  background: #fff;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+/* Policy content area */
+.policy-content {
+  padding: 20px;
+  flex: 1;
+}
+
+.policy-panel {
+  display: block;
+}
+
+.policy-panel h2 {
+  margin-top: 0;
+  color: var(--primary-color);
+}
+
+.policy-panel p {
+  line-height: 1.6;
+}
