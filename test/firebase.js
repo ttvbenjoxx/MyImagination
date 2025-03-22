@@ -17,7 +17,6 @@ var auth = firebase.auth();
 var provider = new firebase.auth.GoogleAuthProvider();
 var database = firebase.database();
 
-// Expose these so main.js can use them
 window.auth = auth;
 window.provider = provider;
 window.database = database;
@@ -49,7 +48,7 @@ window.runTransaction = function(refObj, transactionUpdate) {
 window.firebaseLogin = function() {
   auth.signInWithPopup(provider)
     .then((result) => {
-      // If the "Whoops!" modal is open, hide it
+      // If "Whoops!" modal is open, hide it
       window.hideModal('signedOutModal');
 
       // Update UI with user info
@@ -68,12 +67,12 @@ window.firebaseLogin = function() {
         window.renderIdeas();
       });
 
-      // Unlock site, fetch data
+      // Unlock site (also sets localStorage.setItem('visited','true'))
       window.unlockSite();
       window.fetchIdeas();
       window.listenForCommentsCount();
 
-      // Start tutorial right after login
+      // Immediately start the tutorial
       window.startTutorial();
     })
     .catch((error) => {
@@ -91,11 +90,13 @@ window.logout = function() {
     });
 };
 
-// Auth state changes
+// Watch auth state changes
 auth.onAuthStateChanged(function(user) {
   if (user) {
-    // Signed in
+    // If logged in, hide the modals if they are open
+    window.hideModal('introModal');
     window.hideModal('signedOutModal');
+
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
 
@@ -111,14 +112,18 @@ auth.onAuthStateChanged(function(user) {
       window.renderIdeas();
     });
 
+    // Unlock site (shows newIdeaBtn, etc.)
     window.unlockSite();
     window.fetchIdeas();
     window.listenForCommentsCount();
+
   } else {
-    // Signed out
+    // Not logged in
+    // If they've never visited (this browser), show Intro
     if (!localStorage.getItem('visited')) {
       window.showModal('introModal');
     } else {
+      // Otherwise show "Whoops!"
       window.showModal('signedOutModal');
     }
   }
