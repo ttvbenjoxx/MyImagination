@@ -75,28 +75,27 @@ header {
   margin-right: 8px;
 }
 
-/* Main layout: 2 columns */
+/* Main layout: 2 columns, left is white navbar, right is white card */
 .policies-page {
   display: flex;
   max-width: 1200px;
   margin: 40px auto; /* centers container, with spacing above/below */
-  padding: 0 20px;   /* optional horizontal padding so it doesn't touch the screen edges */
+  padding: 0 20px;
+  box-sizing: border-box;
+  gap: 20px;
+}
+
+/* LEFT NAVBAR: white, rounded background, slightly to the left */
+.left-navbar {
+  width: 250px;
+  background: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+  padding: 20px;
   box-sizing: border-box;
 }
 
-/* LEFT COLUMN: The policy selector (navbar) over the gradient */
-.left-navbar {
-  width: 250px;
-  margin-right: 20px;
-  /* If you want a subtle backdrop behind the tabs, uncomment below:
-     background-color: rgba(255,255,255,0.2);
-     border-radius: var(--border-radius);
-     padding: 20px;
-     box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-  */
-}
-
-/* The policy tabs themselves */
+/* The policy tabs */
 .policies-tabs {
   display: flex;
   flex-direction: column;
@@ -110,25 +109,24 @@ header {
   text-align: left;
   cursor: pointer;
   font-size: 16px;
-  color: #fff; /* white text if you want it to stand out over the gradient */
+  color: var(--text-color);
   transition: var(--transition);
   border-radius: var(--border-radius);
   font-weight: 500;
-  /* Outline or background on hover if desired */
 }
 
 .policies-tabs .tab:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .policies-tabs .tab.active {
-  background: rgba(255, 255, 255, 0.3);
+  background: #f0f0f0;
   font-weight: 600;
-  color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--primary-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* RIGHT COLUMN: The white card for the selected policy */
+/* RIGHT CONTENT CARD */
 .policy-content-card {
   flex: 1;
   background: var(--card-background);
@@ -136,11 +134,10 @@ header {
   padding: 30px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
-}
-
-/* Policy text styles */
-.policy-panel {
-  margin-bottom: 20px;
+  position: relative;
+  /* Overflow so scrolling is visible within the panel if needed */
+  overflow-y: auto;
+  max-height: calc(100vh - 120px); /* limit height so user can scroll inside */
 }
 
 .policy-panel h2 {
@@ -148,7 +145,18 @@ header {
   color: var(--primary-color);
 }
 
+.policy-panel h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  color: var(--primary-color);
+}
+
 .policy-panel p {
   line-height: 1.6;
+  margin-bottom: 1em;
+}
+
+.policy-panel ul {
+  margin-left: 1.5em;
   margin-bottom: 1em;
 }
