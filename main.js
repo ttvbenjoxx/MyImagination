@@ -148,8 +148,9 @@ function renderIdeas() {
                 : idea.description
             }
             ${
+              // REMOVED the backslash before the backtick here
               idea.description.length > 200
-                ? \`<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>\`
+                ? `<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>`
                 : ""
             }
           </div>
@@ -157,7 +158,7 @@ function renderIdeas() {
         <div class="idea-meta">
           <span>${idea.username}</span>
           <div class="idea-actions">
-            <button class="action-button \${window.userLikes.has(idea.id) ? 'liked' : ''}"
+            <button class="action-button ${window.userLikes.has(idea.id) ? 'liked' : ''}"
               onclick="toggleLike('${idea.id}','${idea.id}'); event.stopPropagation();">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0
@@ -166,7 +167,7 @@ function renderIdeas() {
                   l7.78-7.78 1.06-1.06
                   a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
-              \${idea.likes || 0}
+              ${idea.likes || 0}
             </button>
             <span class="action-button static">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -179,7 +180,7 @@ function renderIdeas() {
                   8.38 8.38 0 0 1 3.8-.9
                   h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
               </svg>
-              \${commCount}
+              ${commCount}
             </span>
           </div>
         </div>
