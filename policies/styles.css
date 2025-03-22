@@ -9,17 +9,17 @@
   --transition: all 0.3s ease;
 }
 
-/* Same gradient background as the main site */
+/* Same gradient background as main page */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: var(--text-color);
   min-height: 100vh;
-  padding-bottom: 50px; /* for any footer or disclaimer */
+  padding-bottom: 50px; /* if you have a footer or disclaimer */
 }
 
-/* Header styling from main page: translucent, sticky, blurred */
+/* Header: translucent bar with blur, matching main page */
 header {
   background-color: rgba(255, 255, 255, 0.1);
   padding: 20px;
@@ -69,41 +69,38 @@ header {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Make the arrow bigger and spaced */
+/* Make the arrow bigger */
 .back-arrow {
   font-size: 24px;
   margin-right: 8px;
 }
 
-/* The main container: single white card with two columns */
-.policies-container {
+/* Main layout: 2 columns */
+.policies-page {
   display: flex;
   max-width: 1200px;
-  margin: 40px auto; /* centers the container, with spacing above/below */
-  background: var(--card-background);
-  border-radius: var(--border-radius);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
+  margin: 40px auto; /* centers container, with spacing above/below */
+  padding: 0 20px;   /* optional horizontal padding so it doesn't touch the screen edges */
+  box-sizing: border-box;
 }
 
-/* Left column: nav for policy selection */
-.nav-column {
-  width: 300px;
-  background: #f5f5f5;
-  padding: 20px;
-  box-sizing: border-box;
-  /* If you want a vertical divider, uncomment:
-     border-right: 1px solid #ddd; 
+/* LEFT COLUMN: The policy selector (navbar) over the gradient */
+.left-navbar {
+  width: 250px;
+  margin-right: 20px;
+  /* If you want a subtle backdrop behind the tabs, uncomment below:
+     background-color: rgba(255,255,255,0.2);
+     border-radius: var(--border-radius);
+     padding: 20px;
+     box-shadow: 0 3px 5px rgba(0,0,0,0.1);
   */
 }
 
-/* The tabs inside the left column */
+/* The policy tabs themselves */
 .policies-tabs {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin: 0;
-  padding: 0;
 }
 
 .policies-tabs .tab {
@@ -113,30 +110,35 @@ header {
   text-align: left;
   cursor: pointer;
   font-size: 16px;
-  color: var(--text-color);
+  color: #fff; /* white text if you want it to stand out over the gradient */
   transition: var(--transition);
   border-radius: var(--border-radius);
   font-weight: 500;
+  /* Outline or background on hover if desired */
 }
 
 .policies-tabs .tab:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .policies-tabs .tab.active {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.3);
   font-weight: 600;
-  color: var(--primary-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Right column: policy content area */
-.content-column {
+/* RIGHT COLUMN: The white card for the selected policy */
+.policy-content-card {
   flex: 1;
+  background: var(--card-background);
+  border-radius: var(--border-radius);
   padding: 30px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
 }
 
+/* Policy text styles */
 .policy-panel {
   margin-bottom: 20px;
 }
