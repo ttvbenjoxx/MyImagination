@@ -9,7 +9,7 @@
   --transition: all 0.3s ease;
 }
 
-/* Same gradient background as main page */
+/* Overall page with gradient background */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
@@ -19,21 +19,16 @@ body {
   padding-bottom: 50px; /* if you have a footer or disclaimer */
 }
 
-/* Header: translucent bar with blur, matching main page */
+/* Header is no longer sticky, just normal flow */
 header {
   background-color: rgba(255, 255, 255, 0.1);
   padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Left side of header: MyImagination + back button side by side */
 .header-left {
   display: flex;
   align-items: center;
@@ -52,7 +47,7 @@ header {
   color: #fff;
 }
 
-/* Back to Dashboard button next to the logo */
+/* Back to Dashboard button */
 .back-button a {
   color: #fff;
   text-decoration: none;
@@ -69,33 +64,36 @@ header {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Make the arrow bigger */
 .back-arrow {
   font-size: 24px;
   margin-right: 8px;
 }
 
-/* Main layout: 2 columns, left is white navbar, right is white card */
+/* Page layout: left nav + right content. No internal scroll. */
 .policies-page {
   display: flex;
   max-width: 1200px;
-  margin: 40px auto; /* centers container, with spacing above/below */
+  margin: 40px auto;
   padding: 0 20px;
   box-sizing: border-box;
   gap: 20px;
 }
 
-/* LEFT NAVBAR: white, rounded background, slightly to the left */
+/* LEFT NAVBAR: fixed small height, white, rounded corners */
 .left-navbar {
   width: 250px;
+  height: 300px; /* consistent small length */
   background: #fff;
   border-radius: var(--border-radius);
   box-shadow: 0 3px 5px rgba(0,0,0,0.1);
   padding: 20px;
   box-sizing: border-box;
+  /* If you have many tabs, you can enable scrolling:
+     overflow-y: auto;
+  */
 }
 
-/* The policy tabs */
+/* Policy tabs inside the left navbar */
 .policies-tabs {
   display: flex;
   flex-direction: column;
@@ -126,18 +124,19 @@ header {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* RIGHT CONTENT CARD */
-.policy-content-card {
+/* RIGHT COLUMN: grows with content, no internal scroll */
+.policy-content-column {
   flex: 1;
   background: var(--card-background);
   border-radius: var(--border-radius);
   padding: 30px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
-  position: relative;
-  /* Overflow so scrolling is visible within the panel if needed */
-  overflow-y: auto;
-  max-height: calc(100vh - 120px); /* limit height so user can scroll inside */
+}
+
+/* Panels: only one is visible at a time */
+.policy-panel {
+  margin-bottom: 20px;
 }
 
 .policy-panel h2 {
