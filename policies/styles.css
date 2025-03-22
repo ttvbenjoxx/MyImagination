@@ -9,7 +9,7 @@
   --transition: all 0.3s ease;
 }
 
-/* Page background with gradient, normal header */
+/* Overall gradient background, normal header */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
@@ -34,7 +34,7 @@ header {
   gap: 20px;
 }
 
-.header-left .logo {
+.logo {
   font-size: 24px;
   font-weight: bold;
   color: #fff;
@@ -67,7 +67,7 @@ header {
   margin-right: 8px;
 }
 
-/* 2-column layout: small left box, big right box */
+/* Policies layout: left = small box, right = bigger white card */
 .policies-page {
   display: flex;
   max-width: 1200px;
@@ -77,7 +77,6 @@ header {
   gap: 20px;
 }
 
-/* LEFT NAVBAR: 300px tall so all 3 tabs are fully visible */
 .left-navbar {
   width: 250px;
   height: 300px;
@@ -88,14 +87,13 @@ header {
   box-sizing: border-box;
 }
 
-/* Tabs inside left navbar */
 .policies-tabs {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.policies-tabs .tab {
+.tab {
   padding: 16px;
   border: none;
   background: none;
@@ -108,19 +106,18 @@ header {
   font-weight: 500;
 }
 
-.policies-tabs .tab:hover {
+.tab:hover {
   background: rgba(0, 0, 0, 0.05);
 }
 
-.policies-tabs .tab.active {
+.tab.active {
   background: #f0f0f0;
   font-weight: 600;
   color: var(--primary-color);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* RIGHT COLUMN: grows with content, white card */
-.policy-content-column {
+.policy-content-card {
   flex: 1;
   background: var(--card-background);
   border-radius: var(--border-radius);
@@ -129,12 +126,11 @@ header {
   box-sizing: border-box;
 }
 
-/* Panels (only one is visible at a time) */
 .policy-panel {
   margin-bottom: 20px;
 }
 
-.policy-panel h2 {
+.policy-title {
   margin-top: 0;
   color: var(--primary-color);
 }
@@ -143,6 +139,7 @@ header {
   margin-top: 1.5em;
   margin-bottom: 0.5em;
   color: var(--primary-color);
+  position: relative;
 }
 
 .policy-panel p {
@@ -155,11 +152,8 @@ header {
   margin-bottom: 1em;
 }
 
-/* Only highlight the text of the cookie title, not the entire line */
-.cookie-title {
-  display: inline-block; /* shrink wrap around text only */
-  transition: background-color 1s ease; /* fade out over 1s */
-}
-.cookie-title.highlight {
-  background-color: #ff00ff; /* vibrant pink/purple */
+/* Highlight effect for cross-referenced sections */
+.highlighted-section {
+  background-color: #ffe6ff; /* light pink highlight */
+  transition: background-color 1s ease;
 }
