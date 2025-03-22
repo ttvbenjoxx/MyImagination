@@ -1,7 +1,7 @@
 // main.js
-// All UI logic: modals, Intro.js tutorial, idea rendering, toggling likes, etc.
+// All UI logic: modals, Intro.js tutorial, data rendering, toggling likes, etc.
 
-// Focus trap for modals
+// FOCUS TRAP
 let lastFocusedElement;
 function trapFocus(modal) {
   const focusableElements = modal.querySelectorAll(
@@ -47,17 +47,17 @@ window.hideModal = function(id) {
   }
 };
 
-// Called once user is authorized
+// UNLOCK SITE
 window.unlockSite = function() {
   window.siteLocked = false;
   document.getElementById('ideasGrid').classList.remove('locked');
   document.getElementById('filterBtn').style.display = 'flex';
   document.getElementById('newIdeaBtn').style.display = 'block';
   window.hideModal('introModal');
-  localStorage.setItem('visited', 'true');
+  localStorage.setItem('visited','true'); // Mark visited once they log in
 };
 
-// TUTORIAL: new post → sign out → filter → info
+// TUTORIAL STEPS (Order: new post → sign out → filter → info)
 window.startTutorial = function() {
   introJs().setOptions({
     steps: [
@@ -87,7 +87,7 @@ window.startTutorial = function() {
   }).start();
 };
 
-// If user starts the tutorial from the Info modal, add an extra step to close that modal first
+// If starting from Info modal, add an extra step to close that modal first
 window.startTutorialFromInfoModal = function() {
   introJs().setOptions({
     steps: [
@@ -121,7 +121,7 @@ window.startTutorialFromInfoModal = function() {
   }).start();
 };
 
-// Sign-out dropdown logic
+// SIGN-OUT DROPDOWN
 document.getElementById('userProfile').addEventListener('click', function(e){
   document.getElementById('logoutDropdown').classList.toggle("show");
   e.stopPropagation();
@@ -134,7 +134,7 @@ document.getElementById('confirmLogout').addEventListener('click', function(e){
   window.logout();
 });
 
-// New Idea & Info modals
+// SHOW/HIDE MODALS
 document.getElementById('newIdeaBtn').addEventListener('click', function(e){
   e.stopPropagation();
   window.showModal('newIdeaModal');
@@ -144,7 +144,7 @@ document.getElementById('infoBtn').addEventListener('click', function(e){
   window.showModal('infoModal');
 });
 
-// Filter logic
+// FILTER
 let filterBy = "recent";
 document.getElementById('filterBtn').addEventListener('click', function(e){
   e.stopPropagation();
@@ -158,7 +158,7 @@ document.getElementById('filterBtn').addEventListener('click', function(e){
   renderIdeas();
 });
 
-// Close modals when clicking background
+// CLOSE MODAL WHEN CLICKING BACKDROP
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', function(e){
     if(e.target === modal){
@@ -167,12 +167,11 @@ document.querySelectorAll('.modal').forEach(modal => {
   });
 });
 
-// Data / Rendering
+// DATA / RENDERING
 window.siteLocked = true;
 window.userLikes = new Set();
 window.commentsCount = {};
 
-// Count comments recursively
 function countComments(obj) {
   let count = 0;
   for(const key in obj) {
@@ -204,7 +203,7 @@ window.fetchIdeas = function() {
     ideas = [];
     if(data) {
       for(const key in data) {
-        const idea = data[key];
+        let idea = data[key];
         idea.id = key;
         ideas.push(idea);
       }
@@ -307,7 +306,14 @@ window.toggleLike = function(ideaId, key) {
   }
 };
 
-// Comments logic
+window.sanitizeEmail = function(email) {
+  return email.replace(/[.#$/\[\]]/g, "_");
+};
+window.sanitizeText = function(text) {
+  return text.replace(/[.#$/\[\]\s]/g, "_");
+};
+
+// COMMENTS + REPLIES
 function renderComments(comments, parentPath) {
   return comments.map(comment => {
     const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
@@ -452,7 +458,8 @@ window.showFullIdea = function(ideaId) {
 <div id="modalCommentForm_${idea.id}" style="display: none; margin-top: 10px;">
   <textarea class="form-input comment-input" placeholder="Write a comment..."></textarea>
   <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-    <button class="post-comment-button modal-post-comment-button" onclick="addCommentModal('${idea.id}'); event.stopPropagation();">Post</button>
+    <button class="post-comment-button modal-post-comment-button"
+      onclick="addCommentModal('${idea.id}'); event.stopPropagation();">Post</button>
   </div>
 </div>`;
 
@@ -485,9 +492,9 @@ function fetchComments(postId) {
   const cRef = window.ref(window.database, "comments/" + postId);
   window.onValue(cRef, (snapshot) => {
     const data = snapshot.val();
+    console.log("Comments for post:", postId, data);
     let commHtml = "";
     if (data) {
-      // Exclude "_next"
       const obj = {};
       for (const key in data) {
         if (key !== "_next") {
