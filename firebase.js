@@ -1,12 +1,12 @@
 // firebase.js
-// MyImaginationBackup credentials + forced sign-in + userManagement likes loading
-// Load this with: <script type="module" src="firebase.js"></script>
+// MyImaginationBackup credentials + forced sign-in + userManagement "likes" loading
+// Load in index.html with: <script type="module" src="firebase.js"></script>
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getDatabase, ref, onValue, push, update, set, get, runTransaction } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
-// Your MyImaginationBackup credentials
+// 1) Your MyImaginationBackup credentials
 const firebaseConfig = {
   apiKey: "AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4",
   authDomain: "myimaginationbackup.firebaseapp.com",
@@ -17,13 +17,13 @@ const firebaseConfig = {
   appId: "1:780723525935:web:151a6d230b3705852a29da"
 };
 
-// Initialize
+// 2) Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const database = getDatabase(app);
 
-// Expose references so main.js can use them
+// 3) Expose references so main.js can call them
 window.database = database;
 window.ref = ref;
 window.onValue = onValue;
@@ -34,29 +34,29 @@ window.get = get;
 window.runTransaction = runTransaction;
 
 /**
- * Local helper to sanitize an email into a valid RTDB key
- * (If you already define `window.sanitizeEmail` in main.js, you can remove this
- *  and just call `window.sanitizeEmail(user.email)` below.)
+ * Helper to sanitize an email into a valid RTDB key
+ * If you already define this in main.js, you can remove it here.
  */
 function sanitizeEmail(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
 }
 
 /**
- * Listen for auth changes: If user is signed in, load their liked posts from
- * userManagement/{email}/Likes, so we can highlight which posts are liked
- * (and prevent infinite re-likes).
+ * 4) Monitor auth state:
+ *    - If user is signed in, load their liked posts from userManagement
+ *      so we know which posts are liked (prevent infinite re-likes).
+ *    - If user is not signed in, show "Intro" or "Whoops!" based on localStorage.
  */
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Hide "Whoops!" modal if open
+    // Hide "Whoops!" if open
     window.hideModal('signedOutModal');
 
     // Show user info in top-right
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
 
-    // Store user info globally for main.js
+    // Store user info globally for main.js usage
     window.currentUserEmail = user.email;
     window.currentUserName = user.displayName;
     window.currentUserId = user.uid;
@@ -66,32 +66,30 @@ onAuthStateChanged(auth, (user) => {
     const userLikesRef = ref(database, "userManagement/" + userKey + "/Likes");
     onValue(userLikesRef, (snapshot) => {
       const data = snapshot.val() || {};
-      // Convert object keys into a set for quick "has liked?" checks
+      // Convert object keys into a set so main.js can see which IDs are liked
       window.userLikes = new Set(Object.keys(data));
-      // Re-render so liked hearts appear
+      // Re-render so liked hearts show up
       window.renderIdeas();
     });
 
-    // Unlock site & load data
+    // Now unlock site & load data
     window.unlockSite();
     window.fetchIdeas();
     window.listenForCommentsCount();
   } else {
     // Not logged in
     if (!localStorage.getItem('visited')) {
-      // Show Intro (Welcome) if never visited
+      // Show Intro if never visited
       window.showModal('introModal');
     } else {
-      // Otherwise show "Whoops!"
+      // Show "Whoops!"
       window.showModal('signedOutModal');
     }
   }
 });
 
 /**
- * Called by "Continue with Google" button
- * Once signInWithPopup resolves, we read user likes again
- * (Though onAuthStateChanged will also do it, so this is somewhat optional.)
+ * 5) Called by "Continue with Google" in Intro/Whoops modals
  */
 window.firebaseLogin = function() {
   signInWithPopup(auth, provider)
@@ -116,7 +114,7 @@ window.firebaseLogin = function() {
         window.renderIdeas();
       });
 
-      // Unlock & fetch data
+      // Unlock site & load data
       window.unlockSite();
       window.fetchIdeas();
       window.listenForCommentsCount();
@@ -126,7 +124,9 @@ window.firebaseLogin = function() {
     });
 };
 
-// Called when user confirms sign-out
+/**
+ * 6) Called when user confirms sign-out
+ */
 window.logout = function() {
   signOut(auth)
     .then(() => {
