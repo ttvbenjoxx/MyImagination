@@ -80,15 +80,12 @@ header {
 /* LEFT NAVBAR: 300px tall so all 3 tabs are fully visible */
 .left-navbar {
   width: 250px;
-  height: 300px; /* increased from 210px to 300px */
+  height: 300px;
   background: #fff;
   border-radius: var(--border-radius);
   box-shadow: 0 3px 5px rgba(0,0,0,0.1);
   padding: 20px;
   box-sizing: border-box;
-  /* If there are even more tabs, you could enable scrolling:
-     overflow-y: auto;
-  */
 }
 
 /* Tabs inside left navbar */
@@ -158,8 +155,10 @@ header {
   margin-bottom: 1em;
 }
 
-/* Cookie section highlight effect (for 2 seconds) */
-.cookie-section.highlight {
-  background-color: #ffe6ff; /* A brighter pink/purple */
-  transition: background-color 0.5s ease;
+/* Highlight only the Cookie title, fade out slowly */
+.cookie-title {
+  transition: background-color 1s ease; /* fade out over 1s */
+}
+.cookie-title.highlight {
+  background-color: #ff00ff; /* vibrant pink/purple */
 }
