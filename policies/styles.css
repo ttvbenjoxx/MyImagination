@@ -1,12 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #8a2be2;
-  --secondary-color: #4169e1;
+  --primary-color: #8a2be2; /* same as main page */
+  --secondary-color: #4169e1; /* same as main page */
   --text-color: #333;
-  --background-color: #f4f4f4;
   --card-background: #ffffff;
-  --modal-background: rgba(0, 0, 0, 0.7);
   --border-radius: 12px;
   --transition: all 0.3s ease;
 }
@@ -18,10 +16,11 @@ body {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: var(--text-color);
   min-height: 100vh;
-  padding-bottom: 50px; /* In case you have a bottom banner or disclaimer */
+  /* In case you have a bottom banner or disclaimer */
+  padding-bottom: 50px;
 }
 
-/* Header styling similar to main page */
+/* Header: translucent bar with blur, matching main page style */
 header {
   background-color: rgba(255, 255, 255, 0.1);
   padding: 20px;
@@ -50,6 +49,7 @@ header {
 /* Back button styling */
 .back-button {
   padding: 10px 20px;
+  margin-bottom: 10px; /* add space below it */
 }
 
 .back-button a {
@@ -68,7 +68,7 @@ header {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Make the arrow bigger */
+/* Make the arrow bigger and spaced */
 .back-arrow {
   font-size: 24px;
   margin-right: 8px;
@@ -78,28 +78,29 @@ header {
 .policies-layout {
   display: flex;
   max-width: 1200px;
-  margin: 40px auto; /* Center it with some extra top/bottom space */
+  margin: 40px auto; /* Center it with extra space */
   background: var(--card-background);
   border-radius: var(--border-radius);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* stronger shadow to stand out */
   overflow: hidden;
 }
 
-/* The left policy selector container (larger width, matching corners) */
+/* The left policy selector container */
 .selector-container {
-  width: 300px;
+  width: 400px; /* Make it obviously bigger */
   background: #f5f5f5;
   padding: 20px;
+  box-sizing: border-box;
+  /* Round the left corners to match the card style */
   border-top-left-radius: var(--border-radius);
   border-bottom-left-radius: var(--border-radius);
-  box-sizing: border-box;
 }
 
 /* The actual policy tabs */
 .policies-tabs {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px; /* Extra gap for clarity */
 }
 
 .policies-tabs .tab {
@@ -108,10 +109,11 @@ header {
   background: none;
   text-align: left;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text-color);
   transition: var(--transition);
   border-radius: var(--border-radius);
+  font-weight: 500;
 }
 
 .policies-tabs .tab:hover {
@@ -122,14 +124,15 @@ header {
   background: #fff;
   font-weight: 600;
   color: var(--primary-color);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* The right side container for the policies */
+/* Right side container for the policy content */
 .content-container {
   flex: 1;
-  padding: 20px;
+  padding: 30px;
   box-sizing: border-box;
+  /* Round the right corners */
   border-top-right-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
 }
@@ -150,4 +153,5 @@ header {
 
 .policy-panel p {
   line-height: 1.6;
+  margin-bottom: 1em;
 }
