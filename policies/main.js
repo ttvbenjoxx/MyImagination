@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   termsPanel.style.display = "none";
   privacyCookiePanel.style.display = "block";
 
-  // Clicking the left tabs
+  // Click handlers for the left tabs
   tabs.forEach((tab) => {
     tab.addEventListener("click", function () {
       // Clear all active states
@@ -25,15 +25,27 @@ document.addEventListener("DOMContentLoaded", function () {
         // Scroll to the top anchor
         const topAnchor = document.getElementById("privacyCookieTop");
         if (topAnchor) {
-          topAnchor.scrollIntoView({ behavior: "smooth" });
+          topAnchor.scrollIntoView({
+            behavior: "smooth",
+            block: "start", // top
+          });
         }
         tab.classList.add("active");
       } else if (policyId === "cookieSection") {
         // Show the Privacy & Cookie panel
         privacyCookiePanel.style.display = "block";
-        // Scroll to #cookieSection
-        cookieSection.scrollIntoView({ behavior: "smooth" });
+        // Scroll so that cookieSection is in the middle of the page
+        cookieSection.scrollIntoView({
+          behavior: "smooth",
+          block: "center", // middle of the page
+        });
         tab.classList.add("active");
+
+        // Briefly highlight the cookie section
+        cookieSection.classList.add("highlight");
+        setTimeout(() => {
+          cookieSection.classList.remove("highlight");
+        }, 1000); // 1 second highlight
       } else if (policyId === "terms") {
         // Show Terms panel
         termsPanel.style.display = "block";
