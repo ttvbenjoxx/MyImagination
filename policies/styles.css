@@ -1,22 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #8a2be2; /* same as main page */
-  --secondary-color: #4169e1; /* same as main page */
+  --primary-color: #8a2be2;
+  --secondary-color: #4169e1;
   --text-color: #333;
   --card-background: #ffffff;
   --border-radius: 12px;
   --transition: all 0.3s ease;
 }
 
-/* Gradient background, not sticky header */
+/* Page background with gradient, normal header */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: var(--text-color);
   min-height: 100vh;
-  padding-bottom: 50px; /* if you have a footer or disclaimer */
+  padding-bottom: 50px;
 }
 
 header {
@@ -67,7 +67,7 @@ header {
   margin-right: 8px;
 }
 
-/* 2-column layout: left = small card, right = bigger card */
+/* Two-column layout: small left box, big right box */
 .policies-page {
   display: flex;
   max-width: 1200px;
@@ -77,10 +77,10 @@ header {
   gap: 20px;
 }
 
-/* LEFT NAVBAR: smaller height, white, rounded corners */
+/* LEFT NAVBAR: slightly taller so all tabs fit comfortably */
 .left-navbar {
   width: 250px;
-  height: 180px; /* smaller than before */
+  height: 210px; /* extended from 180px to 210px */
   background: #fff;
   border-radius: var(--border-radius);
   box-shadow: 0 3px 5px rgba(0,0,0,0.1);
@@ -88,7 +88,7 @@ header {
   box-sizing: border-box;
 }
 
-/* Policy tabs inside left navbar */
+/* Tabs inside left navbar */
 .policies-tabs {
   display: flex;
   flex-direction: column;
@@ -119,7 +119,7 @@ header {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* RIGHT COLUMN: full white background, grows with content */
+/* RIGHT COLUMN: grows with content, white card */
 .policy-content-column {
   flex: 1;
   background: var(--card-background);
@@ -129,7 +129,7 @@ header {
   box-sizing: border-box;
 }
 
-/* Panels (only one is shown at a time) */
+/* Panels (only one is visible at a time) */
 .policy-panel {
   margin-bottom: 20px;
 }
@@ -153,4 +153,10 @@ header {
 .policy-panel ul {
   margin-left: 1.5em;
   margin-bottom: 1em;
+}
+
+/* Cookie section highlight effect */
+.cookie-section.highlight {
+  background-color: #f9e6ff; /* Light pink/purple background */
+  transition: background-color 0.5s ease;
 }
