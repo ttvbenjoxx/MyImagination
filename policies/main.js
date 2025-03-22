@@ -2,67 +2,64 @@ document.addEventListener("DOMContentLoaded", function () {
   const tabs = document.querySelectorAll(".policies-tabs .tab");
   const privacyCookiePanel = document.getElementById("privacyCookiePanel");
   const termsPanel = document.getElementById("termsPanel");
-
-  // For scroll spy: detect when #cookieSection is in view
   const cookieSection = document.getElementById("cookieSection");
-  let observer = null;
 
-  // Hide all panels except the Privacy/Cookie one by default
+  // Hide Terms by default, show Privacy/Cookie
   termsPanel.style.display = "none";
   privacyCookiePanel.style.display = "block";
 
-  // Click handler for each tab
+  // Clicking the left tabs
   tabs.forEach((tab) => {
     tab.addEventListener("click", function () {
-      const policyId = tab.getAttribute("data-policy");
-
-      // Remove 'active' from all tabs
+      // Clear all active states
       tabs.forEach((t) => t.classList.remove("active"));
       // Hide both panels
       privacyCookiePanel.style.display = "none";
       termsPanel.style.display = "none";
 
-      // Decide which panel to show
+      // Show the correct panel
+      const policyId = tab.getAttribute("data-policy");
       if (policyId === "privacyCookieTop") {
-        // Show the privacyCookiePanel
+        // Show the Privacy & Cookie panel
         privacyCookiePanel.style.display = "block";
-        // Make this tab active
-        tab.classList.add("active");
-        // Scroll to the top anchor (#privacyCookieTop)
+        // Scroll to the top anchor
         const topAnchor = document.getElementById("privacyCookieTop");
         if (topAnchor) {
           topAnchor.scrollIntoView({ behavior: "smooth" });
         }
-      } else if (policyId === "cookieSection") {
-        // Show the privacyCookiePanel
-        privacyCookiePanel.style.display = "block";
-        // Make this tab active
         tab.classList.add("active");
-        // Scroll to the cookieSection
+      } else if (policyId === "cookieSection") {
+        // Show the Privacy & Cookie panel
+        privacyCookiePanel.style.display = "block";
+        // Scroll to #cookieSection
         cookieSection.scrollIntoView({ behavior: "smooth" });
+        tab.classList.add("active");
       } else if (policyId === "terms") {
-        // Show Terms of Service
+        // Show Terms panel
         termsPanel.style.display = "block";
         tab.classList.add("active");
       }
     });
   });
 
-  // SCROLL SPY:
-  // If the user scrolls to #cookieSection, highlight "Cookie Policy" tab
-  // otherwise highlight "Privacy Policy" tab, as long as Terms panel is hidden.
-  function onIntersection(entries) {
+  // OPTIONAL Scroll Spy:
+  // If you'd like the left tab to auto-change when you manually scroll
+  // the entire page to #cookieSection, you can use an IntersectionObserver
+  // with root: null (the entire viewport).
+  // For example (uncomment if desired):
+
+  /*
+  let observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      // If cookieSection is at least 50% in view, highlight "Cookie Policy"
       if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-        // Make "Cookie Policy" tab active
+        // highlight "Cookie Policy" tab
         tabs.forEach((t) => t.classList.remove("active"));
         document
           .querySelector('.tab[data-policy="cookieSection"]')
           .classList.add("active");
       } else {
-        // If cookieSection is not in view, highlight "Privacy Policy"
-        // but only if the Terms panel is not showing
+        // if we are not seeing cookieSection, highlight "Privacy Policy"
+        // but only if Terms is not visible
         if (termsPanel.style.display === "none") {
           tabs.forEach((t) => t.classList.remove("active"));
           document
@@ -71,15 +68,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
     });
-  }
-
-  // Set up IntersectionObserver to watch cookieSection
-  observer = new IntersectionObserver(onIntersection, {
-    root: document.querySelector(".policy-content-card"), // watch scrolling inside the card
-    threshold: 0.5, // must be 50% in view
+  }, {
+    root: null, // entire page
+    threshold: 0.5,
   });
 
-  if (cookieSection) {
-    observer.observe(cookieSection);
-  }
+  observer.observe(cookieSection);
+  */
 });
