@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <!-- Header is no longer sticky -->
+    <!-- Header is not sticky, just a normal block -->
     <header>
       <div class="header-left">
         <!-- Logo -->
@@ -25,12 +25,11 @@
       </div>
     </header>
 
-    <!-- Main layout: left = fixed-height selector, right = full-page policy -->
+    <!-- Main layout: left = smaller white card (selector), right = white card for policy text -->
     <div class="policies-page">
-      <!-- LEFT NAVBAR: White, fixed height, small size -->
+      <!-- LEFT NAVBAR: smaller height -->
       <div class="left-navbar">
         <nav class="policies-tabs">
-          <!-- 3 tabs: Privacy Policy, Cookie Policy, Terms of Service -->
           <button class="tab active" data-policy="privacyCookieTop">
             Privacy Policy
           </button>
@@ -43,7 +42,7 @@
         </nav>
       </div>
 
-      <!-- RIGHT COLUMN: Full page length, no internal scrolling -->
+      <!-- RIGHT COLUMN: White background for the entire policy text -->
       <div class="policy-content-column">
         <!-- 1) Combined Privacy & Cookie Policy panel -->
         <div class="policy-panel" id="privacyCookiePanel">
