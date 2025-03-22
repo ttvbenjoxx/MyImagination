@@ -67,7 +67,7 @@ header {
   margin-right: 8px;
 }
 
-/* Two-column layout: small left box, big right box */
+/* 2-column layout: small left box, big right box */
 .policies-page {
   display: flex;
   max-width: 1200px;
@@ -77,15 +77,18 @@ header {
   gap: 20px;
 }
 
-/* LEFT NAVBAR: slightly taller so all tabs fit comfortably */
+/* LEFT NAVBAR: 300px tall so all 3 tabs are fully visible */
 .left-navbar {
   width: 250px;
-  height: 210px; /* extended from 180px to 210px */
+  height: 300px; /* increased from 210px to 300px */
   background: #fff;
   border-radius: var(--border-radius);
   box-shadow: 0 3px 5px rgba(0,0,0,0.1);
   padding: 20px;
   box-sizing: border-box;
+  /* If there are even more tabs, you could enable scrolling:
+     overflow-y: auto;
+  */
 }
 
 /* Tabs inside left navbar */
@@ -155,8 +158,8 @@ header {
   margin-bottom: 1em;
 }
 
-/* Cookie section highlight effect */
+/* Cookie section highlight effect (for 2 seconds) */
 .cookie-section.highlight {
-  background-color: #f9e6ff; /* Light pink/purple background */
+  background-color: #ffe6ff; /* A brighter pink/purple */
   transition: background-color 0.5s ease;
 }
