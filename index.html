@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MyImagination Forum</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <!-- Link to external CSS -->
@@ -19,7 +19,7 @@
       </button>
     </div>
     <div class="header-buttons">
-      <!-- User Profile (hidden until logged in) -->
+      <!-- User Profile (hidden until user logs in) -->
       <div id="userProfile" class="user-profile">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -31,7 +31,7 @@
           <button id="confirmLogout" class="logout-button">Sign Out</button>
         </div>
       </div>
-      <!-- New Idea Button (hidden until logged in) -->
+      <!-- New Idea Button (hidden until user logs in) -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -97,8 +97,8 @@
           <div class="gsi-material-button-icon">
             <!-- Google Icon -->
             <svg viewBox="0 0 48 48" style="display: block;">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6
-                l6.85-6.85C35.9 2.38 30.47 0 24 0
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85
+                C35.9 2.38 30.47 0 24 0
                 14.62 0 6.51 5.38 2.56 13.22
                 l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
               <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94
@@ -153,7 +153,6 @@
         <h2 class="modal-title">Information</h2>
         <button class="close-modal" onclick="hideModal('infoModal')">&times;</button>
       </div>
-      <!-- Tabs: Instructions and About the Developer -->
       <div class="tabs">
         <button class="tab active" data-tab="instructions">Instructions</button>
         <button class="tab" data-tab="about">About the Developer</button>
@@ -164,7 +163,7 @@
         <p><strong>How to Use:</strong> Unlock the site by clicking "Continue with Google", then share your ideas using the + button. Use the filter button to toggle sorting between most popular and most recent.</p>
         <p><strong>The purpose of this Site:</strong> This site is meant for Teachers to share their ideas for websites. If there is a website you would use as a teacher or just for fun, please post it. All ideas matter!</p>
 
-        <!-- A "Start Tutorial" button to close the modal and start the old spotlight tutorial -->
+        <!-- Start tutorial button closes info modal and calls startTutorial() -->
         <button class="submit-button" onclick="hideModal('infoModal'); startTutorial();">
           Start Tutorial
         </button>
@@ -191,9 +190,9 @@
     </div>
   </div>
 
-  <!-- 1) Load the MyImaginationBackup credentials + forced sign-in logic -->
+  <!-- 1) MyImaginationBackup forced sign-in + localStorage visited logic -->
   <script type="module" src="firebase.js"></script>
-  <!-- 2) Main site logic (modals, user management likes, old tutorial) -->
+  <!-- 2) Main logic: user management for likes, comment replies, old tutorial -->
   <script src="main.js"></script>
 
   <!-- Disclaimer Banner -->
