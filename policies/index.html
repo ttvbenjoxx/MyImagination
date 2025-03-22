@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <!-- Header (non-sticky) -->
     <header>
       <div class="header-left">
         <div class="logo">MyImagination</div>
@@ -18,34 +17,22 @@
           </a>
         </div>
       </div>
-      <!-- We still keep header-right in the HTML,
-           but we'll move it below the logo on mobile via CSS -->
+      <!-- This will move below the MyImagination name/back button on mobile -->
       <div class="header-right">
         <h1>Policies</h1>
       </div>
     </header>
 
-    <!-- Main layout: left = policy selector, right = policy content card -->
     <div class="policies-page">
-      <!-- LEFT NAVBAR: 3 tabs in the requested order -->
+      <!-- Left navbar: Terms, Privacy, Cookie -->
       <div class="left-navbar">
         <nav class="policies-tabs">
-          <!-- 1) Terms of Service -->
-          <button class="tab active" data-policy="termsPanel">
-            Terms of Service
-          </button>
-          <!-- 2) Privacy Policy -->
-          <button class="tab" data-policy="privacyPanel">
-            Privacy Policy
-          </button>
-          <!-- 3) Cookie Policy -->
-          <button class="tab" data-policy="cookiePanel">
-            Cookie Policy
-          </button>
+          <button class="tab active" data-policy="termsPanel">Terms of Service</button>
+          <button class="tab" data-policy="privacyPanel">Privacy Policy</button>
+          <button class="tab" data-policy="cookiePanel">Cookie Policy</button>
         </nav>
       </div>
 
-      <!-- RIGHT COLUMN: White card for the selected policy -->
       <div class="policy-content-card">
         <!-- TERMS OF SERVICE -->
         <div class="policy-panel" id="termsPanel">
@@ -57,7 +44,7 @@
             team (“we,” “our,” or “the Admin Team”), led by Gavin Molter. These
             Terms of Service (“Terms”) govern your use of the Site as well as any
             child or subsites created or operated by the Admin/Development Team of
-            MyImagination. 
+            MyImagination.
             <strong>
               By creating an account or otherwise using the Site, you confirm that
               you accept and agree to be bound by these Terms, our
@@ -259,7 +246,6 @@
       </div>
     </div>
 
-    <!-- Policies logic: tab switching & cross references -->
     <script src="main.js"></script>
   </body>
 </html>
