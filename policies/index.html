@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>MyImagination - Policies</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="styles.css" />
@@ -18,47 +18,47 @@
     </header>
 
     <div class="back-button">
+      <!-- Relative link back to the main dashboard index. 
+           The "../" assumes policies/ is in a subfolder. -->
       <a href="../">
         <span class="back-arrow">&larr;</span> Back to Dashboard
       </a>
     </div>
 
     <div class="policies-layout">
+      <!-- Larger, left-aligned policy selector with rounded corners -->
       <div class="selector-container">
         <nav class="policies-tabs">
-          <button class="tab active" data-policy="privacy">
-            Privacy Policy
-          </button>
-          <button class="tab" data-policy="cookie">
-            Cookie Policy
-          </button>
-          <button class="tab" data-policy="terms">
-            Terms of Service
-          </button>
+          <button class="tab active" data-policy="privacy">Privacy Policy</button>
+          <button class="tab" data-policy="cookie">Cookie Policy</button>
+          <button class="tab" data-policy="terms">Terms of Service</button>
         </nav>
       </div>
+
       <div class="content-container">
         <div class="policy-content">
           <div class="policy-panel" id="privacy">
             <h2>Privacy Policy</h2>
             <p>
-              Privacy Policy content goes here. This section should explain how
-              user data is collected, used, and protected.
+              Privacy Policy content goes here. This section should explain
+              how user data is collected, used, and protected.
             </p>
           </div>
+
           <div class="policy-panel" id="cookie" style="display: none;">
             <h2>Cookie Policy</h2>
             <p>
-              Cookie Policy content goes here. This section should detail what
-              cookies are used on the site and how users can manage their cookie
-              settings.
+              Cookie Policy content goes here. This section should detail
+              what cookies are used on the site and how users can manage
+              their cookie settings.
             </p>
           </div>
+
           <div class="policy-panel" id="terms" style="display: none;">
             <h2>Terms of Service</h2>
             <p>
-              Terms of Service content goes here. This section should outline the
-              rules and regulations for using the site.
+              Terms of Service content goes here. This section should
+              outline the rules and regulations for using the site.
             </p>
           </div>
         </div>
