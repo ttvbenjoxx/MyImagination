@@ -1,11 +1,11 @@
 // firebase.js
-// (Type="module"): uses ES module imports from the old snippet
+// Uses ES modules from your old snippet. The same forced sign-in logic with localStorage checks.
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getDatabase, ref, onValue, push, update, set, get, runTransaction } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
-// The old config from your snippet
+// Old config from your snippet
 const firebaseConfig = {
   apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
   authDomain: "myteacheropinion.firebaseapp.com",
@@ -31,43 +31,43 @@ window.set = set;
 window.get = get;
 window.runTransaction = runTransaction;
 
-// Listen for auth state changes
+// Forced sign-in logic with localStorage
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Hide "Whoops!" modal
+    // Hide "Whoops!" if open
     window.hideModal('signedOutModal');
 
-    // Show user name in top-right
+    // Update UI with user info
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
 
-    // Expose user info globally
+    // Store user info globally
     window.currentUserEmail = user.email;
     window.currentUserName = user.displayName;
 
-    // Unlock the site, fetch data, etc.
+    // Unlock site
     window.unlockSite();
+    // Then fetch ideas, comments
     fetchIdeas();
     listenForCommentsCount();
   } else {
     // Not logged in
-    // If never visited, show Intro
     if (!localStorage.getItem('visited')) {
+      // Show Intro
       window.showModal('introModal');
     } else {
-      // Otherwise show "Whoops!"
+      // Show "Whoops!"
       window.showModal('signedOutModal');
     }
   }
 });
 
-// Called by "Continue with Google" in Intro or Whoops modals
+// Called by "Continue with Google" in the Intro or Whoops modals
 window.firebaseLogin = function() {
   signInWithPopup(auth, provider)
     .then((result) => {
-      // Hide "Whoops!" if open
+      // Hide the "Whoops!" if open
       window.hideModal('signedOutModal');
-
       // Show user info
       document.getElementById('username').textContent = result.user.displayName;
       document.getElementById('userProfile').style.display = 'flex';
@@ -85,7 +85,7 @@ window.firebaseLogin = function() {
     });
 };
 
-// Called by "Sign Out" button in the logout dropdown
+// Called by "Sign Out" button
 window.logout = function() {
   signOut(auth)
     .then(() => {
