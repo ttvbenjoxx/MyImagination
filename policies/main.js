@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
     link.addEventListener("click", function (e) {
       e.preventDefault();
       const targetPanelId = link.getAttribute("href").substring(1); // e.g. "privacyPanel"
-      const targetTitleId = link.getAttribute("data-target"); // e.g. "privacyTitle"
+      const targetTitleId = link.getAttribute("data-target");       // e.g. "privacyTitle"
 
       // Switch to the correct tab
       tabs.forEach((t) => t.classList.remove("active"));
