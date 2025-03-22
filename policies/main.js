@@ -2,18 +2,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const tabs = document.querySelectorAll(".policies-tabs .tab");
   const panels = document.querySelectorAll(".policy-panel");
 
-  // Attach click handlers to each tab
+  // When a tab is clicked, hide all panels and show the relevant one
   tabs.forEach((tab) => {
     tab.addEventListener("click", function () {
-      // 1) Remove 'active' from all tabs
+      // 1) remove 'active' from all tabs
       tabs.forEach((t) => t.classList.remove("active"));
-      // 2) Hide all panels
+      // 2) hide all panels
       panels.forEach((panel) => (panel.style.display = "none"));
 
-      // 3) Mark clicked tab as active
+      // 3) mark this tab active
       tab.classList.add("active");
-
-      // 4) Show the corresponding panel
+      // 4) show the corresponding panel
       const policyId = tab.getAttribute("data-policy");
       const panel = document.getElementById(policyId);
       if (panel) {
