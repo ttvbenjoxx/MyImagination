@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MyImagination Forum</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
-
-  <!-- Link to external CSS (style.css) -->
+  <!-- Link to external CSS -->
   <link rel="stylesheet" href="style.css" />
-
-  <!-- We'll load our main logic and Firebase logic below -->
 </head>
 <body>
   <header>
@@ -33,7 +30,7 @@
           <button id="confirmLogout" class="logout-button">Sign Out</button>
         </div>
       </div>
-      <!-- New Idea Button, hidden until user logs in -->
+      <!-- Hidden until login -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -51,7 +48,7 @@
     <span class="info-text">i</span>
   </button>
 
-  <!-- Intro Modal (Welcome + Unlock) -->
+  <!-- Intro Modal (Welcome) -->
   <div id="introModal" class="modal">
     <div class="modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
@@ -60,12 +57,19 @@
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
           <div class="gsi-material-button-icon">
-            <!-- Google Icon -->
             <svg viewBox="0 0 48 48" style="display: block;">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0
+                14.62 0 6.51 5.38 2.56 13.22l7.98 6.19
+                C12.43 13.72 17.74 9.5 24 9.5z"></path>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18
+                l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59
+                l-7.98-6.19C.92 16.46 0 20.12 0 24
+                c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6
+                c-2.15 1.45-4.92 2.3-8.16 2.3
+                -6.26 0-11.57-4.22-13.47-9.91
+                l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
               <path fill="none" d="M0 0h48v48H0z"></path>
             </svg>
           </div>
@@ -84,12 +88,21 @@
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
           <div class="gsi-material-button-icon">
-            <!-- Google Icon -->
             <svg viewBox="0 0 48 48" style="display: block;">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0
+                24 0 14.62 0 6.51 5.38 2.56 13.22
+                l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94
+                c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6
+                c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59
+                l-7.98-6.19C.92 16.46 0 20.12 0 24
+                c0 3.88.92 7.54 2.56 10.78
+                l7.97-6.19z"></path>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81
+                l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3
+                -6.26 0-11.57-4.22-13.47-9.91
+                l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
               <path fill="none" d="M0 0h48v48H0z"></path>
             </svg>
           </div>
@@ -120,7 +133,7 @@
     </div>
   </div>
 
-  <!-- Full Idea Modal (Expanded Post) -->
+  <!-- Full Idea Modal -->
   <div id="fullIdeaModal" class="modal"></div>
 
   <!-- Info Modal -->
@@ -130,23 +143,31 @@
         <h2 class="modal-title">Information</h2>
         <button class="close-modal" onclick="hideModal('infoModal')">&times;</button>
       </div>
-      <!-- Two merged tabs: Instructions and About the Developer -->
+      <!-- Tabs: Instructions and About the Developer -->
       <div class="tabs">
         <button class="tab active" data-tab="instructions">Instructions</button>
         <button class="tab" data-tab="about">About the Developer</button>
       </div>
-      <!-- Merged Instructions Tab -->
       <div class="tab-content active" id="instructions">
         <h3>Instructions</h3>
         <p><strong>How to Share an Idea:</strong> Click the + button in the top right (after unlocking) to create a new post.</p>
         <p><strong>How to Use:</strong> Unlock the site by clicking "Continue with Google", then share your ideas using the + button. Use the filter button to toggle sorting between most popular and most recent.</p>
         <p><strong>The purpose of this Site:</strong> This site is meant for Teachers to share their ideas for websites. If there is a website you would use as a teacher or just for fun, please post it. All ideas matter!</p>
+
+        <!-- ADDED: A "Start Tutorial" button that closes Info and starts old tutorial -->
+        <button class="submit-button" onclick="hideModal('infoModal'); startTutorial();">
+          Start Tutorial
+        </button>
       </div>
-      <!-- About the Developer Tab -->
       <div class="tab-content" id="about">
         <h3>About the Developer</h3>
         <p>
-          Hi, I'm Gavin Molter! I am currently a junior in the student IT Cyberflash program. I love making websites, but I have such a small imagination. ...
+          Hi, I'm Gavin Molter! I am currently a junior in the student IT Cyberflash program. I love making websites, but I have such a small imagination. This is where I could use your help! I want to create a wide variety of websites that both students and teachers can use. Any ideas you have are greatly appreciated.
+          <br /><br />
+          If you have any questions, please email me at
+          <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a>
+          and I will try to respond as soon as possible! If there is an issue with the site, please fill out the simple issue report form
+          <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.
         </p>
       </div>
     </div>
@@ -160,8 +181,8 @@
     </div>
   </div>
 
-  <!-- Load your JS files -->
-  <script src="firebase.js" type="module"></script>
+  <!-- Firebase + Main Logic -->
+  <script type="module" src="firebase.js"></script>
   <script src="main.js"></script>
 
   <!-- Disclaimer Banner -->
