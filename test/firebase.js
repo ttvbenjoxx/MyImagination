@@ -1,6 +1,7 @@
 // firebase.js
 // Using "compat" libraries for a global firebase object
 
+// 1) Your Firebase config
 var firebaseConfig = {
   apiKey: "AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4",
   authDomain: "myimaginationbackup.firebaseapp.com",
@@ -11,12 +12,14 @@ var firebaseConfig = {
   databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com/"
 };
 
+// 2) Initialize the global 'firebase' object
 firebase.initializeApp(firebaseConfig);
 
 var auth = firebase.auth();
 var provider = new firebase.auth.GoogleAuthProvider();
 var database = firebase.database();
 
+// Expose these so main.js can use them
 window.auth = auth;
 window.provider = provider;
 window.database = database;
@@ -44,12 +47,15 @@ window.runTransaction = function(refObj, transactionUpdate) {
   return refObj.transaction(transactionUpdate);
 };
 
-// Always run the tutorial after login
+// This function is called when user clicks "Continue with Google" 
+// or any sign-in button in your modals
 window.firebaseLogin = function() {
   auth.signInWithPopup(provider)
     .then((result) => {
-      // If "Whoops!" modal is open, hide it
+      // If a sign-out modal is open, hide it
       window.hideModal('signedOutModal');
+      // Also hide the intro modal if it might be open
+      window.hideModal('introModal');
 
       // Update UI with user info
       document.getElementById('username').textContent = result.user.displayName;
@@ -67,36 +73,40 @@ window.firebaseLogin = function() {
         window.renderIdeas();
       });
 
-      // Unlock site (also sets localStorage.setItem('visited','true'))
+      // Unlock the site (remove "locked" UI) 
       window.unlockSite();
+      // Fetch data & comments
       window.fetchIdeas();
       window.listenForCommentsCount();
 
-      // Immediately start the tutorial
-      window.startTutorial();
+      // Optionally run the tutorial after login
+      window.startTutorial(); 
     })
     .catch((error) => {
       console.error("Firebase login error:", error);
     });
 };
 
+// This function is called when user confirms sign out
 window.logout = function() {
   auth.signOut()
     .then(() => {
-      location.reload();
+      location.reload(); 
     })
     .catch((error) => {
       console.error("Firebase logout error:", error);
     });
 };
 
-// Watch auth state changes
+// This fires on page load + whenever auth state changes
 auth.onAuthStateChanged(function(user) {
   if (user) {
-    // If logged in, hide the modals if they are open
+    // User is signed in
+    // Hide sign-in prompts if they're open
     window.hideModal('introModal');
     window.hideModal('signedOutModal');
 
+    // Update UI
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
 
@@ -112,19 +122,13 @@ auth.onAuthStateChanged(function(user) {
       window.renderIdeas();
     });
 
-    // Unlock site (shows newIdeaBtn, etc.)
+    // Unlock the site, fetch data
     window.unlockSite();
     window.fetchIdeas();
     window.listenForCommentsCount();
-
   } else {
-    // Not logged in
-    // If they've never visited (this browser), show Intro
-    if (!localStorage.getItem('visited')) {
-      window.showModal('introModal');
-    } else {
-      // Otherwise show "Whoops!"
-      window.showModal('signedOutModal');
-    }
+    // User is not signed in, always show the same sign-in prompt
+    window.showModal('introModal');
+    // Or if you want the "Whoops!" text, do: window.showModal('signedOutModal');
   }
 });
