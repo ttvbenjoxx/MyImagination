@@ -1,7 +1,7 @@
 // main.js
-// All the old scripts from your snippet, combined into one file.
+// Your old site logic: modals, idea rendering, old spotlight tutorial steps, etc.
 
-// 1) Modal show/hide and siteLocked logic
+// 1) Show/hide modals, siteLocked
 function showModal(modalId) {
   document.getElementById(modalId).classList.add('show');
   document.body.classList.add('modal-open');
@@ -60,7 +60,7 @@ document.getElementById('filterBtn').addEventListener('click', function(e) {
   }
   renderIdeas();
 });
-// Close modal on background click
+// Close modals on background click
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', function(e) {
     if (e.target === modal) {
@@ -121,7 +121,6 @@ function fetchIdeas() {
   });
 }
 
-// Render ideas sorted
 function renderIdeas() {
   const ideasGrid = document.getElementById('ideasGrid');
   let sortedIdeas = ideas.slice();
@@ -172,7 +171,6 @@ function renderIdeas() {
   }).join('');
 }
 
-// Keep track of likes
 window.userLikes = new Set();
 function toggleLike(ideaId) {
   if (window.siteLocked) {
@@ -203,7 +201,7 @@ function toggleLike(ideaId) {
   }
 }
 
-// Comments logic
+// 6) Comments
 function renderComments(comments, parentPath) {
   parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
   return comments.map(comment => {
@@ -291,7 +289,7 @@ function addReply(parentPath, commentId) {
   });
 }
 
-// Show full idea
+// 7) Show full idea
 function showFullIdea(ideaId) {
   const idea = ideas.find(i => i.id === ideaId);
   if (!idea) return;
@@ -321,7 +319,8 @@ function showFullIdea(ideaId) {
       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8
                8.5 8.5 0 0 1-7.6 4.7
                8.38 8.38 0 0 1-3.8-.9
-               L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8
+               L3 21l1.9-5.7
+               a8.38 8.38 0 0 1-.9-3.8
                8.5 8.5 0 0 1 4.7-7.6
                8.38 8.38 0 0 1 3.8-.9
                h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
@@ -332,7 +331,8 @@ function showFullIdea(ideaId) {
 </div>`;
   const commentToggleMarkup = `
 <button class="comment-toggle-button" onclick="toggleModalCommentForm('${idea.id}'); event.stopPropagation();">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+       style="vertical-align: middle;">
     <line x1="12" y1="5" x2="12" y2="19"></line>
     <line x1="5" y1="12" x2="19" y2="12"></line>
   </svg>
@@ -436,7 +436,7 @@ function scrollToComments(e) {
   }
 }
 
-// 6) TUTORIAL script
+// 8) Old spotlight tutorial (no Intro.js)
 let tutorialSteps = [
   { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
   { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
@@ -444,6 +444,7 @@ let tutorialSteps = [
   { target: "#userProfile", text: "Click your name to sign out." }
 ];
 let currentTutorialStep = 0;
+
 function startTutorial() {
   currentTutorialStep = 0;
   showTutorialStep();
@@ -466,24 +467,31 @@ function showTutorialStep() {
   let tooltip = document.getElementById('tutorialTooltip');
   let tooltipText = document.getElementById('tutorialText');
   tooltipText.textContent = step.text;
+
   let topPosition = rect.bottom + 10 + window.scrollY;
   let leftPosition = rect.left + window.scrollX;
+
   if (currentTutorialStep === 0) {
-    leftPosition = leftPosition - 150;
+    leftPosition -= 150;
     if (leftPosition < window.scrollX + 40) {
       leftPosition = window.scrollX + 40;
     }
   }
+
   tooltip.style.top = topPosition + "px";
   tooltip.style.left = leftPosition + "px";
   tooltip.style.visibility = "hidden";
   tooltip.style.display = "block";
+
   let tooltipHeight = tooltip.offsetHeight;
   let tooltipWidth = tooltip.offsetWidth;
   tooltip.style.visibility = "visible";
+
+  // If it goes below screen
   if (topPosition + tooltipHeight > window.innerHeight + window.scrollY) {
     topPosition = rect.top - tooltipHeight - 10 + window.scrollY;
   }
+  // If it goes off right edge
   if (leftPosition + tooltipWidth > window.innerWidth + window.scrollX) {
     let altLeft = rect.left - tooltipWidth - 10 + window.scrollX;
     if (altLeft > window.scrollX + 10) {
