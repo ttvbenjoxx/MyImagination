@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const privacyCookiePanel = document.getElementById("privacyCookiePanel");
   const termsPanel = document.getElementById("termsPanel");
   const cookieSection = document.getElementById("cookieSection");
-  // Only highlight the h3 title
+  // Only highlight the text span
   const cookieTitle = document.querySelector(".cookie-title");
 
   // Hide Terms by default, show Privacy & Cookie
