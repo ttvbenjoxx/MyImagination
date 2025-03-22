@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <!-- Header is not sticky, just a normal block -->
+    <!-- Header is not sticky, just normal flow -->
     <header>
       <div class="header-left">
         <!-- Logo -->
@@ -25,9 +25,9 @@
       </div>
     </header>
 
-    <!-- Main layout: left = smaller white card (selector), right = white card for policy text -->
+    <!-- Main layout: left = white card (selector), right = white card for policy text -->
     <div class="policies-page">
-      <!-- LEFT NAVBAR: smaller height -->
+      <!-- LEFT NAVBAR: slightly larger so it covers all three tabs -->
       <div class="left-navbar">
         <nav class="policies-tabs">
           <button class="tab active" data-policy="privacyCookieTop">
@@ -44,7 +44,7 @@
 
       <!-- RIGHT COLUMN: White background for the entire policy text -->
       <div class="policy-content-column">
-        <!-- 1) Combined Privacy & Cookie Policy panel -->
+        <!-- Combined Privacy & Cookie Policy panel -->
         <div class="policy-panel" id="privacyCookiePanel">
           <h2>MyImagination Privacy &amp; Cookie Policy</h2>
           <p><strong>Effective Date:</strong> 3/22/24</p>
@@ -86,17 +86,18 @@
             No data is used for advertising, analytics, or personalized marketing.
           </p>
 
-          <!-- #cookieSection: anchor for "Cookie Policy" button scroll -->
-          <div id="cookieSection"></div>
-          <h3>3. Cookies and Local Storage</h3>
-          <p>
-            MyImagination does not use cookies or any third-party trackers.
-            <br /><br />
-            To support a seamless experience, this site uses local storage to
-            retain user session data. This ensures that users remain signed in
-            between visits. Only essential, non-sensitive data related to login
-            status is stored locally.
-          </p>
+          <!-- Wrap the cookie section in a div so we can highlight it -->
+          <div id="cookieSection" class="cookie-section">
+            <h3>3. Cookies and Local Storage</h3>
+            <p>
+              MyImagination does not use cookies or any third-party trackers.
+              <br /><br />
+              To support a seamless experience, this site uses local storage to
+              retain user session data. This ensures that users remain signed in
+              between visits. Only essential, non-sensitive data related to login
+              status is stored locally.
+            </p>
+          </div>
 
           <h3>4. Data Sharing and Third Parties</h3>
           <p>
@@ -139,7 +140,7 @@
           </p>
         </div>
 
-        <!-- 2) Terms of Service panel (hidden by default) -->
+        <!-- Terms of Service panel (hidden by default) -->
         <div class="policy-panel" id="termsPanel" style="display: none;">
           <h2>Terms of Service</h2>
           <p>
