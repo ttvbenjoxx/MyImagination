@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>MyImagination - Policies</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="styles.css" />
@@ -10,24 +10,26 @@
   <body>
     <header>
       <div class="header-left">
+        <!-- MyImagination Logo -->
         <div class="logo">MyImagination</div>
+
+        <!-- Back to Dashboard button right next to logo -->
+        <div class="back-button">
+          <!-- Uses a relative link back to your main page (../ means "up one folder") -->
+          <a href="../">
+            <span class="back-arrow">&larr;</span> Back to Dashboard
+          </a>
+        </div>
       </div>
+
       <div class="header-right">
         <h1>Policies</h1>
       </div>
     </header>
 
-    <!-- Back to Dashboard button -->
-    <div class="back-button">
-      <!-- Uses relative link: "../" goes up one level from /policies/ -->
-      <a href="../">
-        <span class="back-arrow">&larr;</span> Back to Dashboard
-      </a>
-    </div>
-
-    <!-- Main container for the policy page -->
-    <div class="policies-layout">
-      <!-- Left side: policy selector -->
+    <!-- Main page layout: left side is a "navbar" for policies, right side is a white card -->
+    <div class="policies-page">
+      <!-- Left side: policy selector as a "navbar" -->
       <div class="selector-container">
         <nav class="policies-tabs">
           <button class="tab active" data-policy="privacy">Privacy Policy</button>
@@ -36,36 +38,34 @@
         </nav>
       </div>
 
-      <!-- Right side: content area -->
-      <div class="content-container">
-        <div class="policy-content">
-          <!-- Default visible panel: Privacy Policy -->
-          <div class="policy-panel" id="privacy">
-            <h2>Privacy Policy</h2>
-            <p>
-              Privacy Policy content goes here. This section should explain
-              how user data is collected, used, and protected.
-            </p>
-          </div>
+      <!-- Right side: white card with the active policy -->
+      <div class="policy-content-card">
+        <!-- Default visible panel: Privacy Policy -->
+        <div class="policy-panel" id="privacy">
+          <h2>Privacy Policy</h2>
+          <p>
+            Privacy Policy content goes here. This section should explain
+            how user data is collected, used, and protected.
+          </p>
+        </div>
 
-          <!-- Hidden by default -->
-          <div class="policy-panel" id="cookie" style="display: none;">
-            <h2>Cookie Policy</h2>
-            <p>
-              Cookie Policy content goes here. This section should detail
-              what cookies are used on the site and how users can manage
-              their cookie settings.
-            </p>
-          </div>
+        <!-- Hidden by default -->
+        <div class="policy-panel" id="cookie" style="display: none;">
+          <h2>Cookie Policy</h2>
+          <p>
+            Cookie Policy content goes here. This section should detail
+            what cookies are used on the site and how users can manage
+            their cookie settings.
+          </p>
+        </div>
 
-          <!-- Hidden by default -->
-          <div class="policy-panel" id="terms" style="display: none;">
-            <h2>Terms of Service</h2>
-            <p>
-              Terms of Service content goes here. This section should
-              outline the rules and regulations for using the site.
-            </p>
-          </div>
+        <!-- Hidden by default -->
+        <div class="policy-panel" id="terms" style="display: none;">
+          <h2>Terms of Service</h2>
+          <p>
+            Terms of Service content goes here. This section should
+            outline the rules and regulations for using the site.
+          </p>
         </div>
       </div>
     </div>
