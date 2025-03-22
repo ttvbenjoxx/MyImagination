@@ -8,12 +8,10 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <!-- Header is not sticky, normal flow -->
+    <!-- Header (non-sticky) -->
     <header>
       <div class="header-left">
-        <!-- Logo -->
         <div class="logo">MyImagination</div>
-        <!-- Back to Dashboard button -->
         <div class="back-button">
           <a href="../">
             <span class="back-arrow">&larr;</span> Back to Dashboard
@@ -25,137 +23,239 @@
       </div>
     </header>
 
-    <!-- Main layout: left = white card (selector), right = white card for policy text -->
+    <!-- Main layout: left = policy selector, right = policy content card -->
     <div class="policies-page">
-      <!-- LEFT NAVBAR: 300px tall to fully cover the 3 tabs -->
+      <!-- LEFT NAVBAR: 3 tabs in the requested order -->
       <div class="left-navbar">
         <nav class="policies-tabs">
-          <button class="tab active" data-policy="privacyCookieTop">
+          <!-- 1) Terms of Service -->
+          <button class="tab active" data-policy="termsPanel">
+            Terms of Service
+          </button>
+          <!-- 2) Privacy Policy -->
+          <button class="tab" data-policy="privacyPanel">
             Privacy Policy
           </button>
-          <button class="tab" data-policy="cookieSection">
+          <!-- 3) Cookie Policy -->
+          <button class="tab" data-policy="cookiePanel">
             Cookie Policy
-          </button>
-          <button class="tab" data-policy="terms">
-            Terms of Service
           </button>
         </nav>
       </div>
 
-      <!-- RIGHT COLUMN: White background for the entire policy text -->
-      <div class="policy-content-column">
-        <!-- Combined Privacy & Cookie Policy panel -->
-        <div class="policy-panel" id="privacyCookiePanel">
-          <h2>MyImagination Privacy &amp; Cookie Policy</h2>
-          <p><strong>Effective Date:</strong> 3/22/24</p>
+      <!-- RIGHT COLUMN: White card for the selected policy -->
+      <div class="policy-content-card">
+        <!-- TERMS OF SERVICE -->
+        <div class="policy-panel" id="termsPanel">
+          <h2 id="termsTitle" class="policy-title">MyImagination Terms of Service</h2>
+          <p><strong>Last Updated:</strong> 3/22/2024</p>
 
           <p>
-            This Privacy &amp; Cookie Policy outlines how MyImagination collects,
-            uses, and protects user data. This site is designed with user privacy
-            in mind and aims to provide full transparency regarding data practices.
+            Welcome to MyImagination (“the Site”), developed and administered by a
+            team (“we,” “our,” or “the Admin Team”), led by Gavin Molter. These
+            Terms of Service (“Terms”) govern your use of the Site as well as any
+            child or subsites created or operated by the Admin/Development Team of
+            MyImagination. 
+            <strong>
+              By creating an account or otherwise using the Site, you confirm that
+              you accept and agree to be bound by these Terms, our
+              <a href="#privacyPanel" class="internal-link" data-target="privacyTitle">
+                Privacy Policy
+              </a>
+              and
+              <a href="#cookiePanel" class="internal-link" data-target="cookieTitle">
+                Cookie Policy
+              </a>.
+            </strong>
+            If you do not agree with any provision of these Terms, you must
+            discontinue use of the Site immediately and contact
+            <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a>
+            for the deletion of your MyImagination account.
           </p>
 
-          <!-- #privacyCookieTop: anchor for "Privacy Policy" button scroll -->
-          <div id="privacyCookieTop"></div>
+          <h3>1. Purpose and Non-Affiliation</h3>
+          <p>
+            MyImagination serves as a platform for teachers, students, and other
+            users to share website ideas that may enhance quality of life (QoL) for
+            educational communities or personal use. We are not affiliated with
+            Franklin Central Community School Corporation (“FTCSC”) or any of its
+            schools, including Franklin Central High School. References to teaching
+            or education are solely for the purpose of idea sharing and do not
+            imply any official endorsement.
+          </p>
+
+          <h3>2. Eligibility and Account Requirements</h3>
+          <p>
+            By using the Site, you represent that you are at least 13 years of age.
+            If you are under this age, you may not use MyImagination without
+            explicit permission from a parent or guardian over the age of 18. To
+            post ideas, comments, or otherwise engage with the Site, you must
+            continue with an account using the chosen sign-in method.
+          </p>
+
+          <h3>3. User-Generated Content</h3>
+          <p>
+            You retain ownership of any original ideas or content (“User Content”)
+            you post on MyImagination. By submitting User Content, you grant the
+            Admin Team a non-exclusive, worldwide license to display, host, and
+            share that content within the Site. Posting an idea does not obligate
+            the Admin Team to develop or implement it. If the Admin/Development
+            Team chooses to implement a user-submitted idea, the user who created
+            that idea will receive no reimbursement or compensation, and forfeits
+            any further claim to possession or ownership of that idea.
+          </p>
+
+          <h3>4. No Liability</h3>
+          <p>
+            We make no warranties regarding the Site’s functionality, reliability,
+            or availability. Neither the Site nor its developer(s), Admin Team, or
+            any affiliated parties shall be liable for any direct, indirect,
+            incidental, consequential, or special damages arising out of or in
+            connection with your use of the Site, your reliance on User Content, or
+            any other matter relating to MyImagination or its child/subsites.
+          </p>
+
+          <h3>5. Changes to These Terms</h3>
+          <p>
+            We may revise or update these Terms at any time. Any modifications will
+            be posted on this page. Continued use of the Site after changes are
+            posted constitutes acceptance of the updated Terms.
+          </p>
+
+          <h3>6. Contact</h3>
+          <p>
+            If you have questions or concerns about these Terms or MyImagination,
+            please contact the lead developer at
+            <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a>.
+          </p>
+        </div>
+
+        <!-- PRIVACY POLICY -->
+        <div class="policy-panel" id="privacyPanel" style="display: none;">
+          <h2 id="privacyTitle" class="policy-title">MyImagination Privacy Policy</h2>
+          <p><strong>Effective Date:</strong> 3/22/2024</p>
+
+          <p>
+            This Privacy &amp; Cookie Policy (“Policy”) explains how MyImagination
+            (“the Site”) collects, uses, and protects user data. By accessing or
+            using the Site, you agree to the practices described in this Policy. If
+            you do not agree, please discontinue use of the Site and contact
+            <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a>
+            to request account deletion.
+          </p>
+
           <h3>1. Information Collected</h3>
           <p>
-            MyImagination uses a third-party sign-in service to authenticate users.
-            When a user signs in, the following basic profile information is
-            collected:
-          </p>
-          <ul>
-            <li>Name</li>
-            <li>Email address</li>
-          </ul>
-          <p>
-            Passwords are <strong>not</strong> collected, stored, or processed by
-            this site.
+            MyImagination uses a third-party sign-in service for authentication.
+            When you sign in, we collect the following basic profile information:
+            <ul>
+              <li>Name</li>
+              <li>Email Address</li>
+            </ul>
+            We do not collect or store passwords; all password handling is managed
+            by the third-party sign-in provider.
           </p>
 
           <h3>2. Use of Information</h3>
           <p>
-            Collected information is used exclusively to:
-          </p>
-          <ul>
-            <li>Authenticate user identity</li>
-            <li>Display user details on forum content</li>
-            <li>Maintain user access and session stability</li>
-            <li>Ensure the integrity and security of user accounts</li>
-          </ul>
-          <p>
-            No data is used for advertising, analytics, or personalized marketing.
+            The collected information is used exclusively to authenticate your
+            identity, display your details on forum content, maintain user access
+            and session stability, and ensure account integrity. No data is used
+            for advertising, analytics, or personalized marketing.
           </p>
 
-          <!-- Cookie section anchor. 
-               The highlight is applied ONLY to the span containing the text. -->
-          <div id="cookieSection">
-            <h3>
-              <span class="cookie-title">3. Cookies and Local Storage</span>
-            </h3>
-            <p>
-              MyImagination does not use cookies or any third-party trackers.
-              <br /><br />
-              To support a seamless experience, this site uses local storage to
-              retain user session data. This ensures that users remain signed in
-              between visits. Only essential, non-sensitive data related to login
-              status is stored locally.
-            </p>
-          </div>
+          <h3>3. Cookies and Local Storage</h3>
+          <p>
+            MyImagination does not utilize traditional browser cookies or
+            third-party trackers. We rely on local storage for essential
+            non-sensitive login status data to keep you signed in between visits.
+            For more details, see our
+            <a
+              href="#cookiePanel"
+              class="internal-link"
+              data-target="cookieTitle"
+              >Cookie Policy</a
+            >.
+          </p>
 
           <h3>4. Data Sharing and Third Parties</h3>
           <p>
-            User data is never sold, rented, or shared with third parties.
-            Information collected is used strictly for the purpose of enabling
-            account access and forum functionality.
-            <br /><br />
-            No external tools or integrations are used for analytics or
-            advertising.
+            MyImagination does not sell, rent, or share user data with third
+            parties. No external tools or integrations are employed for analytics,
+            advertising, or any other data-processing activities.
           </p>
 
           <h3>5. User Control and Data Access</h3>
           <p>
-            Users may request access to or deletion of their account and associated
-            personal data by contacting
-            <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a>.
-            <br /><br />
-            <strong>Note:</strong> Deleting an account does not remove posts,
-            comments, or replies made on the forum. To request removal of specific
-            content, users must complete the <em>Post Deletion Request</em> found
-            on Page 2 of the MyImagination Issue Report Form, available
+            You may request access to or deletion of your MyImagination account and
+            associated personal data by contacting
+            <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a>. Note
+            that deleting your account does not automatically remove posts or
+            comments you have made. To request removal of specific content, please
+            complete the Post Deletion Request found on Page 2 of the MyImagination
+            Issue Report Form,
             <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.
-            All requests are reviewed and processed within a reasonable timeframe.
           </p>
 
-          <h3>6. Data Security</h3>
+          <h3>6. Unauthorized Access &amp; Third-Party Sign-In</h3>
           <p>
-            Appropriate security measures, including HTTPS encryption and secure
-            session handling, are in place to protect user information. No password
-            data is collected or stored, minimizing the risk of credential-based
-            threats.
+            Because MyImagination relies on a third-party sign-in service, any
+            unauthorized access to your account or the consequences thereof are the
+            responsibility of that third-party provider, not MyImagination.
           </p>
 
           <h3>7. Policy Updates</h3>
           <p>
-            This policy may be updated from time to time to reflect platform
-            changes or legal requirements. All updates will be posted on this page.
-            Continued use of the site after any policy update constitutes
+            This Policy may be updated periodically to reflect platform changes or
+            evolving requirements. Any updates will be posted on this page.
+            Continued use of the Site after any Policy update constitutes
             acceptance of the revised terms.
+          </p>
+
+          <h3>8. Contact Information</h3>
+          <p>
+            If you have questions or requests regarding this Privacy Policy, please
+            contact
+            <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a>.
           </p>
         </div>
 
-        <!-- Terms of Service panel (hidden by default) -->
-        <div class="policy-panel" id="termsPanel" style="display: none;">
-          <h2>Terms of Service</h2>
+        <!-- COOKIE POLICY -->
+        <div class="policy-panel" id="cookiePanel" style="display: none;">
+          <h2 id="cookieTitle" class="policy-title">MyImagination Cookie Policy</h2>
+          <p><strong>Effective Date:</strong> 3/22/2024</p>
+
           <p>
-            This is a placeholder for your Terms of Service.
-            <br /><br />
-            Here you can outline the rules and conditions for using MyImagination,
-            acceptable use policies, disclaimers, liability limitations, etc.
+            MyImagination does not use traditional browser cookies or embed
+            third-party trackers. Instead, we rely on local storage to support a
+            seamless user experience. Only essential, non-sensitive login status
+            data is stored locally, ensuring you remain signed in between visits.
+          </p>
+
+          <p>
+            If you have any concerns about local storage or data handling, please
+            review our
+            <a
+              href="#privacyPanel"
+              class="internal-link"
+              data-target="privacyTitle"
+              >Privacy Policy</a
+            >
+            or contact the lead developer at
+            <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a>.
+          </p>
+
+          <h3>Updates to This Cookie Policy</h3>
+          <p>
+            This Cookie Policy may be revised or updated at any time. Any
+            modifications will be posted here. Continued use of MyImagination after
+            such updates constitutes acceptance of the revised policy.
           </p>
         </div>
       </div>
     </div>
 
+    <!-- Policies logic: tab switching & cross references -->
     <script src="main.js"></script>
   </body>
 </html>
