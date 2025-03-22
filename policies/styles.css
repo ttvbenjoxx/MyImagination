@@ -155,8 +155,9 @@ header {
   margin-bottom: 1em;
 }
 
-/* Highlight only the Cookie title, fade out slowly */
+/* Only highlight the text of the cookie title, not the entire line */
 .cookie-title {
+  display: inline-block; /* shrink wrap around text only */
   transition: background-color 1s ease; /* fade out over 1s */
 }
 .cookie-title.highlight {
