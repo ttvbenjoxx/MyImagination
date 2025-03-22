@@ -18,37 +18,49 @@
     </header>
 
     <div class="back-button">
-      <a href="dashboard.html">&larr; Back to Dashboard</a>
+      <a href="../">
+        <span class="back-arrow">&larr;</span> Back to Dashboard
+      </a>
     </div>
 
-    <div class="policies-container">
-      <nav class="policies-tabs">
-        <button class="tab active" data-policy="privacy">Privacy Policy</button>
-        <button class="tab" data-policy="cookie">Cookie Policy</button>
-        <button class="tab" data-policy="terms">Terms of Service</button>
-      </nav>
-      <div class="policy-content">
-        <div class="policy-panel" id="privacy">
-          <h2>Privacy Policy</h2>
-          <p>
-            Privacy Policy content goes here. This section should explain how
-            user data is collected, used, and protected.
-          </p>
-        </div>
-        <div class="policy-panel" id="cookie" style="display: none;">
-          <h2>Cookie Policy</h2>
-          <p>
-            Cookie Policy content goes here. This section should detail what
-            cookies are used on the site and how users can manage their cookie
-            settings.
-          </p>
-        </div>
-        <div class="policy-panel" id="terms" style="display: none;">
-          <h2>Terms of Service</h2>
-          <p>
-            Terms of Service content goes here. This section should outline the
-            rules and regulations for using the site.
-          </p>
+    <div class="policies-layout">
+      <div class="selector-container">
+        <nav class="policies-tabs">
+          <button class="tab active" data-policy="privacy">
+            Privacy Policy
+          </button>
+          <button class="tab" data-policy="cookie">
+            Cookie Policy
+          </button>
+          <button class="tab" data-policy="terms">
+            Terms of Service
+          </button>
+        </nav>
+      </div>
+      <div class="content-container">
+        <div class="policy-content">
+          <div class="policy-panel" id="privacy">
+            <h2>Privacy Policy</h2>
+            <p>
+              Privacy Policy content goes here. This section should explain how
+              user data is collected, used, and protected.
+            </p>
+          </div>
+          <div class="policy-panel" id="cookie" style="display: none;">
+            <h2>Cookie Policy</h2>
+            <p>
+              Cookie Policy content goes here. This section should detail what
+              cookies are used on the site and how users can manage their cookie
+              settings.
+            </p>
+          </div>
+          <div class="policy-panel" id="terms" style="display: none;">
+            <h2>Terms of Service</h2>
+            <p>
+              Terms of Service content goes here. This section should outline the
+              rules and regulations for using the site.
+            </p>
+          </div>
         </div>
       </div>
     </div>
