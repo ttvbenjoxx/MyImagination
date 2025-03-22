@@ -12,9 +12,8 @@
       <div class="header-left">
         <!-- Logo -->
         <div class="logo">MyImagination</div>
-        <!-- Back to Dashboard button right next to the logo -->
+        <!-- Back to Dashboard button -->
         <div class="back-button">
-          <!-- Uses a relative link: "../" goes up one folder from /policies/ -->
           <a href="../">
             <span class="back-arrow">&larr;</span> Back to Dashboard
           </a>
@@ -25,10 +24,10 @@
       </div>
     </header>
 
-    <!-- Main container: single white card with two columns (left = selector, right = content) -->
-    <div class="policies-container">
-      <!-- Left side: policy selector -->
-      <div class="nav-column">
+    <!-- Main layout: 2 columns, left = navbar (tabs), right = white card with policy text -->
+    <div class="policies-page">
+      <!-- LEFT COLUMN: Nav/selector, directly over gradient -->
+      <div class="left-navbar">
         <nav class="policies-tabs">
           <button class="tab active" data-policy="privacy">Privacy Policy</button>
           <button class="tab" data-policy="cookie">Cookie Policy</button>
@@ -36,8 +35,8 @@
         </nav>
       </div>
 
-      <!-- Right side: active policy content -->
-      <div class="content-column">
+      <!-- RIGHT COLUMN: White card for the selected policy -->
+      <div class="policy-content-card">
         <!-- Default visible: Privacy Policy -->
         <div class="policy-panel" id="privacy">
           <h2>Privacy Policy</h2>
