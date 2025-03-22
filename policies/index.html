@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- Header is no longer sticky -->
     <header>
       <div class="header-left">
         <!-- Logo -->
@@ -24,9 +25,9 @@
       </div>
     </header>
 
-    <!-- Main layout: left = navbar (white, rounded), right = content card -->
+    <!-- Main layout: left = fixed-height selector, right = full-page policy -->
     <div class="policies-page">
-      <!-- LEFT NAVBAR -->
+      <!-- LEFT NAVBAR: White, fixed height, small size -->
       <div class="left-navbar">
         <nav class="policies-tabs">
           <!-- 3 tabs: Privacy Policy, Cookie Policy, Terms of Service -->
@@ -42,8 +43,8 @@
         </nav>
       </div>
 
-      <!-- RIGHT CONTENT CARD -->
-      <div class="policy-content-card">
+      <!-- RIGHT COLUMN: Full page length, no internal scrolling -->
+      <div class="policy-content-column">
         <!-- 1) Combined Privacy & Cookie Policy panel -->
         <div class="policy-panel" id="privacyCookiePanel">
           <h2>MyImagination Privacy &amp; Cookie Policy</h2>
@@ -143,8 +144,7 @@
         <div class="policy-panel" id="termsPanel" style="display: none;">
           <h2>Terms of Service</h2>
           <p>
-            <!-- Replace with your Terms of Service content -->
-            This is a placeholder for your Terms of Service. 
+            This is a placeholder for your Terms of Service.
             <br /><br />
             Here you can outline the rules and conditions for using MyImagination,
             acceptable use policies, disclaimers, liability limitations, etc.
