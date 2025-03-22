@@ -1,27 +1,28 @@
 // firebase.js
-// Uses ES modules from your old snippet. The same forced sign-in logic with localStorage checks.
+// Uses MyImaginationBackup credentials + forced sign-in logic with localStorage
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getDatabase, ref, onValue, push, update, set, get, runTransaction } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
-// Old config from your snippet
+// Replace these with your actual MyImaginationBackup credentials:
 const firebaseConfig = {
-  apiKey: "AIzaSyAOavNNa0NXASTHd--afy37aSIFYqvcacQ",
-  authDomain: "myteacheropinion.firebaseapp.com",
-  databaseURL: "https://myteacheropinion-default-rtdb.firebaseio.com",
-  projectId: "myteacheropinion",
-  storageBucket: "myteacheropinion.firebasestorage.app",
-  messagingSenderId: "945674655787",
-  appId: "1:945674655787:web:a59ef04ec9e843769bf26e"
+  apiKey: "AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4",
+  authDomain: "myimaginationbackup.firebaseapp.com",
+  databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com/",
+  projectId: "myimaginationbackup",
+  storageBucket: "myimaginationbackup.firebasestorage.app",
+  messagingSenderId: "780723525935",
+  appId: "1:780723525935:web:151a6d230b3705852a29da"
 };
 
+// 1) Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const database = getDatabase(app);
 
-// Expose references so main.js can see them
+// 2) Expose these references so your main.js can call them
 window.database = database;
 window.ref = ref;
 window.onValue = onValue;
@@ -31,43 +32,44 @@ window.set = set;
 window.get = get;
 window.runTransaction = runTransaction;
 
-// Forced sign-in logic with localStorage
+// 3) Monitor auth state to force sign-in
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Hide "Whoops!" if open
+    // Hide "Whoops!" modal if open
     window.hideModal('signedOutModal');
 
-    // Update UI with user info
+    // Show user info
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
 
-    // Store user info globally
+    // Store user info globally for your main.js usage
     window.currentUserEmail = user.email;
     window.currentUserName = user.displayName;
 
-    // Unlock site
+    // Unlock site, fetch data, etc.
     window.unlockSite();
-    // Then fetch ideas, comments
-    fetchIdeas();
-    listenForCommentsCount();
+    window.fetchIdeas();
+    window.listenForCommentsCount();
+
   } else {
     // Not logged in
+    // If never visited, show Intro
     if (!localStorage.getItem('visited')) {
-      // Show Intro
       window.showModal('introModal');
     } else {
-      // Show "Whoops!"
+      // Already visited, show "Whoops!"
       window.showModal('signedOutModal');
     }
   }
 });
 
-// Called by "Continue with Google" in the Intro or Whoops modals
+// 4) Called when user clicks "Continue with Google"
 window.firebaseLogin = function() {
   signInWithPopup(auth, provider)
     .then((result) => {
-      // Hide the "Whoops!" if open
+      // Hide "Whoops!" if open
       window.hideModal('signedOutModal');
+
       // Show user info
       document.getElementById('username').textContent = result.user.displayName;
       document.getElementById('userProfile').style.display = 'flex';
@@ -75,17 +77,17 @@ window.firebaseLogin = function() {
       window.currentUserEmail = result.user.email;
       window.currentUserName = result.user.displayName;
 
-      // Unlock site
+      // Unlock site, fetch ideas, etc.
       window.unlockSite();
-      fetchIdeas();
-      listenForCommentsCount();
+      window.fetchIdeas();
+      window.listenForCommentsCount();
     })
     .catch((error) => {
       console.error("Firebase login error:", error);
     });
 };
 
-// Called by "Sign Out" button
+// 5) Called when user confirms sign-out
 window.logout = function() {
   signOut(auth)
     .then(() => {
