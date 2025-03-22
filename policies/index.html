@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MyImagination - Policies</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="styles.css" />
@@ -17,16 +17,17 @@
       </div>
     </header>
 
+    <!-- Back to Dashboard button -->
     <div class="back-button">
-      <!-- Relative link back to the main dashboard index. 
-           The "../" assumes policies/ is in a subfolder. -->
+      <!-- Uses relative link: "../" goes up one level from /policies/ -->
       <a href="../">
         <span class="back-arrow">&larr;</span> Back to Dashboard
       </a>
     </div>
 
+    <!-- Main container for the policy page -->
     <div class="policies-layout">
-      <!-- Larger, left-aligned policy selector with rounded corners -->
+      <!-- Left side: policy selector -->
       <div class="selector-container">
         <nav class="policies-tabs">
           <button class="tab active" data-policy="privacy">Privacy Policy</button>
@@ -35,8 +36,10 @@
         </nav>
       </div>
 
+      <!-- Right side: content area -->
       <div class="content-container">
         <div class="policy-content">
+          <!-- Default visible panel: Privacy Policy -->
           <div class="policy-panel" id="privacy">
             <h2>Privacy Policy</h2>
             <p>
@@ -45,6 +48,7 @@
             </p>
           </div>
 
+          <!-- Hidden by default -->
           <div class="policy-panel" id="cookie" style="display: none;">
             <h2>Cookie Policy</h2>
             <p>
@@ -54,6 +58,7 @@
             </p>
           </div>
 
+          <!-- Hidden by default -->
           <div class="policy-panel" id="terms" style="display: none;">
             <h2>Terms of Service</h2>
             <p>
