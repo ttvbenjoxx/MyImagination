@@ -17,7 +17,7 @@ body {
   color: var(--text-color);
 }
 
-/* Header styling similar to the main page */
+/* Header styling similar to main page */
 header {
   background-color: rgba(255, 255, 255, 0.1);
   padding: 20px;
@@ -43,6 +43,7 @@ header {
   color: #fff;
 }
 
+/* Back button styling */
 .back-button {
   padding: 10px 20px;
 }
@@ -50,11 +51,26 @@ header {
 .back-button a {
   color: #fff;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid #fff;
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
 }
 
-/* Container for policies page */
-.policies-container {
+.back-button a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.back-arrow {
+  font-size: 24px;
+  margin-right: 8px;
+}
+
+/* Policies layout container */
+.policies-layout {
   display: flex;
   max-width: 1200px;
   margin: 20px auto;
@@ -64,23 +80,30 @@ header {
   overflow: hidden;
 }
 
-/* Left sidebar tabs */
-.policies-tabs {
-  width: 200px;
+/* Selector container (policy selector) */
+.selector-container {
+  width: 250px;
   background: #f5f5f5;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.policies-tabs {
   display: flex;
   flex-direction: column;
 }
 
 .policies-tabs .tab {
-  padding: 15px;
+  padding: 20px;
+  margin-bottom: 10px;
   border: none;
   background: none;
   text-align: left;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text-color);
   transition: var(--transition);
+  border-radius: var(--border-radius);
 }
 
 .policies-tabs .tab:hover {
@@ -93,10 +116,16 @@ header {
   color: var(--primary-color);
 }
 
+/* Content container */
+.content-container {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
 /* Policy content area */
 .policy-content {
-  padding: 20px;
-  flex: 1;
+  width: 100%;
 }
 
 .policy-panel {
