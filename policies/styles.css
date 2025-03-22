@@ -16,6 +16,7 @@ body {
   color: var(--text-color);
   min-height: 100vh;
   padding-bottom: 50px;
+  overflow-x: hidden; /* remove horizontal scrolling */
 }
 
 header {
@@ -43,6 +44,7 @@ header {
   font-size: 24px;
   font-weight: 600;
   color: #fff;
+  margin: 0; /* remove default margin */
 }
 
 .back-button a {
@@ -81,7 +83,7 @@ header {
   height: 300px;
   background: #fff;
   border-radius: var(--border-radius);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.1);
   padding: 20px;
   box-sizing: border-box;
 }
@@ -159,6 +161,22 @@ header {
 
 /* --- MOBILE RESPONSIVE --- */
 @media (max-width: 768px) {
+  /* Make header a column layout so "Policies" appears under MyImagination */
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-left,
+  .header-right {
+    width: 100%;
+  }
+
+  .header-right {
+    margin-top: 10px; /* spacing below MyImagination name */
+  }
+
+  /* Layout stacks vertically */
   .policies-page {
     flex-direction: column;
     margin: 20px auto;
