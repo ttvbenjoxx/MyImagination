@@ -1,5 +1,5 @@
 // main.js
-// Your old site logic: modals, idea rendering, old spotlight tutorial steps, etc.
+// Merged site logic: forced sign-in, user management for likes, old tutorial, comment replies, etc.
 
 // 1) Show/hide modals, siteLocked
 function showModal(modalId) {
@@ -16,6 +16,7 @@ function unlockSite() {
   document.getElementById('filterBtn').style.display = 'flex';
   document.getElementById('newIdeaBtn').style.display = 'block';
   hideModal('introModal');
+  // If never visited, run tutorial once
   if (!localStorage.getItem('visited')) {
     startTutorial();
     localStorage.setItem('visited', 'true');
@@ -60,7 +61,8 @@ document.getElementById('filterBtn').addEventListener('click', function(e) {
   }
   renderIdeas();
 });
-// Close modals on background click
+
+// Close modals if clicking outside content
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', function(e) {
     if (e.target === modal) {
@@ -79,10 +81,11 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-// 5) Idea rendering, toggling likes, comments
+// 5) Idea + comment rendering
 let ideas = [];
 window.commentsCount = {};
 
+// Count comments recursively
 function countComments(obj) {
   let count = 0;
   for (const key in obj) {
@@ -99,7 +102,7 @@ function listenForCommentsCount() {
   window.onValue(commentsRoot, (snapshot) => {
     const data = snapshot.val() || {};
     window.commentsCount = {};
-    for (const postId in data) {
+    for(const postId in data) {
       window.commentsCount[postId] = countComments(data[postId]);
     }
     renderIdeas();
@@ -121,122 +124,161 @@ function fetchIdeas() {
   });
 }
 
+// 6) Render ideas with user management approach for likes
+window.userLikes = new Set();
+
 function renderIdeas() {
   const ideasGrid = document.getElementById('ideasGrid');
-  let sortedIdeas = ideas.slice();
+  let sorted = ideas.slice();
   if(filterBy === "popular"){
-    sortedIdeas.sort((a, b) => b.likes - a.likes);
+    sorted.sort((a, b) => (b.likes || 0) - (a.likes || 0));
   } else {
-    sortedIdeas.sort((a, b) => b.created - a.created);
+    sorted.sort((a, b) => (b.created || 0) - (a.created || 0));
   }
-  ideasGrid.innerHTML = sortedIdeas.map(idea => {
-    const commentCount = window.commentsCount[idea.id] || 0;
-    return `<div class="idea-card" onclick="showFullIdea('${idea.id}')">
-      <div class="idea-subject">${idea.subject}</div>
-      <div class="idea-description-container">
-        <div class="idea-description">
-          ${idea.description.length > 200 ? idea.description.slice(0,200) + "..." : idea.description}
-          ${idea.description.length > 200 ? `<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>` : ""}
+  ideasGrid.innerHTML = sorted.map(idea => {
+    const commCount = window.commentsCount[idea.id] || 0;
+    return `
+      <div class="idea-card" onclick="showFullIdea('${idea.id}')">
+        <div class="idea-subject">${idea.subject}</div>
+        <div class="idea-description-container">
+          <div class="idea-description">
+            ${
+              idea.description.length > 200
+                ? idea.description.slice(0,200) + "..."
+                : idea.description
+            }
+            ${
+              idea.description.length > 200
+                ? \`<button class="more-button" onclick="showFullIdea('${idea.id}'); event.stopPropagation();">More</button>\`
+                : ""
+            }
+          </div>
+        </div>
+        <div class="idea-meta">
+          <span>${idea.username}</span>
+          <div class="idea-actions">
+            <button class="action-button \${window.userLikes.has(idea.id) ? 'liked' : ''}"
+              onclick="toggleLike('${idea.id}','${idea.id}'); event.stopPropagation();">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0
+                  L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78
+                  l1.06 1.06L12 21.23
+                  l7.78-7.78 1.06-1.06
+                  a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              \${idea.likes || 0}
+            </button>
+            <span class="action-button static">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8
+                  8.5 8.5 0 0 1-7.6 4.7
+                  8.38 8.38 0 0 1-3.8-.9
+                  L3 21l1.9-5.7
+                  a8.38 8.38 0 0 1-.9-3.8
+                  8.5 8.5 0 0 1 4.7-7.6
+                  8.38 8.38 0 0 1 3.8-.9
+                  h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              </svg>
+              \${commCount}
+            </span>
+          </div>
         </div>
       </div>
-      <div class="idea-meta">
-        <span>${idea.username}</span>
-        <div class="idea-actions">
-          <button class="action-button ${window.userLikes && window.userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike('${idea.id}'); event.stopPropagation();">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0
-                L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78
-                l1.06 1.06L12 21.23
-                l7.78-7.78 1.06-1.06
-                a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
-            ${idea.likes}
-          </button>
-          <span class="action-button static">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8
-                8.5 8.5 0 0 1-7.6 4.7
-                8.38 8.38 0 0 1-3.8-.9
-                L3 21l1.9-5.7
-                a8.38 8.38 0 0 1-.9-3.8
-                8.5 8.5 0 0 1 4.7-7.6
-                8.38 8.38 0 0 1 3.8-.9
-                h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-            </svg>
-            ${commentCount}
-          </span>
-        </div>
-      </div>
-    </div>`.trim();
+    `;
   }).join('');
 }
 
-window.userLikes = new Set();
-function toggleLike(ideaId) {
+// 7) Toggle like using userManagement
+window.sanitizeEmail = function(email) {
+  return email.replace(/[.#$/\[\]]/g, "_");
+};
+
+function toggleLike(ideaId, key) {
   if (window.siteLocked) {
     alert('Please unlock the site to like ideas.');
     return;
   }
+  const uid = window.currentUserId;
+  if(!uid) return;
+
   const idea = ideas.find(i => i.id === ideaId);
   if (idea) {
-    if (window.userLikes.has(ideaId)) {
-      window.userLikes.delete(ideaId);
-      idea.likes--;
+    if (window.userLikes.has(key)) {
+      // Unlike
+      window.userLikes.delete(key);
+      idea.likes = Math.max((idea.likes || 0) - 1, 0);
+      window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes });
+      // Remove from userManagement
+      window.set(
+        window.ref(window.database, "userManagement/" + window.sanitizeEmail(window.currentUserEmail) + "/Likes/" + key),
+        null
+      );
     } else {
-      window.userLikes.add(ideaId);
-      idea.likes++;
+      // Like
+      window.userLikes.add(key);
+      idea.likes = (idea.likes || 0) + 1;
+      window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes });
+      // Add to userManagement
+      window.set(
+        window.ref(window.database, "userManagement/" + window.sanitizeEmail(window.currentUserEmail) + "/Likes/" + key),
+        true
+      );
     }
     renderIdeas();
-    window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes })
-      .catch((error) => { console.error("Error updating likes in Firebase:", error); });
-    if (document.getElementById('fullIdeaModal').classList.contains('show') &&
-        window.currentExpandedIdeaId === ideaId) {
+    // If the full idea modal is open, update it too
+    if(document.getElementById('fullIdeaModal').classList.contains('show') &&
+       window.currentExpandedIdeaId === ideaId) {
       showFullIdea(ideaId);
       const heartIcon = document.querySelector('#fullIdeaModal .action-button.liked svg');
-      if (heartIcon) {
+      if(heartIcon) {
         heartIcon.style.animation = 'none';
-        setTimeout(() => { heartIcon.style.animation = 'heartPop 0.3s ease'; }, 10);
+        setTimeout(() => {
+          heartIcon.style.animation = 'heartPop 0.3s ease';
+        }, 10);
       }
     }
   }
 }
 
-// 6) Comments
+// 8) Comments + replies
 function renderComments(comments, parentPath) {
   parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
   return comments.map(comment => {
     const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
     let repliesHtml = "";
-    if (comment.replies) {
-      const repliesArray = Object.entries(comment.replies).map(([key, value]) => ({ id: key, ...value }));
-      repliesArray.sort((a, b) => {
+    if(comment.replies) {
+      const repliesArray = Object.entries(comment.replies).map(([k,v]) => ({ id: k, ...v }));
+      repliesArray.sort((a,b) => {
         const numA = parseInt(a.id.split("_")[1] || "0");
         const numB = parseInt(b.id.split("_")[1] || "0");
         return numA - numB;
       });
       repliesHtml = `<div class="comment-replies">${renderComments(repliesArray, parentPath + "/" + comment.id + "/replies")}</div>`;
     }
-    return `<div class="comment">
-      <div class="comment-header">
-        <span class="comment-author">${comment.commenter || comment.replier || "Unknown"}</span>
-        <span class="comment-date">${comment.timestamp}</span>
-      </div>
-      <div class="comment-content">${comment.content}</div>
-      <button class="reply-button" onclick="showReplyForm('${parentPath}', '${comment.id}'); event.stopPropagation();">Reply</button>
-      <div class="reply-form" id="reply-form-${parentPath.replace(/[\/:]/g, "_")}_${comment.id}" style="display: none; margin-top: 10px;">
-        <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
-        <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-          <button class="post-comment-button modal-post-comment-button" onclick="addReply('${parentPath}', '${comment.id}'); event.stopPropagation();">Post</button>
+    return `
+      <div class="comment">
+        <div class="comment-header">
+          <span class="comment-author">${comment.commenter || comment.replier || "Unknown"}</span>
+          <span class="comment-date">${comment.timestamp}</span>
         </div>
+        <div class="comment-content">${comment.content}</div>
+        <button class="reply-button" onclick="showReplyForm('${parentPath}','${comment.id}'); event.stopPropagation();">Reply</button>
+        <div class="reply-form" id="${replyFormId}" style="display: none; margin-top: 10px;">
+          <textarea class="form-input comment-input" placeholder="Write a reply..."></textarea>
+          <div class="comment-actions" style="margin-top: 6px; text-align: right;">
+            <button class="post-comment-button modal-post-comment-button"
+              onclick="addReply('${parentPath}','${comment.id}'); event.stopPropagation();">Post</button>
+          </div>
+        </div>
+        ${repliesHtml}
       </div>
-      ${repliesHtml}
-    </div>`;
+    `;
   }).join('');
 }
 function showReplyForm(parentPath, commentId) {
   const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
   const form = document.getElementById(replyFormId);
-  if (form) {
+  if(form) {
     form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
   }
 }
@@ -244,7 +286,7 @@ function addCommentModal(postId) {
   const container = document.getElementById('modalCommentForm_' + postId);
   const textarea = container.querySelector('.comment-input');
   const content = textarea.value.trim();
-  if (!content) return;
+  if(!content) return;
   const nextRef = window.ref(window.database, "comments/" + postId + "/_next");
   window.runTransaction(nextRef, (current) => {
     return (current === null ? 0 : current) + 1;
@@ -269,7 +311,7 @@ function addReply(parentPath, commentId) {
   const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
   const replyInput = document.querySelector("#" + replyFormId + " .comment-input");
   const content = replyInput.value.trim();
-  if (!content) return;
+  if(!content) return;
   const nextRef = window.ref(window.database, parentPath + "/" + commentId + "/_next");
   window.runTransaction(nextRef, (current) => {
     return (current === null ? 0 : current) + 1;
@@ -289,11 +331,12 @@ function addReply(parentPath, commentId) {
   });
 }
 
-// 7) Show full idea
+// Show full idea
 function showFullIdea(ideaId) {
   const idea = ideas.find(i => i.id === ideaId);
   if (!idea) return;
   window.currentExpandedIdeaId = ideaId;
+
   const modalHeaderHTML = `
 <div class="header-left-content">
   <h2 class="modal-title" id="fullIdeaTitle">${idea.subject}</h2>
@@ -304,7 +347,8 @@ function showFullIdea(ideaId) {
   </div>
 </div>
 <div class="header-right-content">
-  <button class="action-button like-button ${window.userLikes.has(idea.id) ? 'liked' : ''}" onclick="toggleLike('${idea.id}'); event.stopPropagation();">
+  <button class="action-button like-button ${(window.userLikes.has(idea.id)) ? 'liked' : ''}"
+    onclick="toggleLike('${idea.id}','${idea.id}'); event.stopPropagation();">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0
                L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78
@@ -312,7 +356,7 @@ function showFullIdea(ideaId) {
                l7.78-7.78 1.06-1.06
                a5.5 5.5 0 0 0 0-7.78z"></path>
     </svg>
-    ${idea.likes}
+    ${idea.likes || 0}
   </button>
   <button type="button" class="action-button static comment-button" onclick="scrollToComments(event)">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -329,6 +373,7 @@ function showFullIdea(ideaId) {
   </button>
   <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
 </div>`;
+
   const commentToggleMarkup = `
 <button class="comment-toggle-button" onclick="toggleModalCommentForm('${idea.id}'); event.stopPropagation();">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -340,14 +385,17 @@ function showFullIdea(ideaId) {
 <div id="modalCommentForm_${idea.id}" style="display: none; margin-top: 10px;">
   <textarea class="form-input comment-input" placeholder="Write a comment..."></textarea>
   <div class="comment-actions" style="margin-top: 6px; text-align: right;">
-    <button class="post-comment-button modal-post-comment-button" onclick="addCommentModal('${idea.id}'); event.stopPropagation();">Post</button>
+    <button class="post-comment-button modal-post-comment-button"
+      onclick="addCommentModal('${idea.id}'); event.stopPropagation();">Post</button>
   </div>
 </div>`;
+
   const modalBodyHTML = `
 <div class="idea-description">${idea.description}</div>
 <h3 style="margin: 16px 0 8px 0;">Comments</h3>
 ${commentToggleMarkup}
 <div id="commentsSection" class="comments-section"></div>`;
+
   document.getElementById('fullIdeaModal').innerHTML = `
 <div class="modal-content">
   <div class="modal-header">
@@ -357,6 +405,7 @@ ${commentToggleMarkup}
     ${modalBodyHTML}
   </div>
 </div>`.trim();
+
   showModal('fullIdeaModal');
   fetchComments(idea.id);
 }
@@ -365,78 +414,83 @@ function toggleModalCommentForm(ideaId) {
   container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
 }
 function fetchComments(postId) {
-  const commentsRef = window.ref(window.database, "comments/" + postId);
-  window.onValue(commentsRef, (snapshot) => {
+  const cRef = window.ref(window.database, "comments/" + postId);
+  window.onValue(cRef, (snapshot) => {
     const data = snapshot.val();
-    let commentsHtml = "";
+    let commHtml = "";
     if (data) {
-      const commentsObj = {};
+      const obj = {};
       for (const key in data) {
         if (key !== "_next") {
-          commentsObj[key] = data[key];
+          obj[key] = data[key];
         }
       }
-      const commentsArray = Object.entries(commentsObj).map(([key, value]) => ({ id: key, ...value }));
-      commentsArray.sort((a, b) => {
+      const commArray = Object.entries(obj).map(([k, v]) => ({ id: k, ...v }));
+      // Sort comments in ascending order
+      commArray.sort((a, b) => {
         const numA = parseInt(a.id.split("_")[1] || "0");
         const numB = parseInt(b.id.split("_")[1] || "0");
         return numA - numB;
       });
-      commentsHtml = renderComments(commentsArray, "comments/" + postId);
+      commHtml = renderComments(commArray, "comments/" + postId);
       document.getElementById("fullIdeaCommentsCount").textContent = countComments(data);
     } else {
       document.getElementById("fullIdeaCommentsCount").textContent = 0;
     }
-    const commentsSection = document.getElementById('commentsSection');
-    if (commentsSection) {
-      commentsSection.innerHTML = commentsHtml;
+    const section = document.getElementById('commentsSection');
+    if (section) {
+      section.innerHTML = commHtml;
     }
   });
-}
-function addNewIdea(event) {
-  event.preventDefault();
-  const subject = document.getElementById('ideaSubject').value;
-  const description = document.getElementById('ideaDescription').value;
-  if (subject && description) {
-    const encodedSubject = encodeURIComponent(subject);
-    const newIdea = {
-      subject: subject,
-      description: description,
-      username: window.currentUserName || "DummyUser",
-      email: window.currentUserEmail || "dummyuser@example.com",
-      likes: 0,
-      created: Date.now()
-    };
-    window.get(window.ref(window.database, "ideas/" + encodedSubject))
-      .then((snapshot) => {
-        let key = encodedSubject;
-        if (snapshot.exists()) {
-          key = encodedSubject + "_" + Date.now();
-        }
-        return window.set(window.ref(window.database, "ideas/" + key), newIdea);
-      })
-      .then(() => {
-        hideModal('newIdeaModal');
-        document.getElementById('newIdeaForm').reset();
-      })
-      .catch((error) => {
-        console.error("Error posting idea:", error);
-      });
-  }
-  return false;
 }
 function scrollToComments(e) {
   e.stopPropagation();
   const modalContent = document.querySelector('#fullIdeaModal .modal-content');
   if (modalContent) {
-    const commentsSection = modalContent.querySelector('#commentsSection');
-    if (commentsSection) {
-      commentsSection.scrollIntoView({ behavior: 'smooth' });
+    const commSection = modalContent.querySelector('#commentsSection');
+    if (commSection) {
+      commSection.scrollIntoView({ behavior: 'smooth' });
     }
   }
 }
 
-// 8) Old spotlight tutorial (no Intro.js)
+// 9) Add new idea
+function addNewIdea(event) {
+  event.preventDefault();
+  const subject = document.getElementById('ideaSubject').value.trim();
+  const description = document.getElementById('ideaDescription').value.trim();
+  if(!subject || !description) return;
+
+  // Key is subject (URL-encoded). If it exists, we add a timestamp
+  const encodedSubject = encodeURIComponent(subject);
+  const newIdea = {
+    subject: subject,
+    description: description,
+    username: window.currentUserName || "DummyUser",
+    email: window.currentUserEmail || "dummyuser@example.com",
+    likes: 0,
+    created: Date.now()
+  };
+  window.get(window.ref(window.database, "ideas/" + encodedSubject))
+    .then((snapshot) => {
+      let key = encodedSubject;
+      if (snapshot.exists()) {
+        key = encodedSubject + "_" + Date.now();
+      }
+      return window.set(window.ref(window.database, "ideas/" + key), newIdea);
+    })
+    .then(() => {
+      hideModal('newIdeaModal');
+      document.getElementById('newIdeaForm').reset();
+    })
+    .catch((error) => {
+      console.error("Error posting idea:", error);
+    });
+
+  return false;
+}
+
+// 10) Old spotlight tutorial
 let tutorialSteps = [
   { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
   { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
@@ -463,6 +517,7 @@ function showTutorialStep() {
     return;
   }
   targetEl.classList.add('highlighted');
+
   let rect = targetEl.getBoundingClientRect();
   let tooltip = document.getElementById('tutorialTooltip');
   let tooltipText = document.getElementById('tutorialText');
@@ -471,6 +526,7 @@ function showTutorialStep() {
   let topPosition = rect.bottom + 10 + window.scrollY;
   let leftPosition = rect.left + window.scrollX;
 
+  // If first step, shift left a bit
   if (currentTutorialStep === 0) {
     leftPosition -= 150;
     if (leftPosition < window.scrollX + 40) {
@@ -491,7 +547,7 @@ function showTutorialStep() {
   if (topPosition + tooltipHeight > window.innerHeight + window.scrollY) {
     topPosition = rect.top - tooltipHeight - 10 + window.scrollY;
   }
-  // If it goes off right edge
+  // If off right edge
   if (leftPosition + tooltipWidth > window.innerWidth + window.scrollX) {
     let altLeft = rect.left - tooltipWidth - 10 + window.scrollX;
     if (altLeft > window.scrollX + 10) {
