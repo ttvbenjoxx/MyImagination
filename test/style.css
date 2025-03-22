@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #8a2be2; /* Purple */
-  --secondary-color: #4169e1; /* RoyalBlue */
+  --primary-color: #8a2be2;
+  --secondary-color: #4169e1;
   --text-color: #333;
   --background-color: #f4f4f4;
   --card-background: #ffffff;
@@ -11,13 +11,7 @@
   --transition: all 0.3s ease;
 }
 
-/* Focus outline for interactive elements */
-button:focus,
-input:focus,
-textarea:focus {
-  outline: 2px solid var(--primary-color);
-}
-
+/* Disable body scroll when modal is open */
 body.modal-open {
   overflow: hidden;
 }
@@ -34,7 +28,7 @@ body {
   color: var(--text-color);
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   min-height: 100vh;
-  padding-bottom: 50px; /* For disclaimer banner */
+  padding-bottom: 50px; /* Make room for the disclaimer banner */
 }
 
 .container {
@@ -44,7 +38,7 @@ body {
 }
 
 header {
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -75,6 +69,7 @@ header {
   align-items: center;
 }
 
+/* User Profile and Logout Dropdown */
 .user-profile {
   display: none;
   align-items: center;
@@ -90,7 +85,6 @@ header {
 .user-profile:hover {
   background: rgba(255,255,255,0.2);
 }
-
 .logout-dropdown {
   position: absolute;
   top: 100%;
@@ -148,6 +142,7 @@ header {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
+/* Ideas Grid – 6 columns per row */
 .ideas-grid {
   display: grid;
   grid-template-columns: repeat(6, 180px);
@@ -156,6 +151,7 @@ header {
   margin: 0 auto;
 }
 
+/* Fixed-size Idea Cards */
 .idea-card {
   background-color: var(--card-background);
   border-radius: var(--border-radius);
@@ -174,7 +170,6 @@ header {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
-
 .idea-subject {
   font-size: 14px;
   font-weight: 600;
@@ -184,6 +179,7 @@ header {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Scrollable description container */
 .idea-description-container {
   flex: 1;
   overflow-y: auto;
@@ -211,7 +207,6 @@ header {
 .more-button:hover {
   background: #7424c1;
 }
-
 .idea-meta {
   display: flex;
   justify-content: space-between;
@@ -251,6 +246,7 @@ header {
   100% { transform: scale(1); }
 }
 
+/* Modal Styles */
 .modal {
   display: none;
   position: fixed;
@@ -285,6 +281,7 @@ header {
   transform: translateY(0);
   opacity: 1;
 }
+/* Expanded modal body: vertical scroll if needed */
 .modal-body {
   overflow-y: auto;
   white-space: normal;
@@ -312,11 +309,6 @@ header {
 .close-modal:hover {
   color: #1a1a1a;
 }
-@keyframes modalFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 .form-group {
   margin-bottom: 12px;
 }
@@ -448,18 +440,24 @@ textarea.form-input {
 .reply-button:hover {
   background: rgba(138,43,226,0.1);
 }
+
+/* New: Author details smaller with extra spacing */
 .author-details {
   font-size: 0.8rem;
   margin-bottom: 12px;
 }
+
+/* Align modal header buttons horizontally */
 .header-right-content {
   display: flex;
   gap: 10px;
   align-items: center;
 }
+
+/* Info Icon – updated to move it higher above the banner */
 .info-icon {
   position: fixed;
-  bottom: 80px;
+  bottom: 80px; /* Increased from 20px to move it above the banner */
   left: 20px;
   background: white;
   border-radius: 50%;
@@ -470,7 +468,7 @@ textarea.form-input {
   justify-content: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: var(--transition);
-  z-index: 300;
+  z-index: 300; /* Ensures it appears above the disclaimer banner */
 }
 .info-icon:hover {
   transform: translateY(-2px);
@@ -482,6 +480,8 @@ textarea.form-input {
   color: var(--primary-color);
   line-height: 1;
 }
+
+/* Tabs (for Info Modal) */
 .tabs {
   display: flex;
   gap: 2px;
@@ -510,6 +510,49 @@ textarea.form-input {
 .tab-content.active {
   display: block;
 }
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Tutorial Overlay & Spotlight Tutorial */
+#tutorialOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  z-index: 3000;
+  display: none;
+}
+#tutorialTooltip {
+  position: absolute;
+  background: white;
+  padding: 16px;
+  border-radius: var(--border-radius);
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: var(--transition);
+}
+.highlighted {
+  position: relative;
+  z-index: 3100;
+  box-shadow: 0 0 0 4px var(--primary-color);
+  border-radius: var(--border-radius);
+}
+@media (max-width: 768px) {
+  .ideas-grid {
+    grid-template-columns: 1fr;
+  }
+  .modal-content {
+    padding: 24px;
+    margin: 20px;
+  }
+}
+
+/* Google Sign-In Button */
 .gsi-material-button {
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -604,6 +647,7 @@ textarea.form-input {
   opacity: 8%;
 }
 
+/* Comment Toggle Button */
 .comment-toggle-button {
   background: #f0f0f0;
   border: none;
@@ -618,13 +662,15 @@ textarea.form-input {
 .comment-toggle-button:hover {
   background: #e0e0e0;
 }
+
+/* Author Email Label */
 .idea-email {
   font-size: 12px;
   color: #666;
   margin-bottom: 12px;
 }
 
-/* Disclaimer Banner */
+/* Disclaimer Banner at the bottom */
 .disclaimer-banner {
   position: fixed;
   bottom: 0;
@@ -640,33 +686,4 @@ textarea.form-input {
 .disclaimer-banner a {
   color: var(--primary-color);
   text-decoration: underline;
-}
-
-/* Intro.js custom styling to match your theme */
-.introjs-tooltip, .introjs-fixedTooltip {
-  background-color: var(--primary-color) !important;
-  color: #fff !important;
-  border: 2px solid var(--secondary-color) !important;
-  border-radius: var(--border-radius) !important;
-}
-.introjs-arrow {
-  border-top-color: var(--primary-color) !important;
-}
-.introjs-button {
-  background: var(--secondary-color) !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: 4px !important;
-  padding: 6px 12px !important;
-}
-.introjs-tooltiptitle {
-  color: #fff !important;
-  font-weight: bold !important;
-}
-.introjs-helperNumberLayer {
-  background-color: #fff !important;
-  color: var(--primary-color) !important;
-}
-.introjs-bullets {
-  display: none !important;
 }
