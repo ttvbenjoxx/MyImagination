@@ -35,7 +35,6 @@ window.runTransaction = runTransaction;
 
 /**
  * Helper to sanitize an email into a valid RTDB key
- * If you already define this in main.js, you can remove it here.
  */
 function sanitizeEmail(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
@@ -43,15 +42,32 @@ function sanitizeEmail(email) {
 
 /**
  * 4) Monitor auth state:
- *    - If user is signed in, load their liked posts from userManagement
- *      so we know which posts are liked (prevent infinite re-likes).
+ *    - If user is signed in, check if they have "Consented" in userManagement
+ *      If not, forcibly sign them out & show the intro flow again.
  *    - If user is not signed in, show "Intro" or "Whoops!" based on localStorage.
  */
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (user) {
     // Hide "Whoops!" if open
     window.hideModal('signedOutModal');
 
+    // Check if user has "Consented"
+    const userKey = sanitizeEmail(user.email);
+    const userRef = ref(database, "userManagement/" + userKey);
+    const snapshot = await get(userRef);
+    const userData = snapshot.val() || {};
+
+    if (!userData.Consented) {
+      // If not consented, forcibly sign them out and show Intro flow again
+      // so they can do the 2-step (Intro -> Consent) approach
+      signOut(auth).then(() => {
+        // Show the Intro modal again
+        window.showModal('introModal');
+      });
+      return;
+    }
+
+    // If user has consented, proceed:
     // Show user info in top-right
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
@@ -62,7 +78,6 @@ onAuthStateChanged(auth, (user) => {
     window.currentUserId = user.uid;
 
     // Load user’s liked posts from userManagement
-    const userKey = sanitizeEmail(user.email);
     const userLikesRef = ref(database, "userManagement/" + userKey + "/Likes");
     onValue(userLikesRef, (snapshot) => {
       const data = snapshot.val() || {};
@@ -76,6 +91,7 @@ onAuthStateChanged(auth, (user) => {
     window.unlockSite();
     window.fetchIdeas();
     window.listenForCommentsCount();
+
   } else {
     // Not logged in
     if (!localStorage.getItem('visited')) {
@@ -89,35 +105,19 @@ onAuthStateChanged(auth, (user) => {
 });
 
 /**
- * 5) Called by "Continue with Google" in Intro/Whoops modals
+ * 5) Called by "Continue with Google" in the Consent Modal
  */
 window.firebaseLogin = function() {
   signInWithPopup(auth, provider)
     .then((result) => {
-      // Hide "Whoops!" if open
-      window.hideModal('signedOutModal');
+      // Once user is signed in, set "Consented: true" in userManagement
+      const user = result.user;
+      const userKey = sanitizeEmail(user.email);
 
-      // Show user info
-      document.getElementById('username').textContent = result.user.displayName;
-      document.getElementById('userProfile').style.display = 'flex';
+      // Mark that they've consented
+      set(ref(database, "userManagement/" + userKey + "/Consented"), true);
 
-      window.currentUserEmail = result.user.email;
-      window.currentUserName = result.user.displayName;
-      window.currentUserId = result.user.uid;
-
-      // Load user’s liked posts again
-      const userKey = sanitizeEmail(result.user.email);
-      const userLikesRef = ref(database, "userManagement/" + userKey + "/Likes");
-      onValue(userLikesRef, (snapshot) => {
-        const data = snapshot.val() || {};
-        window.userLikes = new Set(Object.keys(data));
-        window.renderIdeas();
-      });
-
-      // Unlock site & load data
-      window.unlockSite();
-      window.fetchIdeas();
-      window.listenForCommentsCount();
+      // The onAuthStateChanged will proceed to unlock site if success
     })
     .catch((error) => {
       console.error("Firebase login error:", error);
