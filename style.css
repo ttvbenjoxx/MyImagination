@@ -67,7 +67,6 @@ header {
   color: #fff;
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-
 .header-buttons {
   display: flex;
   gap: 16px;
@@ -646,12 +645,12 @@ textarea.form-input {
   opacity: 8%;
 }
 
-/* disclaimers modal bigger look */
+/* disclaimers + intro modal bigger look */
 .disclaimers-modal-content {
   width: 500px;
   max-width: 90%;
-  text-align: left;
   margin: 0 auto;
+  text-align: left;
 }
 .intro-modal-content {
   width: 500px;
@@ -663,7 +662,7 @@ textarea.form-input {
   line-height: 1.5;
 }
 
-/* disclaimer checkboxes spacing */
+/* disclaimers checkboxes spacing */
 .disclaimer-check {
   margin-right: 8px;
 }
