@@ -24,25 +24,24 @@ function unlockSite() {
   }
 }
 
-// Expose these globally so other scripts can call them
 window.showModal = showModal;
 window.hideModal = hideModal;
 window.unlockSite = unlockSite;
 window.siteLocked = true;
 
-// Show the Intro Modal on page load, if user not logged in
+// Show Intro Modal on page load
 window.addEventListener('load', () => {
   showModal('introModal');
 });
 
-// 1) Intro -> Disclaimers
+// Intro -> disclaimers
 const introNextBtn = document.getElementById('introNextBtn');
 introNextBtn.addEventListener('click', () => {
   hideModal('introModal');
   showModal('disclaimerModal');
 });
 
-// 2) Disclaimers -> Google Sign In
+// disclaimers -> google sign in
 const disclaimers = document.querySelectorAll('.disclaimer-check');
 const disclaimerSignInBtn = document.getElementById('disclaimerSignInBtn');
 
@@ -62,25 +61,27 @@ disclaimers.forEach(chk => {
 
 disclaimerSignInBtn.addEventListener('click', () => {
   if (!disclaimerSignInBtn.disabled) {
-    // Calls the global function from firebase.js
+    // calls the global function from firebase.js
     window.firebaseLogin();
   }
 });
 
-// 3) Logout dropdown
+// Logout dropdown
 document.getElementById('userProfile').addEventListener('click', function(e) {
   document.getElementById('logoutDropdown').classList.toggle('show');
   e.stopPropagation();
 });
+
 document.addEventListener('click', function() {
   document.getElementById('logoutDropdown').classList.remove('show');
 });
+
 document.getElementById('confirmLogout').addEventListener('click', function(e) {
   e.stopPropagation();
   logout();
 });
 
-// 4) Buttons for new idea, info, filter
+// Buttons for new idea, info, filter
 document.getElementById('newIdeaBtn').addEventListener('click', function(e) {
   e.stopPropagation();
   showModal('newIdeaModal');
@@ -104,7 +105,7 @@ document.getElementById('filterBtn').addEventListener('click', function(e) {
   renderIdeas();
 });
 
-// 5) Prevent outside-click for #introModal & #disclaimerModal only
+// Skip outside-click for #introModal & #disclaimerModal only
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', function(e) {
     if ((modal.id !== 'introModal' && modal.id !== 'disclaimerModal') && e.target === modal) {
@@ -113,11 +114,10 @@ document.querySelectorAll('.modal').forEach(modal => {
   });
 });
 
-// 6) Data: ideas, comments
+// Data: ideas, comments
 let ideas = [];
 window.commentsCount = {};
 
-// Count comments recursively
 function countComments(obj) {
   let count = 0;
   for (const key in obj) {
@@ -130,9 +130,8 @@ function countComments(obj) {
   return count;
 }
 
-// Listen for comments in DB, then update local counts
 function listenForCommentsCount() {
-  const commentsRoot = window.ref(window.database, "comments");
+  const commentsRoot = window.ref("comments");
   window.onValue(commentsRoot, (snapshot) => {
     const data = snapshot.val() || {};
     window.commentsCount = {};
@@ -143,9 +142,8 @@ function listenForCommentsCount() {
   });
 }
 
-// Fetch ideas from DB
 function fetchIdeas() {
-  const ideasRef = window.ref(window.database, "ideas");
+  const ideasRef = window.ref("ideas");
   window.onValue(ideasRef, (snapshot) => {
     const data = snapshot.val();
     ideas = [];
@@ -160,7 +158,7 @@ function fetchIdeas() {
   });
 }
 
-// 7) Render ideas
+// Render ideas
 window.userLikes = new Set();
 
 function renderIdeas() {
@@ -170,7 +168,6 @@ function renderIdeas() {
   if (filterBy === "popular") {
     sorted.sort((a, b) => (b.likes || 0) - (a.likes || 0));
   } else {
-    // "recent"
     sorted.sort((a, b) => (b.created || 0) - (a.created || 0));
   }
 
@@ -227,7 +224,6 @@ function renderIdeas() {
   }).join('');
 }
 
-// 8) Toggle like
 function toggleLike(ideaId, key) {
   if (window.siteLocked) {
     alert('Please unlock the site to like ideas.');
@@ -243,18 +239,18 @@ function toggleLike(ideaId, key) {
     // Unlike
     window.userLikes.delete(key);
     idea.likes = Math.max((idea.likes || 0) - 1, 0);
-    window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes });
+    window.update(window.ref("ideas/" + ideaId), { likes: idea.likes });
     window.set(
-      window.ref(window.database, "userManagement/" + window.sanitizeEmail(window.currentUserEmail) + "/Likes/" + key),
+      window.ref("userManagement/" + window.sanitizeEmail(window.currentUserEmail) + "/Likes/" + key),
       null
     );
   } else {
     // Like
     window.userLikes.add(key);
     idea.likes = (idea.likes || 0) + 1;
-    window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes });
+    window.update(window.ref("ideas/" + ideaId), { likes: idea.likes });
     window.set(
-      window.ref(window.database, "userManagement/" + window.sanitizeEmail(window.currentUserEmail) + "/Likes/" + key),
+      window.ref("userManagement/" + window.sanitizeEmail(window.currentUserEmail) + "/Likes/" + key),
       true
     );
   }
@@ -274,7 +270,7 @@ function toggleLike(ideaId, key) {
   }
 }
 
-// 9) Comments + replies
+// Comments + replies
 function renderComments(comments, parentPath) {
   parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
 
@@ -331,7 +327,7 @@ function addCommentModal(postId) {
   const content = textarea.value.trim();
   if (!content) return;
 
-  const nextRef = window.ref(window.database, "comments/" + postId + "/_next");
+  const nextRef = window.ref("comments/" + postId + "/_next");
   window.runTransaction(nextRef, (current) => {
     return (current === null ? 0 : current) + 1;
   }).then((result) => {
@@ -343,7 +339,7 @@ function addCommentModal(postId) {
       content: content,
       replies: {}
     };
-    return window.set(window.ref(window.database, "comments/" + postId + "/" + newCommentId), commentData);
+    return window.set(window.ref("comments/" + postId + "/" + newCommentId), commentData);
   }).then(() => {
     textarea.value = "";
     container.style.display = "none";
@@ -358,7 +354,7 @@ function addReply(parentPath, commentId) {
   const content = replyInput.value.trim();
   if (!content) return;
 
-  const nextRef = window.ref(window.database, parentPath + "/" + commentId + "/_next");
+  const nextRef = window.ref(parentPath + "/" + commentId + "/_next");
   window.runTransaction(nextRef, (current) => {
     return (current === null ? 0 : current) + 1;
   }).then((result) => {
@@ -369,7 +365,7 @@ function addReply(parentPath, commentId) {
       timestamp: new Date().toLocaleString(),
       content: content
     };
-    return window.set(window.ref(window.database, parentPath + "/" + commentId + "/replies/" + newReplyId), replyData);
+    return window.set(window.ref(parentPath + "/" + commentId + "/replies/" + newReplyId), replyData);
   }).then(() => {
     replyInput.value = "";
   }).catch((error) => {
@@ -377,7 +373,7 @@ function addReply(parentPath, commentId) {
   });
 }
 
-// 10) Show full idea modal
+// Full Idea Modal
 function showFullIdea(ideaId) {
   const idea = ideas.find(i => i.id === ideaId);
   if (!idea) return;
@@ -462,7 +458,7 @@ function toggleModalCommentForm(ideaId) {
 }
 
 function fetchComments(postId) {
-  const cRef = window.ref(window.database, "comments/" + postId);
+  const cRef = window.ref("comments/" + postId);
   window.onValue(cRef, (snapshot) => {
     const data = snapshot.val();
     let commHtml = "";
@@ -493,7 +489,6 @@ function fetchComments(postId) {
   });
 }
 
-// 11) Scroll to comments
 function scrollToComments(event) {
   event.stopPropagation();
   const commentsSec = document.getElementById('commentsSection');
@@ -502,7 +497,7 @@ function scrollToComments(event) {
   }
 }
 
-// 12) Add new idea
+// Add new idea
 function addNewIdea(event) {
   event.preventDefault();
   const subject = document.getElementById('ideaSubject').value.trim();
@@ -519,14 +514,13 @@ function addNewIdea(event) {
     created: Date.now()
   };
 
-  window.get(window.ref(window.database, "ideas/" + encodedSubject))
+  window.get(window.ref("ideas/" + encodedSubject))
     .then((snapshot) => {
       let key = encodedSubject;
       if (snapshot.exists()) {
-        // If this subject is already taken, add timestamp
         key = encodedSubject + "_" + Date.now();
       }
-      return window.set(window.ref(window.database, "ideas/" + key), newIdea);
+      return window.set(window.ref("ideas/" + key), newIdea);
     })
     .then(() => {
       hideModal('newIdeaModal');
@@ -538,7 +532,7 @@ function addNewIdea(event) {
   return false;
 }
 
-// 13) Old tutorial steps
+// Old tutorial steps
 let tutorialSteps = [
   { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
   { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
@@ -592,11 +586,9 @@ function showTutorialStep() {
   let tooltipWidth = tooltip.offsetWidth;
   tooltip.style.visibility = "visible";
 
-  // If it goes below screen
   if (topPosition + tooltipHeight > window.innerHeight + window.scrollY) {
     topPosition = rect.top - tooltipHeight - 10 + window.scrollY;
   }
-  // If it goes off right edge
   if (leftPosition + tooltipWidth > window.innerWidth + window.scrollX) {
     let altLeft = rect.left - tooltipWidth - 10 + window.scrollX;
     if (altLeft > window.scrollX + 10) {
