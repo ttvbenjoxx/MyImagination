@@ -1,13 +1,13 @@
 // firebase.js
 // MyImaginationBackup credentials + userManagement
-// disclaimers -> intro -> sign in flow handled in main.js
+// disclaimers -> intro -> sign in flow is in main.js
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getDatabase, ref, onValue, push, update, set, get, runTransaction } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4",
+  apiKey: "AIzaSyC...CeaXh8n4",
   authDomain: "myimaginationbackup.firebaseapp.com",
   databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com",
   projectId: "myimaginationbackup",
@@ -21,6 +21,7 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const database = getDatabase(app);
 
+// Expose references globally
 window.database = database;
 window.ref = ref;
 window.onValue = onValue;
@@ -30,11 +31,12 @@ window.set = set;
 window.get = get;
 window.runTransaction = runTransaction;
 
-function sanitizeEmail(email) {
+// Helper to sanitize email
+window.sanitizeEmail = function(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
-}
+};
 
-// If user is logged in, show their name, load ideas
+// Monitor auth state
 onAuthStateChanged(auth, (user) => {
   if (user) {
     document.getElementById('username').textContent = user.displayName;
@@ -44,9 +46,9 @@ onAuthStateChanged(auth, (user) => {
     window.currentUserName = user.displayName;
     window.currentUserId = user.uid;
 
-    const userKey = sanitizeEmail(user.email);
+    const userKey = window.sanitizeEmail(user.email);
 
-    // Ensure userManagement node is created with displayName
+    // Create userManagement node if missing
     set(ref(database, "userManagement/" + userKey + "/displayName"), user.displayName);
 
     // Load user’s liked posts
@@ -57,15 +59,16 @@ onAuthStateChanged(auth, (user) => {
       window.renderIdeas();
     });
 
+    // Unlock site & load data
     window.unlockSite();
     window.fetchIdeas();
     window.listenForCommentsCount();
   } else {
-    // Not logged in => main.js shows intro + disclaimers
+    // Not logged in => main.js shows disclaimers
   }
 });
 
-// Called when disclaimers are accepted -> user clicks "Continue with Google"
+// The function main.js calls
 window.firebaseLogin = function() {
   signInWithPopup(auth, provider)
     .then((result) => {
@@ -77,9 +80,8 @@ window.firebaseLogin = function() {
       window.currentUserName = user.displayName;
       window.currentUserId = user.uid;
 
-      const userKey = sanitizeEmail(user.email);
-
-      // Ensure userManagement node is created with displayName
+      const userKey = window.sanitizeEmail(user.email);
+      // Create userManagement node
       set(ref(database, "userManagement/" + userKey + "/displayName"), user.displayName);
 
       // Load user’s liked posts
@@ -90,7 +92,7 @@ window.firebaseLogin = function() {
         window.renderIdeas();
       });
 
-      // Now unlock site & load data
+      // Unlock site & load data
       window.unlockSite();
       window.fetchIdeas();
       window.listenForCommentsCount();
@@ -100,6 +102,7 @@ window.firebaseLogin = function() {
     });
 };
 
+// Logout
 window.logout = function() {
   signOut(auth)
     .then(() => {
