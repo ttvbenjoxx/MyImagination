@@ -19,6 +19,7 @@
       </button>
     </div>
     <div class="header-buttons">
+      <!-- User Profile (hidden until user logs in) -->
       <div id="userProfile" class="user-profile">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -30,7 +31,7 @@
           <button id="confirmLogout" class="logout-button">Sign Out</button>
         </div>
       </div>
-      <!-- Hidden until site unlocks -->
+      <!-- New Idea Button (hidden until site unlocks) -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -48,7 +49,7 @@
     <span class="info-text">i</span>
   </button>
 
-  <!-- (1) Intro Modal (no Google sign-in here) -->
+  <!-- (1) Intro Modal (no Google sign-in) -->
   <div id="introModal" class="modal">
     <div class="modal-content intro-modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
@@ -56,12 +57,12 @@
         This site was built by a student at FCHS to gather and share creative website ideas.
         Please read the disclaimers next.
       </p>
-      <!-- Next button (goes to disclaimers) -->
+      <!-- "Next" button goes to disclaimers modal -->
       <button id="introNextBtn" class="submit-button">Next</button>
     </div>
   </div>
 
-  <!-- (2) Disclaimer Modal (with checkboxes + Google sign-in) -->
+  <!-- (2) Disclaimer Modal (checkboxes + Google sign-in) -->
   <div id="disclaimerModal" class="modal">
     <div class="modal-content disclaimers-modal-content">
       <h2 class="modal-title">Before We Continue</h2>
@@ -85,7 +86,7 @@
             I agree not to post anything inappropriate.
           </label>
         </div>
-        <!-- Google Sign-In button, disabled until all disclaimers are checked -->
+        <!-- Google sign-in button, disabled until disclaimers are checked -->
         <button id="disclaimerSignInBtn" type="button" class="gsi-material-button" disabled>
           <div class="gsi-material-button-state"></div>
           <div class="gsi-material-button-content-wrapper">
@@ -94,20 +95,20 @@
                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85
                   C35.9 2.38 30.47 0 24 0
                   14.62 0 6.51 5.38 2.56 13.22
-                  l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                  l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
                 <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94
                   c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6
-                  c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                  c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
                 <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59
                   s.27-3.14.76-4.59l-7.98-6.19
                   C.92 16.46 0 20.12 0 24
                   c0 3.88.92 7.54 2.56 10.78
-                  l7.97-6.19z"/>
+                  l7.97-6.19z"></path>
                 <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81
                   l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3
                   -6.26 0-11.57-4.22-13.47-9.91
-                  l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                <path fill="none" d="M0 0h48v48H0z"/>
+                  l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+                <path fill="none" d="M0 0h48v48H0z"></path>
               </svg>
             </div>
             <span class="gsi-material-button-contents">Continue with Google</span>
@@ -183,7 +184,7 @@
     </div>
   </div>
 
-  <!-- Firebase (no whoops, disclaimers -> intro -> sign in) -->
+  <!-- Firebase (disclaimers -> intro -> sign in) -->
   <script type="module" src="firebase.js"></script>
   <!-- Main logic (modals, disclaimers, new idea, tutorial) -->
   <script src="main.js"></script>
