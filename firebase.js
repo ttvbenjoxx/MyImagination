@@ -1,6 +1,6 @@
 // firebase.js
 // MyImaginationBackup credentials + userManagement likes
-// No "Whoops!" modal. We'll rely on disclaimers -> intro -> sign in flow
+// No "Whoops!" modal. The disclaimers + intro flow is in main.js
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
@@ -34,14 +34,9 @@ function sanitizeEmail(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
 }
 
-// onAuthStateChanged
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Hide disclaimers & intro if open
-    window.hideModal('disclaimerModal');
-    window.hideModal('introModal');
-
-    // Show user info
+    // Already logged in -> unlock site, load user likes, fetch ideas
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
 
@@ -49,7 +44,6 @@ onAuthStateChanged(auth, (user) => {
     window.currentUserName = user.displayName;
     window.currentUserId = user.uid;
 
-    // Load user’s liked posts from userManagement
     const userKey = sanitizeEmail(user.email);
     const userLikesRef = ref(database, "userManagement/" + userKey + "/Likes");
     onValue(userLikesRef, (snapshot) => {
@@ -58,21 +52,18 @@ onAuthStateChanged(auth, (user) => {
       window.renderIdeas();
     });
 
-    // Unlock site & load data
     window.unlockSite();
     window.fetchIdeas();
     window.listenForCommentsCount();
   } else {
-    // Not logged in -> show disclaimers first
-    // main.js handles disclaimers logic. We'll show disclaimers.
-    window.showModal('disclaimerModal');
+    // Not logged in -> main.js shows intro & disclaimers
+    // We do nothing special here
   }
 });
 
 window.firebaseLogin = function() {
   signInWithPopup(auth, provider)
     .then((result) => {
-      window.hideModal('introModal');
       document.getElementById('username').textContent = result.user.displayName;
       document.getElementById('userProfile').style.display = 'flex';
 
