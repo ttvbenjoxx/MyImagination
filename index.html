@@ -50,11 +50,11 @@
     <span class="info-text">i</span>
   </button>
 
-  <!-- Intro Modal -->
+  <!-- Intro Modal (bigger) -->
   <div id="introModal" class="modal">
     <div class="modal-content intro-modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
-      <p style="font-size: 1.25rem; line-height: 1.5;">
+      <p>
         This site was built by a student at FCHS to gather and share creative website ideas.
         Please click "Next" to proceed to the disclaimers.
       </p>
@@ -62,7 +62,7 @@
     </div>
   </div>
 
-  <!-- Disclaimer Modal -->
+  <!-- Disclaimer Modal (bigger) -->
   <div id="disclaimerModal" class="modal">
     <div class="modal-content disclaimers-modal-content">
       <h2 class="modal-title">Before We Continue</h2>
@@ -185,15 +185,14 @@
     </div>
   </div>
 
-  <!-- 
-    1) Load Firebase v8 (older approach, no import/export)
-    2) Then load firebase.js (also no import/export)
-    3) Then load main.js
-  -->
+  <!-- 1) Firebase v8 (no import/export) -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <!-- 2) Our config + logic in older style -->
   <script src="firebase.js"></script>
+  <!-- 3) Main logic (modals, disclaimers, new idea, tutorial) -->
   <script src="main.js"></script>
 
   <!-- Disclaimer Banner -->
