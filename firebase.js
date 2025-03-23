@@ -1,6 +1,6 @@
 // firebase.js
-// MyImaginationBackup credentials + forced sign-in + userManagement "likes" loading
-// No "Whoops!" modal at all
+// MyImaginationBackup credentials + userManagement likes
+// No "Whoops!" modal. We'll rely on disclaimers -> intro -> sign in flow
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
@@ -34,10 +34,11 @@ function sanitizeEmail(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
 }
 
-// onAuthStateChanged: no "Whoops!" - if not signed in, show Intro always
+// onAuthStateChanged
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Hide Intro if open
+    // Hide disclaimers & intro if open
+    window.hideModal('disclaimerModal');
     window.hideModal('introModal');
 
     // Show user info
@@ -62,18 +63,16 @@ onAuthStateChanged(auth, (user) => {
     window.fetchIdeas();
     window.listenForCommentsCount();
   } else {
-    // Not logged in -> always show Intro
-    window.showModal('introModal');
+    // Not logged in -> show disclaimers first
+    // main.js handles disclaimers logic. We'll show disclaimers.
+    window.showModal('disclaimerModal');
   }
 });
 
-// Called by "Continue with Google" in the Intro modal
 window.firebaseLogin = function() {
   signInWithPopup(auth, provider)
     .then((result) => {
-      // Hide Intro if open
       window.hideModal('introModal');
-
       document.getElementById('username').textContent = result.user.displayName;
       document.getElementById('userProfile').style.display = 'flex';
 
@@ -98,7 +97,6 @@ window.firebaseLogin = function() {
     });
 };
 
-// Called when user confirms sign-out
 window.logout = function() {
   signOut(auth)
     .then(() => {
