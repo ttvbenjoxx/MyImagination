@@ -1,7 +1,7 @@
 // firebase.js (older approach, no import/export)
 
 var firebaseConfig = {
-  apiKey: "AIzaSyC...",
+  apiKey: "AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4",
   authDomain: "myimaginationbackup.firebaseapp.com",
   databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com",
   projectId: "myimaginationbackup",
@@ -18,7 +18,7 @@ var auth = firebase.auth();
 var provider = new firebase.auth.GoogleAuthProvider();
 var db = firebase.database();
 
-// 3) Expose references globally so main.js can use them
+// 3) Expose references globally
 window.database = db;
 window.ref = function(path) { return db.ref(path); };
 window.onValue = function(reference, callback) { reference.on('value', callback); };
@@ -81,7 +81,6 @@ window.firebaseLogin = function() {
       window.currentUserId = user.uid;
 
       var userKey = window.sanitizeEmail(user.email);
-
       // Create userManagement node
       window.set(window.ref("userManagement/" + userKey + "/displayName"), user.displayName);
 
