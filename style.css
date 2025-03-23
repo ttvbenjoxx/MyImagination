@@ -11,7 +11,7 @@
   --transition: all 0.3s ease;
 }
 
-/* Outline for keyboard focus */
+/* Focus outlines */
 button:focus,
 input:focus,
 textarea:focus {
@@ -61,7 +61,6 @@ header {
   align-items: center;
   gap: 16px;
 }
-
 .logo {
   font-size: 24px;
   font-weight: bold;
@@ -647,28 +646,29 @@ textarea.form-input {
   opacity: 8%;
 }
 
-/* Comment Toggle Button */
-.comment-toggle-button {
-  background: #f0f0f0;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  color: var(--primary-color);
-  font-size: 14px;
-  padding: 4px 8px;
-  margin-top: 8px;
-  display: inline-block;
+/* disclaimers modal bigger look */
+.disclaimers-modal-content {
+  width: 500px;
+  max-width: 90%;
+  text-align: left;
+  margin: 0 auto;
 }
-.comment-toggle-button:hover {
-  background: #e0e0e0;
-}
-.idea-email {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 12px;
+.intro-modal-content {
+  width: 500px;
+  max-width: 90%;
+  margin: 0 auto;
+  text-align: center;
+  padding: 24px;
+  font-size: 1.25rem;
+  line-height: 1.5;
 }
 
-/* Disclaimer Banner at the bottom */
+/* disclaimer checkboxes spacing */
+.disclaimer-check {
+  margin-right: 8px;
+}
+
+/* Disclaimer Banner */
 .disclaimer-banner {
   position: fixed;
   bottom: 0;
@@ -684,11 +684,4 @@ textarea.form-input {
 .disclaimer-banner a {
   color: var(--primary-color);
   text-decoration: underline;
-}
-
-/* Optional: bigger text class for the Intro modal */
-.intro-modal-content {
-  /* If you want even bigger, adjust here: */
-  font-size: 1.25rem;
-  line-height: 1.5;
 }
