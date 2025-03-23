@@ -1,13 +1,8 @@
 // firebase.js
-// MyImaginationBackup credentials + userManagement
-// disclaimers -> intro -> sign in flow is in main.js
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
-import { getDatabase, ref, onValue, push, update, set, get, runTransaction } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+// MyImaginationBackup credentials + userManagement (no import statements)
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC...CeaXh8n4",
+  apiKey: "AIzaSyC...",
   authDomain: "myimaginationbackup.firebaseapp.com",
   databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com",
   projectId: "myimaginationbackup",
@@ -16,28 +11,31 @@ const firebaseConfig = {
   appId: "1:780723525935:web:151a6d230b3705852a29da"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-const database = getDatabase(app);
+// Initialize Firebase the older way
+firebase.initializeApp(firebaseConfig);
 
-// Expose references globally
-window.database = database;
-window.ref = ref;
-window.onValue = onValue;
-window.push = push;
-window.update = update;
-window.set = set;
-window.get = get;
-window.runTransaction = runTransaction;
+// Access Firebase services
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+const db = firebase.database();
+
+// Expose references globally so main.js can use them
+window.database = db;
+window.ref = db.ref.bind(db);
+window.onValue = (reference, callback) => reference.on('value', callback);
+window.push = (reference, data) => reference.push(data);
+window.update = (reference, data) => reference.update(data);
+window.set = (reference, data) => reference.set(data);
+window.get = (reference) => reference.get();
+window.runTransaction = (reference, transactionUpdate) => reference.transaction(transactionUpdate);
 
 // Helper to sanitize email
 window.sanitizeEmail = function(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
 };
 
-// Monitor auth state
-onAuthStateChanged(auth, (user) => {
+// Watch for auth changes
+auth.onAuthStateChanged((user) => {
   if (user) {
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
@@ -47,13 +45,12 @@ onAuthStateChanged(auth, (user) => {
     window.currentUserId = user.uid;
 
     const userKey = window.sanitizeEmail(user.email);
-
-    // Create userManagement node if missing
-    set(ref(database, "userManagement/" + userKey + "/displayName"), user.displayName);
+    // Create or update userManagement node
+    window.set(window.ref("userManagement/" + userKey + "/displayName"), user.displayName);
 
     // Load user’s liked posts
-    const userLikesRef = ref(database, "userManagement/" + userKey + "/Likes");
-    onValue(userLikesRef, (snapshot) => {
+    const userLikesRef = window.ref("userManagement/" + userKey + "/Likes");
+    userLikesRef.on('value', (snapshot) => {
       const data = snapshot.val() || {};
       window.userLikes = new Set(Object.keys(data));
       window.renderIdeas();
@@ -68,9 +65,9 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// The function main.js calls
+// This is called by disclaimers -> Google sign in
 window.firebaseLogin = function() {
-  signInWithPopup(auth, provider)
+  auth.signInWithPopup(provider)
     .then((result) => {
       const user = result.user;
       document.getElementById('username').textContent = user.displayName;
@@ -82,11 +79,11 @@ window.firebaseLogin = function() {
 
       const userKey = window.sanitizeEmail(user.email);
       // Create userManagement node
-      set(ref(database, "userManagement/" + userKey + "/displayName"), user.displayName);
+      window.set(window.ref("userManagement/" + userKey + "/displayName"), user.displayName);
 
       // Load user’s liked posts
-      const userLikesRef = ref(database, "userManagement/" + userKey + "/Likes");
-      onValue(userLikesRef, (snapshot) => {
+      const userLikesRef = window.ref("userManagement/" + userKey + "/Likes");
+      userLikesRef.on('value', (snapshot) => {
         const data = snapshot.val() || {};
         window.userLikes = new Set(Object.keys(data));
         window.renderIdeas();
@@ -104,7 +101,7 @@ window.firebaseLogin = function() {
 
 // Logout
 window.logout = function() {
-  signOut(auth)
+  auth.signOut()
     .then(() => {
       location.reload();
     })
