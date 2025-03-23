@@ -1,5 +1,5 @@
 // firebase.js
-// MyImaginationBackup credentials + userManagement likes
+// MyImaginationBackup credentials + userManagement
 // disclaimers -> intro -> sign in flow handled in main.js
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
@@ -34,9 +34,9 @@ function sanitizeEmail(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
 }
 
+// If user is logged in, show their name, load ideas
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Already logged in -> unlock site, load user likes, fetch ideas
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
 
@@ -45,6 +45,11 @@ onAuthStateChanged(auth, (user) => {
     window.currentUserId = user.uid;
 
     const userKey = sanitizeEmail(user.email);
+
+    // Ensure userManagement node exists with displayName
+    set(ref(database, "userManagement/" + userKey + "/displayName"), user.displayName);
+
+    // Load user’s liked posts
     const userLikesRef = ref(database, "userManagement/" + userKey + "/Likes");
     onValue(userLikesRef, (snapshot) => {
       const data = snapshot.val() || {};
@@ -56,21 +61,28 @@ onAuthStateChanged(auth, (user) => {
     window.fetchIdeas();
     window.listenForCommentsCount();
   } else {
-    // Not logged in -> main.js will show the Intro -> disclaimers
+    // Not logged in => main.js shows intro + disclaimers
   }
 });
 
+// Called when disclaimers are accepted -> user clicks "Continue with Google"
 window.firebaseLogin = function() {
   signInWithPopup(auth, provider)
     .then((result) => {
-      document.getElementById('username').textContent = result.user.displayName;
+      const user = result.user;
+      document.getElementById('username').textContent = user.displayName;
       document.getElementById('userProfile').style.display = 'flex';
 
-      window.currentUserEmail = result.user.email;
-      window.currentUserName = result.user.displayName;
-      window.currentUserId = result.user.uid;
+      window.currentUserEmail = user.email;
+      window.currentUserName = user.displayName;
+      window.currentUserId = user.uid;
 
-      const userKey = sanitizeEmail(result.user.email);
+      const userKey = sanitizeEmail(user.email);
+
+      // Ensure userManagement node is created with displayName
+      set(ref(database, "userManagement/" + userKey + "/displayName"), user.displayName);
+
+      // Load user’s liked posts
       const userLikesRef = ref(database, "userManagement/" + userKey + "/Likes");
       onValue(userLikesRef, (snapshot) => {
         const data = snapshot.val() || {};
@@ -78,6 +90,7 @@ window.firebaseLogin = function() {
         window.renderIdeas();
       });
 
+      // Now unlock site & load data
       window.unlockSite();
       window.fetchIdeas();
       window.listenForCommentsCount();
