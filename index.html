@@ -91,6 +91,7 @@
           <div class="gsi-material-button-state"></div>
           <div class="gsi-material-button-content-wrapper">
             <div class="gsi-material-button-icon">
+              <!-- Google Icon -->
               <svg viewBox="0 0 48 48" style="display: block;">
                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85
                   C35.9 2.38 30.47 0 24 0
@@ -184,9 +185,11 @@
     </div>
   </div>
 
-  <!-- Firebase (disclaimers -> intro -> sign in) -->
-  <script type="module" src="firebase.js"></script>
-  <!-- Main logic (modals, disclaimers, new idea, tutorial) -->
+  <!-- 
+    IMPORTANT: remove type="module" so window.firebaseLogin 
+    is in global scope for main.js to see 
+  -->
+  <script src="firebase.js"></script>
   <script src="main.js"></script>
 
   <!-- Disclaimer Banner -->
