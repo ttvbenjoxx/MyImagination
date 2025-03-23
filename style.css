@@ -664,7 +664,46 @@ textarea.form-input {
   line-height: 1.6;
 }
 
-/* Disclaimer Banner */
+/* Full Idea Modal improvements */
+#fullIdeaModal .modal-content {
+  width: 700px;         /* Increase width for clarity */
+  max-width: 95%;
+  margin: 0 auto;
+  text-align: left;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+#fullIdeaModal .modal-header {
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#fullIdeaModal .modal-title {
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+}
+#fullIdeaModal .author-details {
+  font-size: 0.9rem;
+  color: #666;
+}
+#fullIdeaModal .header-right-content {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+#fullIdeaModal .header-right-content .action-button {
+  margin-left: 8px;
+}
+#fullIdeaModal .idea-description {
+  margin-bottom: 16px;
+  color: #333;
+}
+#fullIdeaModal .comments-section {
+  margin-top: 16px;
+}
+
 .disclaimer-banner {
   position: fixed;
   bottom: 0;
