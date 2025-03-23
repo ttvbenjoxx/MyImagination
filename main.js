@@ -61,7 +61,6 @@ disclaimers.forEach(function(chk) {
 
 disclaimerSignInBtn.addEventListener('click', function() {
   if (!disclaimerSignInBtn.disabled) {
-    // calls the global function from firebase.js
     window.firebaseLogin();
   }
 });
@@ -573,6 +572,7 @@ function showTutorialStep() {
   var topPosition = rect.bottom + 10 + window.scrollY;
   var leftPosition = rect.left + window.scrollX;
 
+  // Shift left for the first step
   if (currentTutorialStep === 0) {
     leftPosition -= 150;
     if (leftPosition < window.scrollX + 40) {
