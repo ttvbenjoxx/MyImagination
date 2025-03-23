@@ -1,7 +1,7 @@
 // firebase.js (older approach, no import/export)
 
 var firebaseConfig = {
-  apiKey: "AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4",
+  apiKey: "AIzaSyC...",
   authDomain: "myimaginationbackup.firebaseapp.com",
   databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com",
   projectId: "myimaginationbackup",
@@ -26,8 +26,8 @@ window.push = function(reference, data) { return reference.push(data); };
 window.update = function(reference, data) { return reference.update(data); };
 window.set = function(reference, data) { return reference.set(data); };
 window.get = function(reference) { return reference.once('value'); };
-window.runTransaction = function(reference, transactionUpdate) { 
-  return reference.transaction(transactionUpdate); 
+window.runTransaction = function(reference, transactionUpdate) {
+  return reference.transaction(transactionUpdate);
 };
 
 // 4) Sanitize email
@@ -47,7 +47,7 @@ auth.onAuthStateChanged(function(user) {
 
     var userKey = window.sanitizeEmail(user.email);
 
-    // Ensure userManagement node is created
+    // Create or update user node
     window.set(window.ref("userManagement/" + userKey + "/displayName"), user.displayName);
 
     // Load user’s liked posts
@@ -64,11 +64,11 @@ auth.onAuthStateChanged(function(user) {
     window.listenForCommentsCount();
 
   } else {
-    // Not logged in => disclaimers shown by main.js
+    // Not logged in => main.js decides whether disclaimers or whoops
   }
 });
 
-// 6) Called by disclaimers -> google sign in
+// This is called by disclaimers or whoops -> google sign in
 window.firebaseLogin = function() {
   auth.signInWithPopup(provider)
     .then(function(result) {
@@ -80,15 +80,11 @@ window.firebaseLogin = function() {
       window.currentUserName = user.displayName;
       window.currentUserId = user.uid;
 
-      var userKey = window.sanitizeEmail(user.email);
-
-      // Create userManagement node
-      window.set(window.ref("userManagement/" + userKey + "/displayName"), user.displayName);
-
-      // (NEW) Mark them as having consented
-      window.set(window.ref("userManagement/" + userKey + "/Consented"), true);
+      // Mark localStorage consented
+      localStorage.setItem('consented', 'true');
 
       // Load user’s liked posts
+      var userKey = window.sanitizeEmail(user.email);
       var userLikesRef = window.ref("userManagement/" + userKey + "/Likes");
       userLikesRef.on('value', function(snapshot) {
         var data = snapshot.val() || {};
