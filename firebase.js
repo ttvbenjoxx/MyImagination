@@ -1,7 +1,6 @@
-// firebase.js
-// MyImaginationBackup credentials + userManagement (no import statements)
+// firebase.js (older approach, no import/export)
 
-const firebaseConfig = {
+var firebaseConfig = {
   apiKey: "AIzaSyC...",
   authDomain: "myimaginationbackup.firebaseapp.com",
   databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com",
@@ -11,31 +10,33 @@ const firebaseConfig = {
   appId: "1:780723525935:web:151a6d230b3705852a29da"
 };
 
-// Initialize Firebase the older way
+// 1) Initialize
 firebase.initializeApp(firebaseConfig);
 
-// Access Firebase services
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
-const db = firebase.database();
+// 2) Access services
+var auth = firebase.auth();
+var provider = new firebase.auth.GoogleAuthProvider();
+var db = firebase.database();
 
-// Expose references globally so main.js can use them
+// 3) Expose references globally so main.js can use them
 window.database = db;
-window.ref = db.ref.bind(db);
-window.onValue = (reference, callback) => reference.on('value', callback);
-window.push = (reference, data) => reference.push(data);
-window.update = (reference, data) => reference.update(data);
-window.set = (reference, data) => reference.set(data);
-window.get = (reference) => reference.get();
-window.runTransaction = (reference, transactionUpdate) => reference.transaction(transactionUpdate);
+window.ref = function(path) { return db.ref(path); };
+window.onValue = function(reference, callback) { reference.on('value', callback); };
+window.push = function(reference, data) { return reference.push(data); };
+window.update = function(reference, data) { return reference.update(data); };
+window.set = function(reference, data) { return reference.set(data); };
+window.get = function(reference) { return reference.once('value'); };
+window.runTransaction = function(reference, transactionUpdate) { 
+  return reference.transaction(transactionUpdate); 
+};
 
-// Helper to sanitize email
+// 4) Sanitize email
 window.sanitizeEmail = function(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
 };
 
-// Watch for auth changes
-auth.onAuthStateChanged((user) => {
+// 5) Watch for auth changes
+auth.onAuthStateChanged(function(user) {
   if (user) {
     document.getElementById('username').textContent = user.displayName;
     document.getElementById('userProfile').style.display = 'flex';
@@ -44,14 +45,15 @@ auth.onAuthStateChanged((user) => {
     window.currentUserName = user.displayName;
     window.currentUserId = user.uid;
 
-    const userKey = window.sanitizeEmail(user.email);
-    // Create or update userManagement node
+    var userKey = window.sanitizeEmail(user.email);
+
+    // Ensure userManagement node is created
     window.set(window.ref("userManagement/" + userKey + "/displayName"), user.displayName);
 
     // Load user’s liked posts
-    const userLikesRef = window.ref("userManagement/" + userKey + "/Likes");
-    userLikesRef.on('value', (snapshot) => {
-      const data = snapshot.val() || {};
+    var userLikesRef = window.ref("userManagement/" + userKey + "/Likes");
+    userLikesRef.on('value', function(snapshot) {
+      var data = snapshot.val() || {};
       window.userLikes = new Set(Object.keys(data));
       window.renderIdeas();
     });
@@ -60,16 +62,17 @@ auth.onAuthStateChanged((user) => {
     window.unlockSite();
     window.fetchIdeas();
     window.listenForCommentsCount();
+
   } else {
-    // Not logged in => main.js shows disclaimers
+    // Not logged in => disclaimers shown by main.js
   }
 });
 
-// This is called by disclaimers -> Google sign in
+// 6) Called by disclaimers -> google sign in
 window.firebaseLogin = function() {
   auth.signInWithPopup(provider)
-    .then((result) => {
-      const user = result.user;
+    .then(function(result) {
+      var user = result.user;
       document.getElementById('username').textContent = user.displayName;
       document.getElementById('userProfile').style.display = 'flex';
 
@@ -77,14 +80,15 @@ window.firebaseLogin = function() {
       window.currentUserName = user.displayName;
       window.currentUserId = user.uid;
 
-      const userKey = window.sanitizeEmail(user.email);
+      var userKey = window.sanitizeEmail(user.email);
+
       // Create userManagement node
       window.set(window.ref("userManagement/" + userKey + "/displayName"), user.displayName);
 
       // Load user’s liked posts
-      const userLikesRef = window.ref("userManagement/" + userKey + "/Likes");
-      userLikesRef.on('value', (snapshot) => {
-        const data = snapshot.val() || {};
+      var userLikesRef = window.ref("userManagement/" + userKey + "/Likes");
+      userLikesRef.on('value', function(snapshot) {
+        var data = snapshot.val() || {};
         window.userLikes = new Set(Object.keys(data));
         window.renderIdeas();
       });
@@ -94,18 +98,18 @@ window.firebaseLogin = function() {
       window.fetchIdeas();
       window.listenForCommentsCount();
     })
-    .catch((error) => {
+    .catch(function(error) {
       console.error("Firebase login error:", error);
     });
 };
 
-// Logout
+// 7) Logout
 window.logout = function() {
   auth.signOut()
-    .then(() => {
+    .then(function() {
       location.reload();
     })
-    .catch((error) => {
+    .catch(function(error) {
       console.error("Firebase logout error:", error);
     });
 };
