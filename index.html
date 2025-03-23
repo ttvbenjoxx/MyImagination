@@ -45,24 +45,24 @@
     <div id="ideasGrid" class="ideas-grid"></div>
   </div>
 
+  <!-- Info Button -->
   <button id="infoBtn" class="info-icon" title="Info">
     <span class="info-text">i</span>
   </button>
 
-  <!-- (1) Intro Modal (no Google sign-in) -->
+  <!-- Intro Modal -->
   <div id="introModal" class="modal">
     <div class="modal-content intro-modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
       <p style="font-size: 1.25rem; line-height: 1.5;">
         This site was built by a student at FCHS to gather and share creative website ideas.
-        Please read the disclaimers next.
+        Please click "Next" to proceed to the disclaimers.
       </p>
-      <!-- "Next" button goes to disclaimers modal -->
       <button id="introNextBtn" class="submit-button">Next</button>
     </div>
   </div>
 
-  <!-- (2) Disclaimer Modal (checkboxes + Google sign-in) -->
+  <!-- Disclaimer Modal -->
   <div id="disclaimerModal" class="modal">
     <div class="modal-content disclaimers-modal-content">
       <h2 class="modal-title">Before We Continue</h2>
@@ -71,19 +71,19 @@
         <div class="form-group" style="margin-bottom: 8px;">
           <label>
             <input type="checkbox" class="disclaimer-check" />
-            I am a teacher or staff at FCHS.
+            I agree to the <strong>Terms of Service</strong>
           </label>
         </div>
         <div class="form-group" style="margin-bottom: 8px;">
           <label>
             <input type="checkbox" class="disclaimer-check" />
-            I understand this is an experimental site that may have issues.
+            I agree to the <strong>Privacy &amp; Cookie Policy</strong>
           </label>
         </div>
         <div class="form-group" style="margin-bottom: 8px;">
           <label>
             <input type="checkbox" class="disclaimer-check" />
-            I agree not to post anything inappropriate.
+            I understand MyImagination is not affiliated with FTCSC or any of its tools/websites
           </label>
         </div>
         <!-- Google sign-in button, disabled until disclaimers are checked -->
