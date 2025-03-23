@@ -1,5 +1,6 @@
 // main.js
-// 1) Show/hide modals, siteLocked
+// Disclaimers -> Intro -> Sign In -> Site unlock
+
 function showModal(modalId) {
   document.getElementById(modalId).classList.add('show');
   document.body.classList.add('modal-open');
@@ -13,6 +14,7 @@ function unlockSite() {
   document.getElementById('ideasGrid').classList.remove('locked');
   document.getElementById('filterBtn').style.display = 'flex';
   document.getElementById('newIdeaBtn').style.display = 'block';
+  hideModal('disclaimerModal');
   hideModal('introModal');
   // If first time, run tutorial
   if (!localStorage.getItem('visited')) {
@@ -24,6 +26,28 @@ window.showModal = showModal;
 window.hideModal = hideModal;
 window.unlockSite = unlockSite;
 window.siteLocked = true;
+
+// 1) disclaimers logic
+const disclaimers = document.querySelectorAll('.disclaimer-check');
+const disclaimerContinueBtn = document.getElementById('disclaimerContinueBtn');
+
+function updateDisclaimerButtonState() {
+  // If all disclaimers are checked, enable the button
+  let allChecked = true;
+  disclaimers.forEach(chk => {
+    if (!chk.checked) allChecked = false;
+  });
+  disclaimerContinueBtn.disabled = !allChecked;
+}
+// Listen for changes
+disclaimers.forEach(chk => {
+  chk.addEventListener('change', updateDisclaimerButtonState);
+});
+// When they click "Continue," hide disclaimers, show the Intro modal
+disclaimerContinueBtn.addEventListener('click', () => {
+  hideModal('disclaimerModal');
+  showModal('introModal');
+});
 
 // 2) Logout dropdown
 document.getElementById('userProfile').addEventListener('click', function(e) {
@@ -83,7 +107,6 @@ document.querySelectorAll('.tab').forEach(tab => {
 let ideas = [];
 window.commentsCount = {};
 
-// For counting comments recursively
 function countComments(obj) {
   let count = 0;
   for(const key in obj) {
@@ -95,7 +118,6 @@ function countComments(obj) {
   }
   return count;
 }
-
 function listenForCommentsCount() {
   const commentsRoot = window.ref(window.database, "comments");
   window.onValue(commentsRoot, (snapshot) => {
@@ -107,7 +129,6 @@ function listenForCommentsCount() {
     renderIdeas();
   });
 }
-
 function fetchIdeas() {
   const ideasRef = window.ref(window.database, "ideas");
   window.onValue(ideasRef, (snapshot) => {
@@ -124,7 +145,7 @@ function fetchIdeas() {
   });
 }
 
-// 6) Render ideas (with user management for likes)
+// 6) Render ideas
 window.userLikes = new Set();
 
 function renderIdeas() {
@@ -188,11 +209,9 @@ function renderIdeas() {
   }).join('');
 }
 
-// 7) Like logic referencing userManagement
 window.sanitizeEmail = function(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
 };
-
 function toggleLike(ideaId, key) {
   if (window.siteLocked) {
     alert('Please unlock the site to like ideas.');
@@ -209,7 +228,6 @@ function toggleLike(ideaId, key) {
     window.userLikes.delete(key);
     idea.likes = Math.max((idea.likes || 0) - 1, 0);
     window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes });
-    // Remove from userManagement
     window.set(
       window.ref(window.database, "userManagement/" + window.sanitizeEmail(window.currentUserEmail) + "/Likes/" + key),
       null
@@ -219,14 +237,12 @@ function toggleLike(ideaId, key) {
     window.userLikes.add(key);
     idea.likes = (idea.likes || 0) + 1;
     window.update(window.ref(window.database, "ideas/" + ideaId), { likes: idea.likes });
-    // Add to userManagement
     window.set(
       window.ref(window.database, "userManagement/" + window.sanitizeEmail(window.currentUserEmail) + "/Likes/" + key),
       true
     );
   }
   renderIdeas();
-  // If the full modal is open, update it too
   if (document.getElementById('fullIdeaModal').classList.contains('show') &&
       window.currentExpandedIdeaId === ideaId) {
     showFullIdea(ideaId);
@@ -240,7 +256,7 @@ function toggleLike(ideaId, key) {
   }
 }
 
-// 8) Comments + replies
+// Comments + replies
 function renderComments(comments, parentPath) {
   parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
   return comments.map(comment => {
@@ -277,7 +293,6 @@ function renderComments(comments, parentPath) {
     `;
   }).join('');
 }
-
 function showReplyForm(parentPath, commentId) {
   const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
   const form = document.getElementById(replyFormId);
@@ -285,7 +300,6 @@ function showReplyForm(parentPath, commentId) {
     form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
   }
 }
-
 function addCommentModal(postId) {
   const container = document.getElementById('modalCommentForm_' + postId);
   const textarea = container.querySelector('.comment-input');
@@ -312,7 +326,6 @@ function addCommentModal(postId) {
     console.error("Error posting comment:", error);
   });
 }
-
 function addReply(parentPath, commentId) {
   const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
   const replyInput = document.querySelector("#" + replyFormId + " .comment-input");
@@ -421,7 +434,6 @@ function toggleModalCommentForm(ideaId) {
   const container = document.getElementById('modalCommentForm_' + ideaId);
   container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
 }
-
 function fetchComments(postId) {
   const cRef = window.ref(window.database, "comments/" + postId);
   window.onValue(cRef, (snapshot) => {
@@ -452,7 +464,7 @@ function fetchComments(postId) {
   });
 }
 
-// 9) Add new idea
+// Add new idea
 function addNewIdea(event) {
   event.preventDefault();
   const subject = document.getElementById('ideaSubject').value.trim();
@@ -486,7 +498,7 @@ function addNewIdea(event) {
   return false;
 }
 
-// 10) Old spotlight tutorial
+// Old spotlight tutorial
 let tutorialSteps = [
   { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
   { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
@@ -499,7 +511,6 @@ function startTutorial() {
   currentTutorialStep = 0;
   showTutorialStep();
 }
-
 function showTutorialStep() {
   document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
   if (currentTutorialStep >= tutorialSteps.length) {
@@ -514,37 +525,28 @@ function showTutorialStep() {
     return;
   }
   targetEl.classList.add('highlighted');
-
   let rect = targetEl.getBoundingClientRect();
   let tooltip = document.getElementById('tutorialTooltip');
   let tooltipText = document.getElementById('tutorialText');
   tooltipText.textContent = step.text;
-
   let topPosition = rect.bottom + 10 + window.scrollY;
   let leftPosition = rect.left + window.scrollX;
-
-  // For the first step, shift left a bit
   if (currentTutorialStep === 0) {
     leftPosition -= 150;
     if (leftPosition < window.scrollX + 40) {
       leftPosition = window.scrollX + 40;
     }
   }
-
   tooltip.style.top = topPosition + "px";
   tooltip.style.left = leftPosition + "px";
   tooltip.style.visibility = "hidden";
   tooltip.style.display = "block";
-
   let tooltipHeight = tooltip.offsetHeight;
   let tooltipWidth = tooltip.offsetWidth;
   tooltip.style.visibility = "visible";
-
-  // If it goes below screen
   if (topPosition + tooltipHeight > window.innerHeight + window.scrollY) {
     topPosition = rect.top - tooltipHeight - 10 + window.scrollY;
   }
-  // If it goes off the right edge
   if (leftPosition + tooltipWidth > window.innerWidth + window.scrollX) {
     let altLeft = rect.left - tooltipWidth - 10 + window.scrollX;
     if (altLeft > window.scrollX + 10) {
@@ -560,21 +562,17 @@ function showTutorialStep() {
   tooltip.style.left = leftPosition + "px";
   showTutorialOverlay();
 }
-
 function nextTutorialStep() {
   currentTutorialStep++;
   showTutorialStep();
 }
-
 function showTutorialOverlay() {
   document.getElementById('tutorialOverlay').style.display = 'block';
 }
-
 function hideTutorial() {
   document.getElementById('tutorialOverlay').style.display = 'none';
   document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
 }
-
 document.getElementById('tutorialOverlay').addEventListener('click', function(e) {
   if (e.target === this) {
     hideTutorial();
