@@ -11,7 +11,13 @@
   --transition: all 0.3s ease;
 }
 
-/* Disable body scroll when modal is open */
+/* Outline for keyboard focus */
+button:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid var(--primary-color);
+}
+
 body.modal-open {
   overflow: hidden;
 }
@@ -28,7 +34,7 @@ body {
   color: var(--text-color);
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   min-height: 100vh;
-  padding-bottom: 50px; /* Make room for the disclaimer banner */
+  padding-bottom: 50px; /* For disclaimer banner */
 }
 
 .container {
@@ -38,7 +44,7 @@ body {
 }
 
 header {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255,255,255,0.1);
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -69,7 +75,6 @@ header {
   align-items: center;
 }
 
-/* User Profile and Logout Dropdown */
 .user-profile {
   display: none;
   align-items: center;
@@ -142,7 +147,6 @@ header {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* Ideas Grid – 6 columns per row */
 .ideas-grid {
   display: grid;
   grid-template-columns: repeat(6, 180px);
@@ -151,7 +155,6 @@ header {
   margin: 0 auto;
 }
 
-/* Fixed-size Idea Cards */
 .idea-card {
   background-color: var(--card-background);
   border-radius: var(--border-radius);
@@ -179,7 +182,6 @@ header {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* Scrollable description container */
 .idea-description-container {
   flex: 1;
   overflow-y: auto;
@@ -207,6 +209,7 @@ header {
 .more-button:hover {
   background: #7424c1;
 }
+
 .idea-meta {
   display: flex;
   justify-content: space-between;
@@ -246,7 +249,6 @@ header {
   100% { transform: scale(1); }
 }
 
-/* Modal Styles */
 .modal {
   display: none;
   position: fixed;
@@ -281,7 +283,6 @@ header {
   transform: translateY(0);
   opacity: 1;
 }
-/* Expanded modal body: vertical scroll if needed */
 .modal-body {
   overflow-y: auto;
   white-space: normal;
@@ -446,23 +447,19 @@ textarea.form-input {
   background: rgba(138,43,226,0.1);
 }
 
-/* New: Author details smaller with extra spacing */
 .author-details {
   font-size: 0.8rem;
   margin-bottom: 12px;
 }
-
-/* Align modal header buttons horizontally */
 .header-right-content {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-/* Info Icon – updated to move it higher above the banner */
 .info-icon {
   position: fixed;
-  bottom: 80px; /* Increased from 20px to move it above the banner */
+  bottom: 80px;
   left: 20px;
   background: white;
   border-radius: 50%;
@@ -473,7 +470,7 @@ textarea.form-input {
   justify-content: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: var(--transition);
-  z-index: 300; /* Ensures it appears above the disclaimer banner */
+  z-index: 300;
 }
 .info-icon:hover {
   transform: translateY(-2px);
@@ -485,8 +482,6 @@ textarea.form-input {
   color: var(--primary-color);
   line-height: 1;
 }
-
-/* Tabs (for Info Modal) */
 .tabs {
   display: flex;
   gap: 2px;
@@ -667,8 +662,6 @@ textarea.form-input {
 .comment-toggle-button:hover {
   background: #e0e0e0;
 }
-
-/* Author Email Label */
 .idea-email {
   font-size: 12px;
   color: #666;
@@ -691,4 +684,11 @@ textarea.form-input {
 .disclaimer-banner a {
   color: var(--primary-color);
   text-decoration: underline;
+}
+
+/* Optional: bigger text class for the Intro modal */
+.intro-modal-content {
+  /* If you want even bigger, adjust here: */
+  font-size: 1.25rem;
+  line-height: 1.5;
 }
