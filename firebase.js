@@ -1,6 +1,6 @@
 // firebase.js
 // MyImaginationBackup credentials + userManagement likes
-// No "Whoops!" modal. The disclaimers + intro flow is in main.js
+// No "Whoops!" modal. The disclaimers -> intro -> sign in flow is in main.js
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
@@ -56,8 +56,7 @@ onAuthStateChanged(auth, (user) => {
     window.fetchIdeas();
     window.listenForCommentsCount();
   } else {
-    // Not logged in -> main.js shows intro & disclaimers
-    // We do nothing special here
+    // Not logged in -> main.js will show the Intro -> disclaimers
   }
 });
 
