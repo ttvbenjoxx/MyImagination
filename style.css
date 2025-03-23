@@ -647,22 +647,21 @@ textarea.form-input {
 
 /* disclaimers + intro modal bigger look */
 .disclaimers-modal-content {
-  width: 500px;
-  max-width: 90%;
+  width: 700px;
+  max-width: 95%;
   margin: 0 auto;
   text-align: left;
+  font-size: 1.3rem;
+  line-height: 1.6;
 }
 .intro-modal-content {
-  width: 500px;
-  max-width: 90%;
+  width: 700px;
+  max-width: 95%;
   margin: 0 auto;
   text-align: center;
-  padding: 24px;
-  font-size: 1.25rem;
-  line-height: 1.5;
-}
-.disclaimer-check {
-  margin-right: 8px;
+  padding: 40px;
+  font-size: 1.4rem;
+  line-height: 1.6;
 }
 
 /* Disclaimer Banner */
