@@ -30,24 +30,24 @@ window.unlockSite = unlockSite;
 window.siteLocked = true;
 
 // Show Intro Modal on page load
-window.addEventListener('load', () => {
+window.addEventListener('load', function() {
   showModal('introModal');
 });
 
 // Intro -> disclaimers
-const introNextBtn = document.getElementById('introNextBtn');
-introNextBtn.addEventListener('click', () => {
+var introNextBtn = document.getElementById('introNextBtn');
+introNextBtn.addEventListener('click', function() {
   hideModal('introModal');
   showModal('disclaimerModal');
 });
 
 // disclaimers -> google sign in
-const disclaimers = document.querySelectorAll('.disclaimer-check');
-const disclaimerSignInBtn = document.getElementById('disclaimerSignInBtn');
+var disclaimers = document.querySelectorAll('.disclaimer-check');
+var disclaimerSignInBtn = document.getElementById('disclaimerSignInBtn');
 
 function updateDisclaimerSignInState() {
-  let allChecked = true;
-  disclaimers.forEach(chk => {
+  var allChecked = true;
+  disclaimers.forEach(function(chk) {
     if (!chk.checked) {
       allChecked = false;
     }
@@ -55,11 +55,11 @@ function updateDisclaimerSignInState() {
   disclaimerSignInBtn.disabled = !allChecked;
 }
 
-disclaimers.forEach(chk => {
+disclaimers.forEach(function(chk) {
   chk.addEventListener('change', updateDisclaimerSignInState);
 });
 
-disclaimerSignInBtn.addEventListener('click', () => {
+disclaimerSignInBtn.addEventListener('click', function() {
   if (!disclaimerSignInBtn.disabled) {
     // calls the global function from firebase.js
     window.firebaseLogin();
@@ -71,11 +71,9 @@ document.getElementById('userProfile').addEventListener('click', function(e) {
   document.getElementById('logoutDropdown').classList.toggle('show');
   e.stopPropagation();
 });
-
 document.addEventListener('click', function() {
   document.getElementById('logoutDropdown').classList.remove('show');
 });
-
 document.getElementById('confirmLogout').addEventListener('click', function(e) {
   e.stopPropagation();
   logout();
@@ -86,13 +84,12 @@ document.getElementById('newIdeaBtn').addEventListener('click', function(e) {
   e.stopPropagation();
   showModal('newIdeaModal');
 });
-
 document.getElementById('infoBtn').addEventListener('click', function(e) {
   e.stopPropagation();
   showModal('infoModal');
 });
 
-let filterBy = "recent";
+var filterBy = "recent";
 document.getElementById('filterBtn').addEventListener('click', function(e) {
   e.stopPropagation();
   if (filterBy === "recent") {
@@ -106,7 +103,7 @@ document.getElementById('filterBtn').addEventListener('click', function(e) {
 });
 
 // Skip outside-click for #introModal & #disclaimerModal only
-document.querySelectorAll('.modal').forEach(modal => {
+document.querySelectorAll('.modal').forEach(function(modal) {
   modal.addEventListener('click', function(e) {
     if ((modal.id !== 'introModal' && modal.id !== 'disclaimerModal') && e.target === modal) {
       hideModal(modal.id);
@@ -115,12 +112,12 @@ document.querySelectorAll('.modal').forEach(modal => {
 });
 
 // Data: ideas, comments
-let ideas = [];
+var ideas = [];
 window.commentsCount = {};
 
 function countComments(obj) {
-  let count = 0;
-  for (const key in obj) {
+  var count = 0;
+  for (var key in obj) {
     if (key === "_next") continue;
     count++;
     if (obj[key].replies) {
@@ -131,11 +128,11 @@ function countComments(obj) {
 }
 
 function listenForCommentsCount() {
-  const commentsRoot = window.ref("comments");
-  window.onValue(commentsRoot, (snapshot) => {
-    const data = snapshot.val() || {};
+  var commentsRoot = window.ref("comments");
+  window.onValue(commentsRoot, function(snapshot) {
+    var data = snapshot.val() || {};
     window.commentsCount = {};
-    for (const postId in data) {
+    for (var postId in data) {
       window.commentsCount[postId] = countComments(data[postId]);
     }
     renderIdeas();
@@ -143,13 +140,13 @@ function listenForCommentsCount() {
 }
 
 function fetchIdeas() {
-  const ideasRef = window.ref("ideas");
-  window.onValue(ideasRef, (snapshot) => {
-    const data = snapshot.val();
+  var ideasRef = window.ref("ideas");
+  window.onValue(ideasRef, function(snapshot) {
+    var data = snapshot.val();
     ideas = [];
     if (data) {
-      for (const key in data) {
-        const idea = data[key];
+      for (var key in data) {
+        var idea = data[key];
         idea.id = key;
         ideas.push(idea);
       }
@@ -158,21 +155,20 @@ function fetchIdeas() {
   });
 }
 
-// Render ideas
 window.userLikes = new Set();
 
 function renderIdeas() {
-  const ideasGrid = document.getElementById('ideasGrid');
-  let sorted = ideas.slice();
+  var ideasGrid = document.getElementById('ideasGrid');
+  var sorted = ideas.slice();
 
   if (filterBy === "popular") {
-    sorted.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+    sorted.sort(function(a, b) { return (b.likes || 0) - (a.likes || 0); });
   } else {
-    sorted.sort((a, b) => (b.created || 0) - (a.created || 0));
+    sorted.sort(function(a, b) { return (b.created || 0) - (a.created || 0); });
   }
 
-  ideasGrid.innerHTML = sorted.map(idea => {
-    const commCount = window.commentsCount[idea.id] || 0;
+  ideasGrid.innerHTML = sorted.map(function(idea) {
+    var commCount = window.commentsCount[idea.id] || 0;
     return `
       <div class="idea-card" onclick="showFullIdea('${idea.id}')">
         <div class="idea-subject">${idea.subject}</div>
@@ -229,10 +225,10 @@ function toggleLike(ideaId, key) {
     alert('Please unlock the site to like ideas.');
     return;
   }
-  const uid = window.currentUserId;
+  var uid = window.currentUserId;
   if (!uid) return;
 
-  const idea = ideas.find(i => i.id === ideaId);
+  var idea = ideas.find(function(i) { return i.id === ideaId; });
   if (!idea) return;
 
   if (window.userLikes.has(key)) {
@@ -260,10 +256,10 @@ function toggleLike(ideaId, key) {
   if (document.getElementById('fullIdeaModal').classList.contains('show') &&
       window.currentExpandedIdeaId === ideaId) {
     showFullIdea(ideaId);
-    const heartIcon = document.querySelector('#fullIdeaModal .action-button.liked svg');
+    var heartIcon = document.querySelector('#fullIdeaModal .action-button.liked svg');
     if (heartIcon) {
       heartIcon.style.animation = 'none';
-      setTimeout(() => {
+      setTimeout(function() {
         heartIcon.style.animation = 'heartPop 0.3s ease';
       }, 10);
     }
@@ -274,15 +270,18 @@ function toggleLike(ideaId, key) {
 function renderComments(comments, parentPath) {
   parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
 
-  return comments.map(comment => {
-    const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
-    let repliesHtml = "";
+  return comments.map(function(comment) {
+    var replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
+    var repliesHtml = "";
 
     if (comment.replies) {
-      const repliesArray = Object.entries(comment.replies).map(([k,v]) => ({ id: k, ...v }));
-      repliesArray.sort((a,b) => {
-        const numA = parseInt(a.id.split("_")[1] || "0");
-        const numB = parseInt(b.id.split("_")[1] || "0");
+      var repliesArray = Object.entries(comment.replies).map(function(entry) {
+        var k = entry[0], v = entry[1];
+        return { id: k, ...v };
+      });
+      repliesArray.sort(function(a, b) {
+        var numA = parseInt(a.id.split("_")[1] || "0");
+        var numB = parseInt(b.id.split("_")[1] || "0");
         return numA - numB;
       });
       repliesHtml = `<div class="comment-replies">
@@ -314,72 +313,72 @@ function renderComments(comments, parentPath) {
 }
 
 function showReplyForm(parentPath, commentId) {
-  const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
-  const form = document.getElementById(replyFormId);
+  var replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
+  var form = document.getElementById(replyFormId);
   if (form) {
     form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
   }
 }
 
 function addCommentModal(postId) {
-  const container = document.getElementById('modalCommentForm_' + postId);
-  const textarea = container.querySelector('.comment-input');
-  const content = textarea.value.trim();
+  var container = document.getElementById('modalCommentForm_' + postId);
+  var textarea = container.querySelector('.comment-input');
+  var content = textarea.value.trim();
   if (!content) return;
 
-  const nextRef = window.ref("comments/" + postId + "/_next");
-  window.runTransaction(nextRef, (current) => {
+  var nextRef = window.ref("comments/" + postId + "/_next");
+  window.runTransaction(nextRef, function(current) {
     return (current === null ? 0 : current) + 1;
-  }).then((result) => {
-    const commentNumber = result.snapshot.val();
-    const newCommentId = "Comment_" + commentNumber;
-    const commentData = {
+  }).then(function(result) {
+    var commentNumber = result.snapshot.val();
+    var newCommentId = "Comment_" + commentNumber;
+    var commentData = {
       commenter: window.currentUserName || "DummyUser",
       timestamp: new Date().toLocaleString(),
       content: content,
       replies: {}
     };
     return window.set(window.ref("comments/" + postId + "/" + newCommentId), commentData);
-  }).then(() => {
+  }).then(function() {
     textarea.value = "";
     container.style.display = "none";
-  }).catch((error) => {
+  }).catch(function(error) {
     console.error("Error posting comment:", error);
   });
 }
 
 function addReply(parentPath, commentId) {
-  const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
-  const replyInput = document.querySelector("#" + replyFormId + " .comment-input");
-  const content = replyInput.value.trim();
+  var replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
+  var replyInput = document.querySelector("#" + replyFormId + " .comment-input");
+  var content = replyInput.value.trim();
   if (!content) return;
 
-  const nextRef = window.ref(parentPath + "/" + commentId + "/_next");
-  window.runTransaction(nextRef, (current) => {
+  var nextRef = window.ref(parentPath + "/" + commentId + "/_next");
+  window.runTransaction(nextRef, function(current) {
     return (current === null ? 0 : current) + 1;
-  }).then((result) => {
-    const replyNumber = result.snapshot.val();
-    const newReplyId = "Reply_" + replyNumber;
-    const replyData = {
+  }).then(function(result) {
+    var replyNumber = result.snapshot.val();
+    var newReplyId = "Reply_" + replyNumber;
+    var replyData = {
       replier: window.currentUserName || "DummyUser",
       timestamp: new Date().toLocaleString(),
       content: content
     };
     return window.set(window.ref(parentPath + "/" + commentId + "/replies/" + newReplyId), replyData);
-  }).then(() => {
+  }).then(function() {
     replyInput.value = "";
-  }).catch((error) => {
+  }).catch(function(error) {
     console.error("Error posting reply:", error);
   });
 }
 
 // Full Idea Modal
 function showFullIdea(ideaId) {
-  const idea = ideas.find(i => i.id === ideaId);
+  var idea = ideas.find(function(i) { return i.id === ideaId; });
   if (!idea) return;
   window.currentExpandedIdeaId = ideaId;
 
-  const modalHeaderHTML = `
+  var modalHeaderHTML = `
 <div class="header-left-content">
   <h2 class="modal-title" id="fullIdeaTitle">${idea.subject}</h2>
   <div class="author-details">
@@ -416,7 +415,7 @@ function showFullIdea(ideaId) {
   <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
 </div>`;
 
-  const commentToggleMarkup = `
+  var commentToggleMarkup = `
 <button class="comment-toggle-button" onclick="toggleModalCommentForm('${idea.id}'); event.stopPropagation();">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
        style="vertical-align: middle;">
@@ -432,7 +431,7 @@ function showFullIdea(ideaId) {
   </div>
 </div>`;
 
-  const modalBodyHTML = `
+  var modalBodyHTML = `
 <div class="idea-description">${idea.description}</div>
 <h3 style="margin: 16px 0 8px 0;">Comments</h3>
 ${commentToggleMarkup}
@@ -453,27 +452,30 @@ ${commentToggleMarkup}
 }
 
 function toggleModalCommentForm(ideaId) {
-  const container = document.getElementById('modalCommentForm_' + ideaId);
+  var container = document.getElementById('modalCommentForm_' + ideaId);
   container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
 }
 
 function fetchComments(postId) {
-  const cRef = window.ref("comments/" + postId);
-  window.onValue(cRef, (snapshot) => {
-    const data = snapshot.val();
-    let commHtml = "";
+  var cRef = window.ref("comments/" + postId);
+  window.onValue(cRef, function(snapshot) {
+    var data = snapshot.val();
+    var commHtml = "";
 
     if (data) {
-      const obj = {};
-      for (const key in data) {
+      var obj = {};
+      for (var key in data) {
         if (key !== "_next") {
           obj[key] = data[key];
         }
       }
-      const commArray = Object.entries(obj).map(([k,v]) => ({ id: k, ...v }));
-      commArray.sort((a,b) => {
-        const numA = parseInt(a.id.split("_")[1] || "0");
-        const numB = parseInt(b.id.split("_")[1] || "0");
+      var commArray = Object.entries(obj).map(function(entry) {
+        var k = entry[0], v = entry[1];
+        return { id: k, ...v };
+      });
+      commArray.sort(function(a, b) {
+        var numA = parseInt(a.id.split("_")[1] || "0");
+        var numB = parseInt(b.id.split("_")[1] || "0");
         return numA - numB;
       });
       commHtml = renderComments(commArray, "comments/" + postId);
@@ -482,7 +484,7 @@ function fetchComments(postId) {
       document.getElementById("fullIdeaCommentsCount").textContent = 0;
     }
 
-    const section = document.getElementById('commentsSection');
+    var section = document.getElementById('commentsSection');
     if (section) {
       section.innerHTML = commHtml;
     }
@@ -491,7 +493,7 @@ function fetchComments(postId) {
 
 function scrollToComments(event) {
   event.stopPropagation();
-  const commentsSec = document.getElementById('commentsSection');
+  var commentsSec = document.getElementById('commentsSection');
   if (commentsSec) {
     commentsSec.scrollIntoView({ behavior: 'smooth' });
   }
@@ -500,14 +502,14 @@ function scrollToComments(event) {
 // Add new idea
 function addNewIdea(event) {
   event.preventDefault();
-  const subject = document.getElementById('ideaSubject').value.trim();
-  const description = document.getElementById('ideaDescription').value.trim();
+  var subject = document.getElementById('ideaSubject').value.trim();
+  var description = document.getElementById('ideaDescription').value.trim();
   if (!subject || !description) return;
 
-  const encodedSubject = encodeURIComponent(subject);
-  const newIdea = {
-    subject,
-    description,
+  var encodedSubject = encodeURIComponent(subject);
+  var newIdea = {
+    subject: subject,
+    description: description,
     username: window.currentUserName || "DummyUser",
     email: window.currentUserEmail || "dummyuser@example.com",
     likes: 0,
@@ -515,31 +517,31 @@ function addNewIdea(event) {
   };
 
   window.get(window.ref("ideas/" + encodedSubject))
-    .then((snapshot) => {
-      let key = encodedSubject;
+    .then(function(snapshot) {
+      var key = encodedSubject;
       if (snapshot.exists()) {
         key = encodedSubject + "_" + Date.now();
       }
       return window.set(window.ref("ideas/" + key), newIdea);
     })
-    .then(() => {
+    .then(function() {
       hideModal('newIdeaModal');
       document.getElementById('newIdeaForm').reset();
     })
-    .catch((error) => {
+    .catch(function(error) {
       console.error("Error posting idea:", error);
     });
   return false;
 }
 
-// Old tutorial steps
-let tutorialSteps = [
+// Old tutorial
+var tutorialSteps = [
   { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
   { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
   { target: "#infoBtn", text: "Click this info icon to learn more about the site." },
   { target: "#userProfile", text: "Click your name to sign out." }
 ];
-let currentTutorialStep = 0;
+var currentTutorialStep = 0;
 
 function startTutorial() {
   currentTutorialStep = 0;
@@ -547,13 +549,15 @@ function startTutorial() {
 }
 
 function showTutorialStep() {
-  document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
+  document.querySelectorAll('.highlighted').forEach(function(el) {
+    el.classList.remove('highlighted');
+  });
   if (currentTutorialStep >= tutorialSteps.length) {
     hideTutorial();
     return;
   }
-  let step = tutorialSteps[currentTutorialStep];
-  let targetEl = document.querySelector(step.target);
+  var step = tutorialSteps[currentTutorialStep];
+  var targetEl = document.querySelector(step.target);
   if (!targetEl) {
     currentTutorialStep++;
     showTutorialStep();
@@ -561,15 +565,14 @@ function showTutorialStep() {
   }
   targetEl.classList.add('highlighted');
 
-  let rect = targetEl.getBoundingClientRect();
-  let tooltip = document.getElementById('tutorialTooltip');
-  let tooltipText = document.getElementById('tutorialText');
+  var rect = targetEl.getBoundingClientRect();
+  var tooltip = document.getElementById('tutorialTooltip');
+  var tooltipText = document.getElementById('tutorialText');
   tooltipText.textContent = step.text;
 
-  let topPosition = rect.bottom + 10 + window.scrollY;
-  let leftPosition = rect.left + window.scrollX;
+  var topPosition = rect.bottom + 10 + window.scrollY;
+  var leftPosition = rect.left + window.scrollX;
 
-  // Shift left for the first step
   if (currentTutorialStep === 0) {
     leftPosition -= 150;
     if (leftPosition < window.scrollX + 40) {
@@ -582,15 +585,15 @@ function showTutorialStep() {
   tooltip.style.visibility = "hidden";
   tooltip.style.display = "block";
 
-  let tooltipHeight = tooltip.offsetHeight;
-  let tooltipWidth = tooltip.offsetWidth;
+  var tooltipHeight = tooltip.offsetHeight;
+  var tooltipWidth = tooltip.offsetWidth;
   tooltip.style.visibility = "visible";
 
   if (topPosition + tooltipHeight > window.innerHeight + window.scrollY) {
     topPosition = rect.top - tooltipHeight - 10 + window.scrollY;
   }
   if (leftPosition + tooltipWidth > window.innerWidth + window.scrollX) {
-    let altLeft = rect.left - tooltipWidth - 10 + window.scrollX;
+    var altLeft = rect.left - tooltipWidth - 10 + window.scrollX;
     if (altLeft > window.scrollX + 10) {
       leftPosition = altLeft;
     } else {
@@ -600,7 +603,6 @@ function showTutorialStep() {
   if (leftPosition < window.scrollX + 10) {
     leftPosition = window.scrollX + 10;
   }
-
   tooltip.style.top = topPosition + "px";
   tooltip.style.left = leftPosition + "px";
   showTutorialOverlay();
@@ -617,7 +619,9 @@ function showTutorialOverlay() {
 
 function hideTutorial() {
   document.getElementById('tutorialOverlay').style.display = 'none';
-  document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
+  document.querySelectorAll('.highlighted').forEach(function(el) {
+    el.classList.remove('highlighted');
+  });
 }
 
 document.getElementById('tutorialOverlay').addEventListener('click', function(e) {
