@@ -81,8 +81,12 @@ window.firebaseLogin = function() {
       window.currentUserId = user.uid;
 
       var userKey = window.sanitizeEmail(user.email);
+
       // Create userManagement node
       window.set(window.ref("userManagement/" + userKey + "/displayName"), user.displayName);
+
+      // (NEW) Mark them as having consented
+      window.set(window.ref("userManagement/" + userKey + "/Consented"), true);
 
       // Load user’s liked posts
       var userLikesRef = window.ref("userManagement/" + userKey + "/Likes");
