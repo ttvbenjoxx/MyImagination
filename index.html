@@ -51,47 +51,58 @@
   </button>
 
   <!-- Intro Modal (Welcome) -->
+  <!-- This now shows a single "Continue" button, leading to the Consent Modal -->
   <div id="introModal" class="modal">
     <div class="modal-content">
       <h2 class="modal-title">Welcome to MyImagination!</h2>
-      <p>This site was built by a student at FCHS to gather and share creative website ideas. Please continue with Google to unlock full access to the site.</p>
-      <button class="gsi-material-button" onclick="firebaseLogin()">
-        <div class="gsi-material-button-state"></div>
-        <div class="gsi-material-button-content-wrapper">
-          <div class="gsi-material-button-icon">
-            <!-- Google Icon -->
-            <svg viewBox="0 0 48 48" style="display: block;">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85
-                C35.9 2.38 30.47 0 24 0
-                14.62 0 6.51 5.38 2.56 13.22
-                l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94
-                c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6
-                c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59
-                s.27-3.14.76-4.59l-7.98-6.19
-                C.92 16.46 0 20.12 0 24
-                c0 3.88.92 7.54 2.56 10.78
-                l7.97-6.19z"/>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81
-                l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3
-                -6.26 0-11.57-4.22-13.47-9.91
-                l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-              <path fill="none" d="M0 0h48v48H0z"/>
-            </svg>
-          </div>
-          <span class="gsi-material-button-contents">Continue with Google</span>
-        </div>
+      <p>
+        This site was built by a student at FCHS to gather and share creative
+        website ideas. Please click "Continue" to proceed.
+      </p>
+      <!-- Purple "Continue" button -->
+      <button class="submit-button" id="proceedIntroButton" style="background-color: #8a2be2;">
+        Continue
       </button>
     </div>
   </div>
 
   <!-- Signed Out Modal -->
+  <!-- No longer directly shows "Continue with Google" - replaced with a "Continue" button that leads to Consent Modal -->
   <div id="signedOutModal" class="modal">
     <div class="modal-content">
       <h2 class="modal-title">Whoops!</h2>
       <p>Looks like you've been signed out. Let's get you back on track.</p>
-      <button class="gsi-material-button" onclick="firebaseLogin()">
+      <!-- Instead of Google sign in directly, we lead them to the Consent flow again -->
+      <button class="submit-button" id="whoopsContinueButton" style="background-color: #8a2be2;">
+        Continue
+      </button>
+    </div>
+  </div>
+
+  <!-- Consent (Agreement) Modal -->
+  <!-- Step 2: Three checkboxes + "Continue with Google" (disabled until all are checked) -->
+  <div id="consentModal" class="modal">
+    <div class="modal-content">
+      <h2 class="modal-title">Before we Continue</h2>
+      <p>
+        You must agree to the following items before creating your MyImagination account:
+      </p>
+      <div style="margin: 1em 0;">
+        <label style="display: block; margin-bottom: 8px;">
+          <input type="checkbox" id="agreeTOS" />
+          I agree to the <a href="policies/#termsPanel" target="_blank">Terms of Service</a>
+        </label>
+        <label style="display: block; margin-bottom: 8px;">
+          <input type="checkbox" id="agreePrivacy" />
+          I agree to the <a href="policies/#privacyPanel" target="_blank">Privacy &amp; Cookie Policy</a>
+        </label>
+        <label style="display: block; margin-bottom: 8px;">
+          <input type="checkbox" id="agreeDisclaimer" />
+          I understand MyImagination is not affiliated with FTCSC or any of its tools/websites
+        </label>
+      </div>
+      <!-- "Continue with Google" button, disabled until all boxes are checked -->
+      <button class="gsi-material-button" id="finalContinueButton" disabled>
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
           <div class="gsi-material-button-icon">
@@ -163,7 +174,6 @@
         <p><strong>How to Use:</strong> Unlock the site by clicking "Continue with Google", then share your ideas using the + button. Use the filter button to toggle sorting between most popular and most recent.</p>
         <p><strong>The purpose of this Site:</strong> This site is meant for Teachers to share their ideas for websites. If there is a website you would use as a teacher or just for fun, please post it. All ideas matter!</p>
 
-        <!-- Start tutorial button closes info modal and calls startTutorial() -->
         <button class="submit-button" onclick="hideModal('infoModal'); startTutorial();">
           Start Tutorial
         </button>
