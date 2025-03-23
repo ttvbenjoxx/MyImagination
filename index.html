@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MyImagination Forum</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <!-- Link to external CSS -->
+  <!-- Our site CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -19,7 +19,6 @@
       </button>
     </div>
     <div class="header-buttons">
-      <!-- User Profile (hidden until logged in) -->
       <div id="userProfile" class="user-profile">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -31,7 +30,6 @@
           <button id="confirmLogout" class="logout-button">Sign Out</button>
         </div>
       </div>
-      <!-- New Idea Button (hidden until user logs in) -->
       <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -45,44 +43,46 @@
     <div id="ideasGrid" class="ideas-grid"></div>
   </div>
 
-  <!-- Info Button -->
   <button id="infoBtn" class="info-icon" title="Info">
     <span class="info-text">i</span>
   </button>
 
-  <!-- 1) Disclaimers Modal (checkboxes, no Google sign-in here) -->
-  <div id="disclaimersModal" class="modal">
+  <!-- 1) Before We Continue Modal (Checkboxes) -->
+  <div id="disclaimerModal" class="modal">
     <div class="modal-content disclaimers-modal-content">
-      <h2 class="modal-title">Please Agree to These Items First</h2>
-      <div class="form-group" style="margin-bottom:1rem;">
-        <label>
-          <input type="checkbox" class="disclaimer-checkbox" value="1" />
-          I am a teacher or a faculty member.
-        </label>
-      </div>
-      <div class="form-group" style="margin-bottom:1rem;">
-        <label>
-          <input type="checkbox" class="disclaimer-checkbox" value="2" />
-          I will not post inappropriate content.
-        </label>
-      </div>
-      <div class="form-group" style="margin-bottom:1rem;">
-        <label>
-          <input type="checkbox" class="disclaimer-checkbox" value="3" />
-          I understand these ideas may be shared publicly.
-        </label>
-      </div>
-      <!-- "Next" button that leads to second modal if all boxes are checked -->
-      <button id="disclaimersNextBtn" class="submit-button" disabled>Next</button>
+      <h2 class="modal-title">Before We Continue</h2>
+      <p>Please check all items below to confirm:</p>
+      <form id="disclaimerForm">
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label>
+            <input type="checkbox" class="disclaimer-check" value="1" />
+            I am a teacher or staff at FCHS.
+          </label>
+        </div>
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label>
+            <input type="checkbox" class="disclaimer-check" value="2" />
+            I understand this is an experimental site and may have issues.
+          </label>
+        </div>
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label>
+            <input type="checkbox" class="disclaimer-check" value="3" />
+            I agree not to post inappropriate content.
+          </label>
+        </div>
+        <button id="disclaimerContinueBtn" type="button" class="submit-button" disabled>Continue</button>
+      </form>
     </div>
   </div>
 
-  <!-- 2) "Before We Continue" Modal (has the Google sign-in button) -->
-  <div id="beforeWeContinueModal" class="modal">
+  <!-- 2) Intro Modal (with Google button) -->
+  <div id="introModal" class="modal">
     <div class="modal-content intro-modal-content">
-      <h2 class="modal-title">Before We Continue</h2>
+      <h2 class="modal-title">Welcome to MyImagination!</h2>
       <p style="font-size: 1.25rem; line-height: 1.5;">
-        Thank you for agreeing to the items. Please continue with Google to unlock full access to the site.
+        This site was built by a student at FCHS to gather and share creative website ideas.
+        Please continue with Google to unlock full access to the site.
       </p>
       <button class="gsi-material-button" onclick="firebaseLogin()">
         <div class="gsi-material-button-state"></div>
@@ -154,8 +154,6 @@
         <p><strong>How to Share an Idea:</strong> Click the + button in the top right (after unlocking) to create a new post.</p>
         <p><strong>How to Use:</strong> Unlock the site by clicking "Continue with Google", then share your ideas using the + button. Use the filter button to toggle sorting between most popular and most recent.</p>
         <p><strong>The purpose of this Site:</strong> This site is meant for Teachers to share their ideas for websites. If there is a website you would use as a teacher or just for fun, please post it. All ideas matter!</p>
-
-        <!-- Start tutorial from Info modal -->
         <button class="submit-button" onclick="hideModal('infoModal'); startTutorial();">
           Start Tutorial
         </button>
@@ -182,9 +180,9 @@
     </div>
   </div>
 
-  <!-- 1) Firebase (forced sign-in approach) -->
+  <!-- 1) Firebase (no whoops, forced disclaimers -> intro) -->
   <script type="module" src="firebase.js"></script>
-  <!-- 2) Main logic (including disclaimers logic, new idea, etc.) -->
+  <!-- 2) Main logic (modals, disclaimers, new idea, old tutorial) -->
   <script src="main.js"></script>
 
   <!-- Disclaimer Banner -->
