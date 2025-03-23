@@ -1,6 +1,4 @@
 // main.js
-// Disclaimers -> Intro -> Sign In -> Site unlock
-
 function showModal(modalId) {
   document.getElementById(modalId).classList.add('show');
   document.body.classList.add('modal-open');
@@ -14,8 +12,8 @@ function unlockSite() {
   document.getElementById('ideasGrid').classList.remove('locked');
   document.getElementById('filterBtn').style.display = 'flex';
   document.getElementById('newIdeaBtn').style.display = 'block';
-  hideModal('disclaimerModal');
   hideModal('introModal');
+  hideModal('disclaimerModal');
   // If first time, run tutorial
   if (!localStorage.getItem('visited')) {
     startTutorial();
@@ -27,25 +25,41 @@ window.hideModal = hideModal;
 window.unlockSite = unlockSite;
 window.siteLocked = true;
 
-// 1) disclaimers logic
-const disclaimers = document.querySelectorAll('.disclaimer-check');
-const disclaimerContinueBtn = document.getElementById('disclaimerContinueBtn');
+// 1) Intro -> disclaimers
+const introNextBtn = document.getElementById('introNextBtn');
+introNextBtn.addEventListener('click', () => {
+  hideModal('introModal');
+  showModal('disclaimerModal');
+});
 
-function updateDisclaimerButtonState() {
-  // If all disclaimers are checked, enable the button
+// disclaimers -> google sign in
+const disclaimers = document.querySelectorAll('.disclaimer-check');
+const disclaimerSignInBtn = document.getElementById('disclaimerSignInBtn');
+
+function updateDisclaimerSignInState() {
   let allChecked = true;
   disclaimers.forEach(chk => {
-    if (!chk.checked) allChecked = false;
+    if (!chk.checked) {
+      allChecked = false;
+    }
   });
-  disclaimerContinueBtn.disabled = !allChecked;
+  disclaimerSignInBtn.disabled = !allChecked;
 }
-// Listen for changes
+
 disclaimers.forEach(chk => {
-  chk.addEventListener('change', updateDisclaimerButtonState);
+  chk.addEventListener('change', updateDisclaimerSignInState);
 });
-// When they click "Continue," hide disclaimers, show the Intro modal
-disclaimerContinueBtn.addEventListener('click', () => {
-  hideModal('disclaimerModal');
+
+disclaimerSignInBtn.addEventListener('click', () => {
+  if (!disclaimerSignInBtn.disabled) {
+    // call firebaseLogin from firebase.js
+    window.firebaseLogin();
+  }
+});
+
+// Show intro on page load if user is not logged in
+// If user is logged in, onAuthStateChanged unlocks the site
+window.addEventListener('load', () => {
   showModal('introModal');
 });
 
@@ -84,7 +98,7 @@ document.getElementById('filterBtn').addEventListener('click', function(e) {
   renderIdeas();
 });
 
-// Close modals on outside click
+// Hide modal when clicking outside
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', function(e) {
     if (e.target === modal) {
@@ -93,17 +107,7 @@ document.querySelectorAll('.modal').forEach(modal => {
   });
 });
 
-// 4) Tab switching for Info modal
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    this.classList.add('active');
-    document.getElementById(this.dataset.tab).classList.add('active');
-  });
-});
-
-// 5) Data: ideas, comments
+// 4) Data: ideas, comments
 let ideas = [];
 window.commentsCount = {};
 
@@ -118,6 +122,7 @@ function countComments(obj) {
   }
   return count;
 }
+
 function listenForCommentsCount() {
   const commentsRoot = window.ref(window.database, "comments");
   window.onValue(commentsRoot, (snapshot) => {
@@ -129,6 +134,7 @@ function listenForCommentsCount() {
     renderIdeas();
   });
 }
+
 function fetchIdeas() {
   const ideasRef = window.ref(window.database, "ideas");
   window.onValue(ideasRef, (snapshot) => {
@@ -145,7 +151,7 @@ function fetchIdeas() {
   });
 }
 
-// 6) Render ideas
+// 5) Render ideas (with user management for likes)
 window.userLikes = new Set();
 
 function renderIdeas() {
@@ -209,9 +215,6 @@ function renderIdeas() {
   }).join('');
 }
 
-window.sanitizeEmail = function(email) {
-  return email.replace(/[.#$/\[\]]/g, "_");
-};
 function toggleLike(ideaId, key) {
   if (window.siteLocked) {
     alert('Please unlock the site to like ideas.');
@@ -256,7 +259,7 @@ function toggleLike(ideaId, key) {
   }
 }
 
-// Comments + replies
+// Comments + replies + new idea + full idea
 function renderComments(comments, parentPath) {
   parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
   return comments.map(comment => {
@@ -293,6 +296,7 @@ function renderComments(comments, parentPath) {
     `;
   }).join('');
 }
+
 function showReplyForm(parentPath, commentId) {
   const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
   const form = document.getElementById(replyFormId);
@@ -300,6 +304,7 @@ function showReplyForm(parentPath, commentId) {
     form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
   }
 }
+
 function addCommentModal(postId) {
   const container = document.getElementById('modalCommentForm_' + postId);
   const textarea = container.querySelector('.comment-input');
@@ -326,6 +331,7 @@ function addCommentModal(postId) {
     console.error("Error posting comment:", error);
   });
 }
+
 function addReply(parentPath, commentId) {
   const replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + commentId;
   const replyInput = document.querySelector("#" + replyFormId + " .comment-input");
@@ -351,7 +357,6 @@ function addReply(parentPath, commentId) {
   });
 }
 
-// Show full idea
 function showFullIdea(ideaId) {
   const idea = ideas.find(i => i.id === ideaId);
   if (!idea) return;
@@ -434,6 +439,7 @@ function toggleModalCommentForm(ideaId) {
   const container = document.getElementById('modalCommentForm_' + ideaId);
   container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
 }
+
 function fetchComments(postId) {
   const cRef = window.ref(window.database, "comments/" + postId);
   window.onValue(cRef, (snapshot) => {
@@ -464,7 +470,7 @@ function fetchComments(postId) {
   });
 }
 
-// Add new idea
+// 6) Add new idea
 function addNewIdea(event) {
   event.preventDefault();
   const subject = document.getElementById('ideaSubject').value.trim();
@@ -498,7 +504,7 @@ function addNewIdea(event) {
   return false;
 }
 
-// Old spotlight tutorial
+// 7) Old spotlight tutorial
 let tutorialSteps = [
   { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
   { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
@@ -525,12 +531,15 @@ function showTutorialStep() {
     return;
   }
   targetEl.classList.add('highlighted');
+
   let rect = targetEl.getBoundingClientRect();
   let tooltip = document.getElementById('tutorialTooltip');
   let tooltipText = document.getElementById('tutorialText');
   tooltipText.textContent = step.text;
+
   let topPosition = rect.bottom + 10 + window.scrollY;
   let leftPosition = rect.left + window.scrollX;
+
   if (currentTutorialStep === 0) {
     leftPosition -= 150;
     if (leftPosition < window.scrollX + 40) {
@@ -541,9 +550,11 @@ function showTutorialStep() {
   tooltip.style.left = leftPosition + "px";
   tooltip.style.visibility = "hidden";
   tooltip.style.display = "block";
+
   let tooltipHeight = tooltip.offsetHeight;
   let tooltipWidth = tooltip.offsetWidth;
   tooltip.style.visibility = "visible";
+
   if (topPosition + tooltipHeight > window.innerHeight + window.scrollY) {
     topPosition = rect.top - tooltipHeight - 10 + window.scrollY;
   }
