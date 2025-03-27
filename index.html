@@ -1,93 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MyImagination Forum</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <!-- Link to external CSS -->
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header>
-    <div class="header-left">
-      <div class="logo">MyImagination</div>
-      <button id="filterBtn" class="icon-button" title="Filter: Most Popular" style="display: none;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-        </svg>
-      </button>
-    </div>
-    <div class="header-buttons">
-      <!-- User Profile (hidden until user logs in) -->
-      <div id="userProfile" class="user-profile">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-        <span id="username">DummyUser</span>
-        <div id="logoutDropdown" class="logout-dropdown">
-          <p>Are you sure you want to sign out?</p>
-          <button id="confirmLogout" class="logout-button">Sign Out</button>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MyImagination Forum</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-left">
+        <div class="logo">MyImagination</div>
+        <button id="filterBtn" class="icon-button" title="Filter: Most Popular" style="display: none;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+        </button>
       </div>
-      <!-- New Idea Button (hidden until site unlocks) -->
-      <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-      </button>
+      <div class="header-buttons">
+        <!-- User Profile (hidden until user logs in) -->
+        <div id="userProfile" class="user-profile">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span id="username">DummyUser</span>
+          <div id="logoutDropdown" class="logout-dropdown">
+            <p>Are you sure you want to sign out?</p>
+            <button id="confirmLogout" class="logout-button">Sign Out</button>
+          </div>
+        </div>
+        <!-- New Idea Button (hidden until site unlocks) -->
+        <button id="newIdeaBtn" class="icon-button" title="New Idea" style="display: none;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="container" role="main">
+      <div id="ideasGrid" class="ideas-grid"></div>
     </div>
-  </header>
 
-  <div class="container" role="main">
-    <div id="ideasGrid" class="ideas-grid"></div>
-  </div>
+    <!-- Info Button -->
+    <button id="infoBtn" class="info-icon" title="Info">
+      <span class="info-text">i</span>
+    </button>
 
-  <!-- Info Button -->
-  <button id="infoBtn" class="info-icon" title="Info">
-    <span class="info-text">i</span>
-  </button>
-
-  <!-- Intro Modal (for absolute first-time visitors) -->
-  <div id="introModal" class="modal">
-    <div class="modal-content intro-modal-content">
-      <h2 class="modal-title">Welcome to MyImagination!</h2>
-      <p>
-        This site was built by a student at FCHS to gather and share creative website ideas.
-        Please click "Next" to proceed to the disclaimers.
-      </p>
-      <button id="introNextBtn" class="submit-button">Next</button>
+    <!-- Intro Modal (for first-time visitors) -->
+    <div id="introModal" class="modal">
+      <div class="modal-content intro-modal-content">
+        <h2 class="modal-title">Welcome to MyImagination!</h2>
+        <p>
+          This site was built by a student at FCHS to gather and share creative website ideas.
+          Please click "Next" to proceed to the disclaimers.
+        </p>
+        <button id="introNextBtn" class="submit-button">Next</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Disclaimer Modal (for first-time disclaimers) -->
-  <div id="disclaimerModal" class="modal">
-    <div class="modal-content disclaimers-modal-content">
-      <h2 class="modal-title">Before We Continue</h2>
-      <p>Please check all items below, then sign in with Google:</p>
-      <form id="disclaimerForm">
-        <div class="form-group" style="margin-bottom: 8px;">
-          <label>
-            <input type="checkbox" class="disclaimer-check" />
-            I agree to the <a href="policies/#termsPanel" target="_blank">Terms of Service</a>
-          </label>
-        </div>
-        <div class="form-group" style="margin-bottom: 8px;">
-          <label>
-            <input type="checkbox" class="disclaimer-check" />
-            I agree to the <a href="policies/#privacyPanel" target="_blank">Privacy &amp; Cookie Policy</a>
-          </label>
-        </div>
-        <div class="form-group" style="margin-bottom: 8px;">
-          <label>
-            <input type="checkbox" class="disclaimer-check" />
-            I understand MyImagination is not affiliated with FTCSC or any of its tools/websites
-          </label>
-        </div>
-        <!-- Google sign-in button, disabled until disclaimers are checked -->
-        <button id="disclaimerSignInBtn" type="button" class="gsi-material-button" disabled>
+    <!-- Disclaimer Modal (shown on first visit if not consented) -->
+    <div id="disclaimerModal" class="modal">
+      <div class="modal-content disclaimers-modal-content">
+        <h2 class="modal-title">Before We Continue</h2>
+        <p>Please check all items below, then sign in with Google:</p>
+        <form id="disclaimerForm">
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label>
+              <input type="checkbox" class="disclaimer-check" />
+              I agree to the <a href="policies/#termsPanel" target="_blank">Terms of Service</a>
+            </label>
+          </div>
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label>
+              <input type="checkbox" class="disclaimer-check" />
+              I agree to the <a href="policies/#privacyPanel" target="_blank">Privacy &amp; Cookie Policy</a>
+            </label>
+          </div>
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label>
+              <input type="checkbox" class="disclaimer-check" />
+              I understand MyImagination is not affiliated with FTCSC or any of its tools/websites
+            </label>
+          </div>
+          <!-- Google sign-in button, disabled until all boxes are checked -->
+          <button id="disclaimerSignInBtn" type="button" class="gsi-material-button" disabled>
+            <div class="gsi-material-button-state"></div>
+            <div class="gsi-material-button-content-wrapper">
+              <div class="gsi-material-button-icon">
+                <!-- Google Icon -->
+                <svg viewBox="0 0 48 48" style="display: block;">
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85
+                    C35.9 2.38 30.47 0 24 0
+                    14.62 0 6.51 5.38 2.56 13.22
+                    l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94
+                    c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6
+                    c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59
+                    s.27-3.14.76-4.59l-7.98-6.19
+                    C.92 16.46 0 20.12 0 24
+                    c0 3.88.92 7.54 2.56 10.78
+                    l7.97-6.19z"/>
+                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81
+                    l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3
+                    -6.26 0-11.57-4.22-13.47-9.91
+                    l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                  <path fill="none" d="M0 0h48v48H0z"/>
+                </svg>
+              </div>
+              <span class="gsi-material-button-contents">Continue with Google</span>
+            </div>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Whoops Modal (for returning visitors who already consented) -->
+    <div id="whoopsModal" class="modal">
+      <div class="modal-content disclaimers-modal-content">
+        <h2 class="modal-title">Whoops!</h2>
+        <p>Looks like you're not signed in. Let's fix that!</p>
+        <button id="whoopsSignInBtn" type="button" class="gsi-material-button">
           <div class="gsi-material-button-state"></div>
           <div class="gsi-material-button-content-wrapper">
             <div class="gsi-material-button-icon">
@@ -112,86 +149,94 @@
                 <path fill="none" d="M0 0h48v48H0z"/>
               </svg>
             </div>
-            <span class="gsi-material-button-contents">Continue with Google</span>
+            <span class="gsi-material-button-contents">Sign In with Google</span>
           </div>
         </button>
-      </form>
+      </div>
     </div>
-  </div>
 
-  <!-- Whoops Modal (for subsequent visits if not logged in) -->
-  <div id="whoopsModal" class="modal">
-    <div class="modal-content disclaimers-modal-content">
-      <h2 class="modal-title">Whoops!</h2>
-      <p>Looks like you're not signed in. Let's fix that!</p>
-      <button id="whoopsSignInBtn" type="button" class="gsi-material-button">
-        <div class="gsi-material-button-state"></div>
-        <div class="gsi-material-button-content-wrapper">
-          <div class="gsi-material-button-icon">
-            <!-- Google Icon -->
-            <svg viewBox="0 0 48 48" style="display: block;">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85
-                C35.9 2.38 30.47 0 24 0
-                14.62 0 6.51 5.38 2.56 13.22
-                l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94
-                c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6
-                c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59
-                s.27-3.14.76-4.59l-7.98-6.19
-                C.92 16.46 0 20.12 0 24
-                c0 3.88.92 7.54 2.56 10.78
-                l7.97-6.19z"/>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81
-                l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3
-                -6.26 0-11.57-4.22-13.47-9.91
-                l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-              <path fill="none" d="M0 0h48v48H0z"/>
-            </svg>
-          </div>
-          <span class="gsi-material-button-contents">Sign In with Google</span>
+    <!-- New Idea Modal -->
+    <div id="newIdeaModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Share Your Idea</h2>
+          <button class="close-modal" onclick="hideModal('newIdeaModal')">&times;</button>
         </div>
-      </button>
+        <form id="newIdeaForm" onsubmit="return addNewIdea(event)">
+          <div class="form-group">
+            <label class="form-label" for="ideaSubject">Subject</label>
+            <input type="text" id="ideaSubject" class="form-input" placeholder="Give your idea a catchy title" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ideaDescription">Description</label>
+            <textarea id="ideaDescription" class="form-input" placeholder="Describe your idea in detail..." required></textarea>
+          </div>
+          <button type="submit" class="submit-button">Post Idea</button>
+        </form>
+      </div>
     </div>
-  </div>
 
-  <!-- New Idea Modal -->
-  <div id="newIdeaModal" class="modal">
-    <!-- same as before -->
-  </div>
+    <!-- Full Idea Modal -->
+    <div id="fullIdeaModal" class="modal"></div>
 
-  <!-- Full Idea Modal -->
-  <div id="fullIdeaModal" class="modal"></div>
-
-  <!-- Info Modal -->
-  <div id="infoModal" class="modal">
-    <!-- same as before -->
-  </div>
-
-  <!-- Tutorial Overlay & Spotlight Tutorial -->
-  <div id="tutorialOverlay">
-    <div id="tutorialTooltip">
-      <p id="tutorialText"></p>
-      <button id="tutorialNextBtn" class="submit-button">Next</button>
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Information</h2>
+          <button class="close-modal" onclick="hideModal('infoModal')">&times;</button>
+        </div>
+        <div class="tabs">
+          <button class="tab active" data-tab="instructions">Instructions</button>
+          <button class="tab" data-tab="about">About the Developer</button>
+        </div>
+        <div class="tab-content active" id="instructions">
+          <h3>Instructions</h3>
+          <p><strong>How to Share an Idea:</strong> Click the + button in the top right (after unlocking) to create a new post.</p>
+          <p><strong>How to Use:</strong> Sign in with Google (after disclaimers) to unlock, then share your ideas using the + button. Use the filter button to toggle sorting between most popular and most recent.</p>
+          <p><strong>The purpose of this Site:</strong> This site is meant for Teachers to share their ideas for websites. If there is a website you would use as a teacher or just for fun, please post it. All ideas matter!</p>
+          <button class="submit-button" onclick="hideModal('infoModal'); startTutorial();">
+            Start Tutorial
+          </button>
+        </div>
+        <div class="tab-content" id="about">
+          <h3>About the Developer</h3>
+          <p>
+            Hi, I'm Gavin Molter! I am currently a junior in the student IT Cyberflash program. I love making websites, but I have such a small imagination. This is where I could use your help! I want to create a wide variety of websites that both students and teachers can use. Any ideas you have are greatly appreciated.
+            <br /><br />
+            If you have any questions, please email me at
+            <a href="mailto:gmolter@ftstudent.org">gmolter@ftstudent.org</a>
+            and I will try to respond as soon as possible! If there is an issue with the site, please fill out the simple issue report form
+            <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- 1) Firebase v8 (no import/export) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- Tutorial Overlay & Spotlight Tutorial -->
+    <div id="tutorialOverlay">
+      <div id="tutorialTooltip">
+        <p id="tutorialText"></p>
+        <button id="tutorialNextBtn" class="submit-button">Next</button>
+      </div>
+    </div>
 
-  <!-- 2) Our config + logic in older style -->
-  <script src="firebase.js"></script>
-  <!-- 3) Main logic (modals, disclaimers, new idea, tutorial) -->
-  <script src="main.js"></script>
+    <!-- Firebase v8 (non‑module) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  <!-- Disclaimer Banner -->
-  <div class="disclaimer-banner">
-    <p>
-      This site is experimental and under development – issues may occur.
-      Please submit any issues <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.
-    </p>
-  </div>
-</body>
+    <!-- Our Firebase config and logic -->
+    <script src="firebase.js"></script>
+    <!-- Main logic (modals, disclaimers, ideas, tutorial, etc.) -->
+    <script src="main.js"></script>
+
+    <!-- Disclaimer Banner -->
+    <div class="disclaimer-banner">
+      <p>
+        This site is experimental and under development – issues may occur.
+        Please submit any issues <a href="https://forms.gle/z9MtK3tS1TS1JhK4A" target="_blank">here</a>.
+      </p>
+    </div>
+  </body>
 </html>
