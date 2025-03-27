@@ -10,21 +10,14 @@ function hideModal(modalId) {
   document.body.classList.remove('modal-open');
 }
 
-/**
- * Called when the site is unlocked (user logs in or is recognized).
- * Hides disclaimers/whoops, shows filter button, etc.
- */
 function unlockSite() {
   window.siteLocked = false;
   document.getElementById('ideasGrid').classList.remove('locked');
   document.getElementById('filterBtn').style.display = 'flex';
   document.getElementById('newIdeaBtn').style.display = 'block';
-
   hideModal('introModal');
   hideModal('disclaimerModal');
   hideModal('whoopsModal');
-
-  // If first time, run tutorial
   if (!localStorage.getItem('visited')) {
     startTutorial();
     localStorage.setItem('visited', 'true');
@@ -34,26 +27,16 @@ function unlockSite() {
 window.showModal = showModal;
 window.hideModal = hideModal;
 window.unlockSite = unlockSite;
-
-/**
- * siteLocked = true until we confirm user is recognized or disclaimers are done
- */
 window.siteLocked = true;
 
-// On page load, decide disclaimers vs whoops if user is not logged in
+// On page load, decide which modal to show if not signed in
 window.addEventListener('load', function() {
-  // We'll check if they've "consented" via localStorage
   var hasConsented = localStorage.getItem('consented') === 'true';
-
-  // Wait a short moment for auth.onAuthStateChanged to run
-  // If user is not logged in after that, show disclaimers or whoops
   setTimeout(function() {
     if (window.siteLocked) {
       if (hasConsented) {
-        // They already consented => show Whoops if they're not logged in
         showModal('whoopsModal');
       } else {
-        // Not consented => show Intro
         showModal('introModal');
       }
     }
@@ -67,7 +50,7 @@ introNextBtn.addEventListener('click', function() {
   showModal('disclaimerModal');
 });
 
-// disclaimers -> google sign in
+// Disclaimers -> sign in
 var disclaimers = document.querySelectorAll('.disclaimer-check');
 var disclaimerSignInBtn = document.getElementById('disclaimerSignInBtn');
 
@@ -85,12 +68,11 @@ disclaimers.forEach(function(chk) {
 });
 disclaimerSignInBtn.addEventListener('click', function() {
   if (!disclaimerSignInBtn.disabled) {
-    // calls firebaseLogin in firebase.js
     window.firebaseLogin();
   }
 });
 
-// whoops sign in
+// Whoops modal sign in button
 var whoopsSignInBtn = document.getElementById('whoopsSignInBtn');
 whoopsSignInBtn.addEventListener('click', function() {
   window.firebaseLogin();
@@ -109,10 +91,15 @@ document.getElementById('confirmLogout').addEventListener('click', function(e) {
   logout();
 });
 
-/**
- * Filter, new idea, info
- * By default, filterBtn is hidden in HTML until we unlock
- */
+// Buttons: new idea, info, filter
+document.getElementById('newIdeaBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  showModal('newIdeaModal');
+});
+document.getElementById('infoBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  showModal('infoModal');
+});
 var filterBy = "recent";
 document.getElementById('filterBtn').addEventListener('click', function(e) {
   e.stopPropagation();
@@ -126,31 +113,14 @@ document.getElementById('filterBtn').addEventListener('click', function(e) {
   renderIdeas();
 });
 
-// new idea
-document.getElementById('newIdeaBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  showModal('newIdeaModal');
-});
-
-// info
-document.getElementById('infoBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  showModal('infoModal');
-});
-
-/**
- * Close modals on outside click, EXCEPT disclaimers, intro, whoops
- * which cannot be closed by outside click.
- */
+// Prevent closing for intro, disclaimers, whoops on outside click
 document.querySelectorAll('.modal').forEach(function(modal) {
   modal.addEventListener('click', function(e) {
-    // If disclaimers/intro/whoops => do NOT close on outside
     if ((modal.id === 'introModal' ||
          modal.id === 'disclaimerModal' ||
          modal.id === 'whoopsModal') && e.target === modal) {
-      // do nothing
+      // Do nothing: these modals cannot be closed by clicking outside
     } else if (e.target === modal) {
-      // close for other modals
       hideModal(modal.id);
     }
   });
@@ -160,9 +130,6 @@ document.querySelectorAll('.modal').forEach(function(modal) {
 var ideas = [];
 window.commentsCount = {};
 
-/** 
- * Recursively count comments, ignoring _next
- */
 function countComments(obj) {
   var count = 0;
   for (var key in obj) {
@@ -203,7 +170,6 @@ function fetchIdeas() {
   });
 }
 
-// userLikes for hearts
 window.userLikes = new Set();
 
 function renderIdeas() {
@@ -273,7 +239,6 @@ function renderIdeas() {
   }).join('');
 }
 
-/** Toggle like logic */
 function toggleLike(ideaId, key) {
   if (window.siteLocked) {
     alert('Please unlock the site to like ideas.');
@@ -286,7 +251,6 @@ function toggleLike(ideaId, key) {
   if (!idea) return;
 
   if (window.userLikes.has(key)) {
-    // Unlike
     window.userLikes.delete(key);
     idea.likes = Math.max((idea.likes || 0) - 1, 0);
     window.update(window.ref("ideas/" + ideaId), { likes: idea.likes });
@@ -295,7 +259,6 @@ function toggleLike(ideaId, key) {
       null
     );
   } else {
-    // Like
     window.userLikes.add(key);
     idea.likes = (idea.likes || 0) + 1;
     window.update(window.ref("ideas/" + ideaId), { likes: idea.likes });
@@ -306,7 +269,6 @@ function toggleLike(ideaId, key) {
   }
   renderIdeas();
 
-  // If full idea modal is open, re-render
   if (document.getElementById('fullIdeaModal').classList.contains('show') &&
       window.currentExpandedIdeaId === ideaId) {
     showFullIdea(ideaId);
@@ -320,14 +282,11 @@ function toggleLike(ideaId, key) {
   }
 }
 
-/** Comments + replies rendering */
 function renderComments(comments, parentPath) {
   parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
-
   return comments.map(function(comment) {
     var replyFormId = "reply-form-" + parentPath.replace(/[\/:]/g, "_") + "_" + comment.id;
     var repliesHtml = "";
-
     if (comment.replies) {
       var repliesArray = Object.entries(comment.replies).map(function(entry) {
         var k = entry[0], v = entry[1];
@@ -342,7 +301,6 @@ function renderComments(comments, parentPath) {
         ${renderComments(repliesArray, parentPath + "/" + comment.id + "/replies")}
       </div>`;
     }
-
     return `
       <div class="comment">
         <div class="comment-header">
@@ -379,7 +337,6 @@ function addCommentModal(postId) {
   var textarea = container.querySelector('.comment-input');
   var content = textarea.value.trim();
   if (!content) return;
-
   var nextRef = window.ref("comments/" + postId + "/_next");
   window.runTransaction(nextRef, function(current) {
     return (current === null ? 0 : current) + 1;
@@ -406,7 +363,6 @@ function addReply(parentPath, commentId) {
   var replyInput = document.querySelector("#" + replyFormId + " .comment-input");
   var content = replyInput.value.trim();
   if (!content) return;
-
   var nextRef = window.ref(parentPath + "/" + commentId + "/_next");
   window.runTransaction(nextRef, function(current) {
     return (current === null ? 0 : current) + 1;
@@ -426,12 +382,10 @@ function addReply(parentPath, commentId) {
   });
 }
 
-/** Show Full Idea Modal with bigger styling */
 function showFullIdea(ideaId) {
   var idea = ideas.find(function(i) { return i.id === ideaId; });
   if (!idea) return;
   window.currentExpandedIdeaId = ideaId;
-
   var modalHeaderHTML = `
 <div class="header-left-content">
   <h2 class="modal-title" id="fullIdeaTitle">${idea.subject}</h2>
@@ -468,7 +422,6 @@ function showFullIdea(ideaId) {
   </button>
   <button class="close-modal" onclick="hideModal('fullIdeaModal')">&times;</button>
 </div>`;
-
   var commentToggleMarkup = `
 <button class="comment-toggle-button" onclick="toggleModalCommentForm('${idea.id}'); event.stopPropagation();">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -484,13 +437,11 @@ function showFullIdea(ideaId) {
       onclick="addCommentModal('${idea.id}'); event.stopPropagation();">Post</button>
   </div>
 </div>`;
-
   var modalBodyHTML = `
 <div class="idea-description">${idea.description}</div>
 <h3 style="margin: 16px 0 8px 0;">Comments</h3>
 ${commentToggleMarkup}
 <div id="commentsSection" class="comments-section"></div>`;
-
   document.getElementById('fullIdeaModal').innerHTML = `
 <div class="modal-content">
   <div class="modal-header">
@@ -500,7 +451,6 @@ ${commentToggleMarkup}
     ${modalBodyHTML}
   </div>
 </div>`.trim();
-
   showModal('fullIdeaModal');
   fetchComments(idea.id);
 }
@@ -515,7 +465,6 @@ function fetchComments(postId) {
   window.onValue(cRef, function(snapshot) {
     var data = snapshot.val();
     var commHtml = "";
-
     if (data) {
       var obj = {};
       for (var key in data) {
@@ -537,7 +486,6 @@ function fetchComments(postId) {
     } else {
       document.getElementById("fullIdeaCommentsCount").textContent = 0;
     }
-
     var section = document.getElementById('commentsSection');
     if (section) {
       section.innerHTML = commHtml;
@@ -545,7 +493,6 @@ function fetchComments(postId) {
   });
 }
 
-/** Smooth scroll to #commentsSection in the full idea modal */
 function scrollToComments(event) {
   event.stopPropagation();
   var commentsSec = document.getElementById('commentsSection');
@@ -554,13 +501,11 @@ function scrollToComments(event) {
   }
 }
 
-/** Add new idea from the "New Idea" modal */
 function addNewIdea(event) {
   event.preventDefault();
   var subject = document.getElementById('ideaSubject').value.trim();
   var description = document.getElementById('ideaDescription').value.trim();
   if (!subject || !description) return;
-
   var encodedSubject = encodeURIComponent(subject);
   var newIdea = {
     subject: subject,
@@ -570,12 +515,10 @@ function addNewIdea(event) {
     likes: 0,
     created: Date.now()
   };
-
   window.get(window.ref("ideas/" + encodedSubject))
     .then(function(snapshot) {
       var key = encodedSubject;
       if (snapshot.exists()) {
-        // If subject is taken, append timestamp
         key = encodedSubject + "_" + Date.now();
       }
       return window.set(window.ref("ideas/" + key), newIdea);
@@ -590,7 +533,6 @@ function addNewIdea(event) {
   return false;
 }
 
-/* Old tutorial steps fully included */
 var tutorialSteps = [
   { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
   { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
@@ -620,32 +562,25 @@ function showTutorialStep() {
     return;
   }
   targetEl.classList.add('highlighted');
-
   var rect = targetEl.getBoundingClientRect();
   var tooltip = document.getElementById('tutorialTooltip');
   var tooltipText = document.getElementById('tutorialText');
   tooltipText.textContent = step.text;
-
   var topPosition = rect.bottom + 10 + window.scrollY;
   var leftPosition = rect.left + window.scrollX;
-
-  // shift left for first step
   if (currentTutorialStep === 0) {
     leftPosition -= 150;
     if (leftPosition < window.scrollX + 40) {
       leftPosition = window.scrollX + 40;
     }
   }
-
   tooltip.style.top = topPosition + "px";
   tooltip.style.left = leftPosition + "px";
   tooltip.style.visibility = "hidden";
   tooltip.style.display = "block";
-
   var tooltipHeight = tooltip.offsetHeight;
   var tooltipWidth = tooltip.offsetWidth;
   tooltip.style.visibility = "visible";
-
   if (topPosition + tooltipHeight > window.innerHeight + window.scrollY) {
     topPosition = rect.top - tooltipHeight - 10 + window.scrollY;
   }
