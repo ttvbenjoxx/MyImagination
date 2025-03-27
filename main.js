@@ -10,13 +10,20 @@ function hideModal(modalId) {
   document.body.classList.remove('modal-open');
 }
 
+/**
+ * Called when the site is unlocked (user logs in or is recognized).
+ * Hides disclaimers/whoops, shows filter button, etc.
+ */
 function unlockSite() {
   window.siteLocked = false;
   document.getElementById('ideasGrid').classList.remove('locked');
   document.getElementById('filterBtn').style.display = 'flex';
   document.getElementById('newIdeaBtn').style.display = 'block';
+
   hideModal('introModal');
   hideModal('disclaimerModal');
+  hideModal('whoopsModal');
+
   // If first time, run tutorial
   if (!localStorage.getItem('visited')) {
     startTutorial();
@@ -27,11 +34,30 @@ function unlockSite() {
 window.showModal = showModal;
 window.hideModal = hideModal;
 window.unlockSite = unlockSite;
+
+/**
+ * siteLocked = true until we confirm user is recognized or disclaimers are done
+ */
 window.siteLocked = true;
 
-// Show Intro Modal on page load
+// On page load, decide disclaimers vs whoops if user is not logged in
 window.addEventListener('load', function() {
-  showModal('introModal');
+  // We'll check if they've "consented" via localStorage
+  var hasConsented = localStorage.getItem('consented') === 'true';
+
+  // Wait a short moment for auth.onAuthStateChanged to run
+  // If user is not logged in after that, show disclaimers or whoops
+  setTimeout(function() {
+    if (window.siteLocked) {
+      if (hasConsented) {
+        // They already consented => show Whoops if they're not logged in
+        showModal('whoopsModal');
+      } else {
+        // Not consented => show Intro
+        showModal('introModal');
+      }
+    }
+  }, 200);
 });
 
 // Intro -> disclaimers
@@ -54,16 +80,20 @@ function updateDisclaimerSignInState() {
   });
   disclaimerSignInBtn.disabled = !allChecked;
 }
-
 disclaimers.forEach(function(chk) {
   chk.addEventListener('change', updateDisclaimerSignInState);
 });
-
 disclaimerSignInBtn.addEventListener('click', function() {
   if (!disclaimerSignInBtn.disabled) {
-    // calls the global function from firebase.js
+    // calls firebaseLogin in firebase.js
     window.firebaseLogin();
   }
+});
+
+// whoops sign in
+var whoopsSignInBtn = document.getElementById('whoopsSignInBtn');
+whoopsSignInBtn.addEventListener('click', function() {
+  window.firebaseLogin();
 });
 
 // Logout dropdown
@@ -79,16 +109,10 @@ document.getElementById('confirmLogout').addEventListener('click', function(e) {
   logout();
 });
 
-// Buttons for new idea, info, filter
-document.getElementById('newIdeaBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  showModal('newIdeaModal');
-});
-document.getElementById('infoBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  showModal('infoModal');
-});
-
+/**
+ * Filter, new idea, info
+ * By default, filterBtn is hidden in HTML until we unlock
+ */
 var filterBy = "recent";
 document.getElementById('filterBtn').addEventListener('click', function(e) {
   e.stopPropagation();
@@ -102,10 +126,31 @@ document.getElementById('filterBtn').addEventListener('click', function(e) {
   renderIdeas();
 });
 
-// Skip outside-click for #introModal & #disclaimerModal only
+// new idea
+document.getElementById('newIdeaBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  showModal('newIdeaModal');
+});
+
+// info
+document.getElementById('infoBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  showModal('infoModal');
+});
+
+/**
+ * Close modals on outside click, EXCEPT disclaimers, intro, whoops
+ * which cannot be closed by outside click.
+ */
 document.querySelectorAll('.modal').forEach(function(modal) {
   modal.addEventListener('click', function(e) {
-    if ((modal.id !== 'introModal' && modal.id !== 'disclaimerModal') && e.target === modal) {
+    // If disclaimers/intro/whoops => do NOT close on outside
+    if ((modal.id === 'introModal' ||
+         modal.id === 'disclaimerModal' ||
+         modal.id === 'whoopsModal') && e.target === modal) {
+      // do nothing
+    } else if (e.target === modal) {
+      // close for other modals
       hideModal(modal.id);
     }
   });
@@ -115,6 +160,9 @@ document.querySelectorAll('.modal').forEach(function(modal) {
 var ideas = [];
 window.commentsCount = {};
 
+/** 
+ * Recursively count comments, ignoring _next
+ */
 function countComments(obj) {
   var count = 0;
   for (var key in obj) {
@@ -155,6 +203,7 @@ function fetchIdeas() {
   });
 }
 
+// userLikes for hearts
 window.userLikes = new Set();
 
 function renderIdeas() {
@@ -162,9 +211,13 @@ function renderIdeas() {
   var sorted = ideas.slice();
 
   if (filterBy === "popular") {
-    sorted.sort(function(a, b) { return (b.likes || 0) - (a.likes || 0); });
+    sorted.sort(function(a, b) {
+      return (b.likes || 0) - (a.likes || 0);
+    });
   } else {
-    sorted.sort(function(a, b) { return (b.created || 0) - (a.created || 0); });
+    sorted.sort(function(a, b) {
+      return (b.created || 0) - (a.created || 0);
+    });
   }
 
   ideasGrid.innerHTML = sorted.map(function(idea) {
@@ -176,7 +229,7 @@ function renderIdeas() {
           <div class="idea-description">
             ${
               idea.description.length > 200
-                ? idea.description.slice(0, 200) + "..."
+                ? idea.description.slice(0,200) + "..."
                 : idea.description
             }
             ${
@@ -190,7 +243,7 @@ function renderIdeas() {
           <span>${idea.username}</span>
           <div class="idea-actions">
             <button class="action-button ${window.userLikes.has(idea.id) ? 'liked' : ''}"
-              onclick="toggleLike('${idea.id}', '${idea.id}'); event.stopPropagation();">
+              onclick="toggleLike('${idea.id}','${idea.id}'); event.stopPropagation();">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0
                   L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78
@@ -220,6 +273,7 @@ function renderIdeas() {
   }).join('');
 }
 
+/** Toggle like logic */
 function toggleLike(ideaId, key) {
   if (window.siteLocked) {
     alert('Please unlock the site to like ideas.');
@@ -252,7 +306,7 @@ function toggleLike(ideaId, key) {
   }
   renderIdeas();
 
-  // If the full idea modal is open, re-render it so the like count updates
+  // If full idea modal is open, re-render
   if (document.getElementById('fullIdeaModal').classList.contains('show') &&
       window.currentExpandedIdeaId === ideaId) {
     showFullIdea(ideaId);
@@ -266,7 +320,7 @@ function toggleLike(ideaId, key) {
   }
 }
 
-// Comments + replies
+/** Comments + replies rendering */
 function renderComments(comments, parentPath) {
   parentPath = parentPath || ("comments/" + window.currentExpandedIdeaId);
 
@@ -372,7 +426,7 @@ function addReply(parentPath, commentId) {
   });
 }
 
-// Full Idea Modal
+/** Show Full Idea Modal with bigger styling */
 function showFullIdea(ideaId) {
   var idea = ideas.find(function(i) { return i.id === ideaId; });
   if (!idea) return;
@@ -491,6 +545,7 @@ function fetchComments(postId) {
   });
 }
 
+/** Smooth scroll to #commentsSection in the full idea modal */
 function scrollToComments(event) {
   event.stopPropagation();
   var commentsSec = document.getElementById('commentsSection');
@@ -499,7 +554,7 @@ function scrollToComments(event) {
   }
 }
 
-// Add new idea
+/** Add new idea from the "New Idea" modal */
 function addNewIdea(event) {
   event.preventDefault();
   var subject = document.getElementById('ideaSubject').value.trim();
@@ -520,6 +575,7 @@ function addNewIdea(event) {
     .then(function(snapshot) {
       var key = encodedSubject;
       if (snapshot.exists()) {
+        // If subject is taken, append timestamp
         key = encodedSubject + "_" + Date.now();
       }
       return window.set(window.ref("ideas/" + key), newIdea);
@@ -534,7 +590,7 @@ function addNewIdea(event) {
   return false;
 }
 
-// Old tutorial
+/* Old tutorial steps fully included */
 var tutorialSteps = [
   { target: "#newIdeaBtn", text: "Click the '+' button to share your creative idea." },
   { target: "#filterBtn", text: "Click the filter button to toggle sorting between most popular and most recent." },
@@ -573,6 +629,7 @@ function showTutorialStep() {
   var topPosition = rect.bottom + 10 + window.scrollY;
   var leftPosition = rect.left + window.scrollX;
 
+  // shift left for first step
   if (currentTutorialStep === 0) {
     leftPosition -= 150;
     if (leftPosition < window.scrollX + 40) {
