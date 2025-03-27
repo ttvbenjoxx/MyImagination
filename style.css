@@ -11,17 +11,19 @@
   --transition: all 0.3s ease;
 }
 
-/* Focus outlines */
+/* Focus outlines for form elements */
 button:focus,
 input:focus,
 textarea:focus {
   outline: 2px solid var(--primary-color);
 }
 
+/* Prevent scrolling when modal is open */
 body.modal-open {
   overflow: hidden;
 }
 
+/* Base reset and font */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -34,7 +36,7 @@ body {
   color: var(--text-color);
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   min-height: 100vh;
-  padding-bottom: 50px; /* For disclaimer banner */
+  padding-bottom: 50px; /* for disclaimer banner */
 }
 
 .container {
@@ -43,6 +45,7 @@ body {
   padding: 20px;
 }
 
+/* Header styles */
 header {
   background-color: rgba(255,255,255,0.1);
   padding: 20px;
@@ -55,7 +58,6 @@ header {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-
 .header-left {
   display: flex;
   align-items: center;
@@ -73,6 +75,7 @@ header {
   align-items: center;
 }
 
+/* User profile and logout dropdown */
 .user-profile {
   display: none;
   align-items: center;
@@ -126,6 +129,7 @@ header {
   background-color: #c0392b;
 }
 
+/* Icon button for filter and new idea */
 .icon-button {
   width: 40px;
   height: 40px;
@@ -145,6 +149,7 @@ header {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
+/* Ideas grid */
 .ideas-grid {
   display: grid;
   grid-template-columns: repeat(6, 180px);
@@ -153,6 +158,7 @@ header {
   margin: 0 auto;
 }
 
+/* Idea card styling */
 .idea-card {
   background-color: var(--card-background);
   border-radius: var(--border-radius);
@@ -189,8 +195,8 @@ header {
 .idea-description {
   color: #4a4a4a;
   line-height: 1.4;
-  white-space: normal;
   word-break: break-word;
+  white-space: normal;
 }
 .more-button {
   background: var(--primary-color);
@@ -208,6 +214,7 @@ header {
   background: #7424c1;
 }
 
+/* Idea card meta */
 .idea-meta {
   display: flex;
   justify-content: space-between;
@@ -247,13 +254,12 @@ header {
   100% { transform: scale(1); }
 }
 
+/* Modal base styling */
 .modal {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background-color: var(--modal-background);
   z-index: 1000;
   align-items: center;
@@ -281,11 +287,19 @@ header {
   transform: translateY(0);
   opacity: 1;
 }
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal body */
 .modal-body {
   overflow-y: auto;
   white-space: normal;
   word-break: break-word;
 }
+
+/* Modal header */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -308,11 +322,37 @@ header {
 .close-modal:hover {
   color: #1a1a1a;
 }
-@keyframes modalFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+
+/* Disclaimers and Intro modals (bigger look) */
+.disclaimers-modal-content {
+  width: 700px;
+  max-width: 95%;
+  margin: 0 auto;
+  text-align: left;
+  font-size: 1.3rem;
+  line-height: 1.6;
+}
+.intro-modal-content {
+  width: 700px;
+  max-width: 95%;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px;
+  font-size: 1.4rem;
+  line-height: 1.6;
 }
 
+/* Whoops modal styling */
+#whoopsModal .modal-content {
+  width: 600px;
+  max-width: 95%;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+/* Form elements */
 .form-group {
   margin-bottom: 12px;
 }
@@ -372,6 +412,8 @@ textarea.form-input {
   padding: 8px 12px;
   font-size: 14px;
 }
+
+/* Comments styling */
 .comments-section {
   margin-top: 12px;
   padding-top: 12px;
@@ -445,6 +487,7 @@ textarea.form-input {
   background: rgba(138,43,226,0.1);
 }
 
+/* Author details in full idea modal */
 .author-details {
   font-size: 0.8rem;
   margin-bottom: 12px;
@@ -455,6 +498,7 @@ textarea.form-input {
   align-items: center;
 }
 
+/* Info button */
 .info-icon {
   position: fixed;
   bottom: 80px;
@@ -480,6 +524,8 @@ textarea.form-input {
   color: var(--primary-color);
   line-height: 1;
 }
+
+/* Tabs for Info Modal */
 .tabs {
   display: flex;
   gap: 2px;
@@ -509,45 +555,62 @@ textarea.form-input {
   display: block;
 }
 
-@keyframes modalFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Full Idea Modal improvements */
+#fullIdeaModal .modal-content {
+  width: 700px;
+  max-width: 95%;
+  margin: 0 auto;
+  text-align: left;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+#fullIdeaModal .modal-header {
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#fullIdeaModal .modal-title {
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+}
+#fullIdeaModal .author-details {
+  font-size: 0.9rem;
+  color: #666;
+}
+#fullIdeaModal .header-right-content {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+#fullIdeaModal .header-right-content .action-button {
+  margin-left: 8px;
+}
+#fullIdeaModal .idea-description {
+  margin-bottom: 16px;
+  color: #333;
+}
+#fullIdeaModal .comments-section {
+  margin-top: 16px;
 }
 
-/* Tutorial Overlay & Spotlight Tutorial */
-#tutorialOverlay {
+/* Disclaimer Banner */
+.disclaimer-banner {
   position: fixed;
-  top: 0;
-  left: 0;
+  bottom: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.7);
-  z-index: 3000;
-  display: none;
+  background-color: #fffae6;
+  color: #333;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+  z-index: 200;
 }
-#tutorialTooltip {
-  position: absolute;
-  background: white;
-  padding: 16px;
-  border-radius: var(--border-radius);
-  max-width: 300px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  transition: var(--transition);
-}
-.highlighted {
-  position: relative;
-  z-index: 3100;
-  box-shadow: 0 0 0 4px var(--primary-color);
-  border-radius: var(--border-radius);
-}
-@media (max-width: 768px) {
-  .ideas-grid {
-    grid-template-columns: 1fr;
-  }
-  .modal-content {
-    padding: 24px;
-    margin: 20px;
-  }
+.disclaimer-banner a {
+  color: var(--primary-color);
+  text-decoration: underline;
 }
 
 /* Google Sign-In Button */
@@ -645,78 +708,13 @@ textarea.form-input {
   opacity: 8%;
 }
 
-/* disclaimers + intro modal bigger look */
-.disclaimers-modal-content {
-  width: 700px;
-  max-width: 95%;
-  margin: 0 auto;
-  text-align: left;
-  font-size: 1.3rem;
-  line-height: 1.6;
-}
-.intro-modal-content {
-  width: 700px;
-  max-width: 95%;
-  margin: 0 auto;
-  text-align: center;
-  padding: 40px;
-  font-size: 1.4rem;
-  line-height: 1.6;
-}
-
-/* Full Idea Modal improvements */
-#fullIdeaModal .modal-content {
-  width: 700px;         /* Increase width for clarity */
-  max-width: 95%;
-  margin: 0 auto;
-  text-align: left;
-  font-size: 1.1rem;
-  line-height: 1.5;
-}
-#fullIdeaModal .modal-header {
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-#fullIdeaModal .modal-title {
-  font-size: 1.4rem;
-  margin-bottom: 4px;
-  color: #1a1a1a;
-}
-#fullIdeaModal .author-details {
-  font-size: 0.9rem;
-  color: #666;
-}
-#fullIdeaModal .header-right-content {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-#fullIdeaModal .header-right-content .action-button {
-  margin-left: 8px;
-}
-#fullIdeaModal .idea-description {
-  margin-bottom: 16px;
-  color: #333;
-}
-#fullIdeaModal .comments-section {
-  margin-top: 16px;
-}
-
-.disclaimer-banner {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #fffae6;
-  color: #333;
-  text-align: center;
-  padding: 10px;
-  font-size: 14px;
-  box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-  z-index: 200;
-}
-.disclaimer-banner a {
-  color: var(--primary-color);
-  text-decoration: underline;
+/* Media Query for mobile screens */
+@media (max-width: 768px) {
+  .ideas-grid {
+    grid-template-columns: 1fr;
+  }
+  .modal-content {
+    padding: 24px;
+    margin: 20px;
+  }
 }
