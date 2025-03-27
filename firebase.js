@@ -1,7 +1,7 @@
-// firebase.js (older approach, no import/export)
+// firebase.js (Firebase v8, no import/export)
 
 var firebaseConfig = {
-  apiKey: "AIzaSyC...",
+  apiKey: "AIzaSyCzczvu3wHzJxzmZjN-swMmYglCeaXh8n4",
   authDomain: "myimaginationbackup.firebaseapp.com",
   databaseURL: "https://myimaginationbackup-default-rtdb.firebaseio.com",
   projectId: "myimaginationbackup",
@@ -10,15 +10,15 @@ var firebaseConfig = {
   appId: "1:780723525935:web:151a6d230b3705852a29da"
 };
 
-// 1) Initialize
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-// 2) Access services
+// Access services
 var auth = firebase.auth();
 var provider = new firebase.auth.GoogleAuthProvider();
 var db = firebase.database();
 
-// 3) Expose references globally
+// Expose references globally
 window.database = db;
 window.ref = function(path) { return db.ref(path); };
 window.onValue = function(reference, callback) { reference.on('value', callback); };
@@ -30,12 +30,12 @@ window.runTransaction = function(reference, transactionUpdate) {
   return reference.transaction(transactionUpdate);
 };
 
-// 4) Sanitize email
+// Sanitize email for database keys
 window.sanitizeEmail = function(email) {
   return email.replace(/[.#$/\[\]]/g, "_");
 };
 
-// 5) Watch for auth changes
+// Watch for auth changes
 auth.onAuthStateChanged(function(user) {
   if (user) {
     document.getElementById('username').textContent = user.displayName;
@@ -50,7 +50,7 @@ auth.onAuthStateChanged(function(user) {
     // Create or update user node
     window.set(window.ref("userManagement/" + userKey + "/displayName"), user.displayName);
 
-    // Load user’s liked posts
+    // Load user's liked posts
     var userLikesRef = window.ref("userManagement/" + userKey + "/Likes");
     userLikesRef.on('value', function(snapshot) {
       var data = snapshot.val() || {};
@@ -58,17 +58,16 @@ auth.onAuthStateChanged(function(user) {
       window.renderIdeas();
     });
 
-    // Unlock site & load data
+    // Unlock site and load ideas/comments
     window.unlockSite();
     window.fetchIdeas();
     window.listenForCommentsCount();
-
   } else {
-    // Not logged in => main.js decides whether disclaimers or whoops
+    // Not logged in; main.js will decide whether to show disclaimers or the Whoops modal
   }
 });
 
-// This is called by disclaimers or whoops -> google sign in
+// Called by the disclaimers or Whoops modal to sign in
 window.firebaseLogin = function() {
   auth.signInWithPopup(provider)
     .then(function(result) {
@@ -80,11 +79,15 @@ window.firebaseLogin = function() {
       window.currentUserName = user.displayName;
       window.currentUserId = user.uid;
 
-      // Mark localStorage consented
+      var userKey = window.sanitizeEmail(user.email);
+
+      // Create or update the userManagement node
+      window.set(window.ref("userManagement/" + userKey + "/displayName"), user.displayName);
+
+      // Save consent in localStorage so disclaimers are not shown again
       localStorage.setItem('consented', 'true');
 
-      // Load user’s liked posts
-      var userKey = window.sanitizeEmail(user.email);
+      // Load user's liked posts
       var userLikesRef = window.ref("userManagement/" + userKey + "/Likes");
       userLikesRef.on('value', function(snapshot) {
         var data = snapshot.val() || {};
@@ -92,7 +95,7 @@ window.firebaseLogin = function() {
         window.renderIdeas();
       });
 
-      // Unlock site & load data
+      // Unlock site and load ideas/comments
       window.unlockSite();
       window.fetchIdeas();
       window.listenForCommentsCount();
@@ -102,7 +105,7 @@ window.firebaseLogin = function() {
     });
 };
 
-// 7) Logout
+// Logout function
 window.logout = function() {
   auth.signOut()
     .then(function() {
